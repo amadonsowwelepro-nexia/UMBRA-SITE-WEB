@@ -1,16 +1,2340 @@
-<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UMBRA — Sow Wele</title>
-    <meta name="description" content="UMBRA, manga original par Sow Wele. Lecture en ligne, communauté et théories." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Manrope:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #08080A; color: #F2F0EC; font-family: Manrope, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #4E9BD4; text-decoration: none; }
+  a:hover { color: #7CB9E3; }
+  input, textarea, button { font-family: inherit; }
+  input::placeholder, textarea::placeholder { color: #6B6862; }
+  ::selection { background: #3B8FCB; color: #08080A; }
+  @keyframes umbraPulse { 0%,100% { opacity: .55 } 50% { opacity: 1 } }
+
+  /* ============ RESPONSIVE — MOBILE ≤ 768px ============ */
+  @media (max-width: 768px) {
+    /* Prevent any horizontal scroll */
+    html, body { overflow-x: hidden !important; max-width: 100vw !important; }
+    /* Outer container padding — universal match */
+    [style*="padding: 0 84px"],
+    [style*="padding: 0px 84px"],
+    div[style*="min-height: 100vh"] {
+      padding: 0 12px 100px !important;
+    }
+    /* Any 2-col hero-style grid collapses */
+    [style*="grid-template-columns: 1fr 1fr"] {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+    }
+    /* Sidebar grids (community, about, admin cards) */
+    [style*="grid-template-columns: 1fr 300px"],
+    [style*="grid-template-columns: 260px 1fr"],
+    [style*="grid-template-columns: 240px 1fr"] {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+    }
+    /* Reader main+tools */
+    [style*="grid-template-columns: 1fr 92px"] {
+      grid-template-columns: 1fr !important;
+    }
+    /* Library card row */
+    [style*="grid-template-columns: 78px 1fr auto"] {
+      grid-template-columns: 60px 1fr !important;
+      gap: 12px !important;
+    }
+    /* Admin tome row */
+    [style*="grid-template-columns: 52px 1fr auto auto auto auto"] {
+      grid-template-columns: 52px 1fr !important;
+      gap: 10px !important;
+    }
+    /* 4-col stats -> 2-col */
+    [style*="grid-template-columns: repeat(4, 1fr)"] {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    /* 5-col top rankings -> 1 col */
+    [style*="grid-template-columns: repeat(5, minmax(0, 1fr))"] {
+      grid-template-columns: 1fr !important;
+    }
+    /* 3-col referral stats */
+    [style*="grid-template-columns: repeat(3, 1fr)"] {
+      grid-template-columns: 1fr !important;
+    }
+    /* Thread + reply avatar grids stay */
+
+    /* Fluid font sizes */
+    [style*="font-size: 68px"] { font-size: clamp(38px, 11vw, 68px) !important; }
+    [style*="font-size: 46px"] { font-size: clamp(30px, 9vw, 46px) !important; }
+    [style*="font-size: 40px"] { font-size: clamp(26px, 8vw, 40px) !important; }
+    [style*="font-size: 34px"] { font-size: clamp(24px, 7vw, 34px) !important; }
+    [style*="font-size: 32px"] { font-size: clamp(23px, 6.5vw, 32px) !important; }
+    [style*="font-size: 30px"] { font-size: clamp(22px, 6vw, 30px) !important; }
+    [style*="font-size: 28px"] { font-size: clamp(22px, 5.8vw, 28px) !important; }
+    [style*="font-size: 26px"] { font-size: clamp(20px, 5.5vw, 26px) !important; }
+    [style*="font-size: 25px"] { font-size: clamp(20px, 5.4vw, 25px) !important; }
+    [style*="font-size: 24px"] { font-size: clamp(19px, 5.2vw, 24px) !important; }
+    [style*="font-size: 22px"] { font-size: clamp(18px, 5vw, 22px) !important; }
+
+    /* Left dock repositioned to bottom right, horizontal */
+    [style*="left: 18px; top: 50%"] {
+      left: auto !important;
+      right: 12px !important;
+      top: auto !important;
+      bottom: 84px !important;
+      transform: none !important;
+      flex-direction: row !important;
+      gap: 8px !important;
+    }
+    [style*="left: 18px; top: 50%"] > * {
+      width: 40px !important;
+      height: 40px !important;
+    }
+
+    /* Sticky sidebars unstick on mobile */
+    [style*="position: sticky; top: 96px"],
+    [style*="position: sticky; top: 90px"],
+    [style*="position: sticky; top: 78px"] {
+      position: static !important;
+      top: auto !important;
+    }
+
+    /* Hero card + big cards padding reduction */
+    [style*="padding: 34px"] { padding: 20px !important; }
+    [style*="padding: 28px"] { padding: 18px !important; }
+    [style*="padding: 26px"] { padding: 16px !important; }
+
+    /* Header : wraps naturally, but ensure search shrinks */
+    input[style*="flex: 0 1 210px"] {
+      flex: 1 1 100% !important;
+      width: 100% !important;
+    }
+
+    /* Reader tools sidebar becomes horizontal bar under content */
+    [style*="linear-gradient(180deg, #101015"] {
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+      padding: 10px !important;
+    }
+
+    /* Bottom audio widget offset so it doesn't collide with left dock */
+    [style*="bottom: 22px; left: 22px"] {
+      bottom: 16px !important;
+      left: 12px !important;
+      max-width: calc(100vw - 24px) !important;
+    }
+
+    /* Consent banner + toast : ensure they fit */
+    [style*="bottom: 26px"] { bottom: 16px !important; }
+
+    /* Tables/inputs full width */
+    [style*="width: 210px"] { width: 100% !important; }
+
+    /* Global bottom padding — leave room for fixed tools bar */
+    body > div[style*="min-height: 100vh"],
+    x-dc > div[style*="min-height: 100vh"] {
+      padding: 0 12px 100px !important;
+    }
+
+    /* ===== HOME — "Dernières sorties" : afficher UNIQUEMENT le 1er tome ===== */
+    [style*="grid-template-columns: repeat(auto-fit, minmax(126px, 1fr))"] {
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+    }
+    [style*="grid-template-columns: repeat(auto-fit, minmax(126px, 1fr))"] > *:nth-child(n+2) {
+      display: none !important;
+    }
+    /* Limiter la largeur du seul tome visible pour un rendu propre */
+    [style*="grid-template-columns: repeat(auto-fit, minmax(126px, 1fr))"] > *:first-child {
+      max-width: 220px !important;
+      margin: 0 auto !important;
+    }
+
+    /* ===== HOME — Top 5 en lignes textuelles compactes ===== */
+    [style*="grid-template-columns: repeat(5, minmax(0, 1fr))"] > * {
+      padding: 10px 12px !important;
+      gap: 10px !important;
+    }
+    [style*="grid-template-columns: repeat(5, minmax(0, 1fr))"] > * > [style*="width: 38px; height: 54px"] {
+      display: none !important;
+    }
+    [style*="grid-template-columns: repeat(5, minmax(0, 1fr))"] > * > [style*="font-size: 30px"] {
+      font-size: 22px !important;
+      min-width: 22px !important;
+    }
+
+    /* ===== HOME — About section : cover plus petite ===== */
+    [style*="grid-template-columns: 260px 1fr"] > *:first-child {
+      max-width: 180px !important;
+      margin: 0 auto !important;
+    }
+
+    /* ===== READER — pages plein largeur écran =====
+       (le navigateur normalise les hex en rgb(), on cible par géométrie unique) */
+    [style*="width: 80%"][style*="border-radius: 6px"],
+    [style*="width: 80%"][style*="border-radius: 8px"],
+    [style*="width: 90%"][style*="border-radius: 6px"],
+    [style*="width: 90%"][style*="border-radius: 8px"],
+    [style*="width: 100%"][style*="border-radius: 6px"] {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* ===== READER — barre outils fixée en bas (horizontale) =====
+       Ciblage unique via padding: 12px 8px 14px (spécifique à la sidebar reader).
+       z-index 80 > ad banner (70) pour rester au-dessus */
+    [style*="padding: 12px 8px 14px"] {
+      position: fixed !important;
+      left: 6px !important;
+      right: 6px !important;
+      bottom: 64px !important;
+      top: auto !important;
+      z-index: 80 !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      justify-content: space-around !important;
+      align-items: center !important;
+      padding: 6px 8px !important;
+      background: rgba(11, 14, 18, 0.96) !important;
+      backdrop-filter: blur(10px) !important;
+      box-shadow: 0 -6px 20px rgba(0,0,0,.5) !important;
+      gap: 4px !important;
+      overflow-x: auto !important;
+      border: 1px solid #23323F !important;
+      border-radius: 12px !important;
+    }
+    /* Cacher les labels de section (DÉFILEMENT/TAILLE/DONNÉES/CONFORT)
+       → sélecteur robuste : font-size 8.5px + text-align center */
+    [style*="padding: 12px 8px 14px"] > div[style*="font-size: 8.5px"] {
+      display: none !important;
+    }
+    /* Cacher les sliders verticaux (zoom + brightness) — trop encombrants en mobile */
+    [style*="padding: 12px 8px 14px"] input[type="range"] {
+      display: none !important;
+    }
+    /* Cacher les labels % (80%, 100%) associés aux sliders */
+    [style*="padding: 12px 8px 14px"] > div[style*="font-size: 10px"],
+    [style*="padding: 12px 8px 14px"] > div[style*="font-size: 9.5px"] {
+      display: none !important;
+    }
+    /* Forcer une hauteur compacte */
+    [style*="padding: 12px 8px 14px"] {
+      height: auto !important;
+      max-height: 52px !important;
+      padding: 8px 12px !important;
+    }
+    /* Boutons plus petits pour rentrer sur une ligne */
+    [style*="padding: 12px 8px 14px"] > div[style*="width: 40px; height: 34px"] {
+      width: 34px !important;
+      height: 32px !important;
+      font-size: 14px !important;
+      flex: 0 0 auto !important;
+    }
+    /* Zoom -/+ (22px déjà petit, on garde) */
+    [style*="padding: 12px 8px 14px"] > div[style*="width: 22px; height: 22px"] {
+      width: 26px !important;
+      height: 26px !important;
+      font-size: 13px !important;
+    }
+    /* Le container -/+ zoom */
+    [style*="padding: 12px 8px 14px"] > div[style*="display: flex"][style*="gap: 5px"] {
+      flex: 0 0 auto !important;
+    }
+
+    /* Widget audio en bas-gauche — au-dessus barre outils (64-114px) et ad banner */
+    [style*="bottom: 22px; left: 22px"] {
+      bottom: 126px !important;
+      left: 10px !important;
+      right: 10px !important;
+      max-width: calc(100vw - 20px) !important;
+    }
+
+    /* Bottom padding global mobile : de la place pour ad banner + tool bar + audio */
+    [style*="padding: 0 84px"],
+    [style*="padding: 0px 84px"],
+    div[style*="min-height: 100vh"] {
+      padding: 0 12px 180px !important;
+    }
+  }
+</style>
+</helmet>
+
+<audio ref="{{ audioRef }}" src="uploads/果てなき航海.mp3" preload="auto" style="display: none;"></audio>
+<sc-if value="{{ audioStarted }}" hint-placeholder-val="{{ false }}">
+  <div style="position: fixed; bottom: 22px; left: 22px; z-index: 90; display: flex; align-items: center; gap: 10px; padding: 9px 14px 9px 12px; border-radius: 999px; border: 1px solid #23323F; background: rgba(8,12,18,.92); backdrop-filter: blur(8px); box-shadow: 0 12px 32px rgba(0,0,0,.5);">
+    <div onClick="{{ playTrailer }}" title="Lecture / pause" style="width: 30px; height: 30px; border-radius: 999px; background: #3B8FCB; color: #06131F; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer;" style-hover="background: #7CB9E3;">{{ trailerIcon }}</div>
+    <div onClick="{{ toggleMute }}" title="Couper / activer le son" style="width: 30px; height: 30px; border-radius: 999px; border: 1px solid #23323F; color: #7CB9E3; display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer;" style-hover="color: #F2F0EC; border-color: #3B8FCB;">{{ muteIcon }}</div>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .08em; color: #6B7A87;">OPENING</div>
+  </div>
+</sc-if>
+
+<div style="min-height: 100vh; background: #08080A; padding: 0 84px 80px;">
+
+  <div style="position: fixed; left: 18px; top: 50%; transform: translateY(-50%); z-index: 60; display: flex; flex-direction: column; gap: 12px;">
+    <a href="{{ twitterUrl }}" target="_blank" title="Compte X" style="width: 46px; height: 46px; border-radius: 999px; border: 1px solid #223243; background: #0D131A; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: #7CB9E3;" style-hover="border-color: #3B8FCB; background: #12202C;">𝕏</a>
+    <a href="{{ tiktokUrl }}" target="_blank" title="Compte TikTok" style="width: 46px; height: 46px; border-radius: 999px; border: 1px solid #223243; background: #0D131A; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #7CB9E3;" style-hover="border-color: #3B8FCB; background: #12202C;">♪</a>
+    <div onClick="{{ openSupport }}" title="Cagnotte soutien créateur" style="width: 46px; height: 46px; border-radius: 999px; background: #3B8FCB; color: #06131F; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">€</div>
+  </div>
+
+  <div style="position: sticky; top: 0; z-index: 40; background: rgba(8,8,10,.92); backdrop-filter: blur(14px); border-bottom: 1px solid #1C1C20;">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; flex-wrap: wrap; row-gap: 10px; column-gap: 18px;">
+      <div onClick="{{ goHome }}" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+        <div style="width: 30px; height: 30px; border-radius: 8px; background: #3B8FCB; color: #06131F; font-family: 'Archivo Black', sans-serif; font-size: 16px; display: flex; align-items: center; justify-content: center;">U</div>
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 17px; letter-spacing: .14em;">UMBRA</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <div onClick="{{ goHome }}" style="padding: 8px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: #F2F0EC; cursor: pointer;" style-hover="background: #16161A;">Accueil</div>
+        <div onClick="{{ goCommunity }}" style="padding: 8px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: #A8A49C; cursor: pointer;" style-hover="background: #16161A; color: #F2F0EC;">Communauté</div>
+        <div onClick="{{ goLibrary }}" style="padding: 8px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: #A8A49C; cursor: pointer;" style-hover="background: #16161A; color: #F2F0EC;">Lecture</div>
+      </div>
+      <div style="flex: 1 1 12px; min-width: 12px;"></div>
+      <div style="display: flex; align-items: center; gap: 10px; flex: 0 1 auto; min-width: 0;">
+        <input value="{{ search }}" onChange="{{ onSearch }}" placeholder="Rechercher…" style="flex: 0 1 210px; min-width: 0; width: 210px; padding: 9px 14px; border-radius: 999px; border: 1px solid #22222A; background: #101014; color: #F2F0EC; font-size: 13px; outline: none;">
+        <div onClick="{{ goReferral }}" style="padding: 9px 16px; border-radius: 999px; background: #3B8FCB; color: #06131F; font-size: 13px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">Parrainage</div>
+        <div onClick="{{ openAuth }}" style="padding: 9px 14px; border-radius: 999px; border: 1px solid {{ authChipBorder }}; color: {{ authChipColor }}; font-size: 12.5px; font-weight: 700; cursor: pointer; max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" style-hover="border-color: #3B8FCB; color: #7CB9E3;">{{ authLabel }}</div>
+        <sc-if value="{{ showAdminLink }}" hint-placeholder-val="{{ true }}">
+        <div onClick="{{ goAdmin }}" title="Panneau créateur" style="width: 36px; height: 36px; border-radius: 999px; border: 1px solid #22222A; color: #A8A49C; font-size: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-hover="border-color: #3B8FCB; color: #7CB9E3;">⚙</div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="Accueil" style="max-width: 1120px; margin: 0 auto; padding: 28px 24px 0;">
+
+    <div style="border-radius: 20px; border: 1px solid #1F1F26; background: linear-gradient(115deg, #0B1520 0%, #0C0C0F 55%, #0A0A0C 100%); padding: 34px; display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: center;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+          <div style="padding: 5px 11px; border-radius: 999px; background: #3B8FCB; color: #06131F; font-size: 10.5px; font-weight: 800; letter-spacing: .1em;">TENDANCE #1</div>
+          <div style="font-size: 12px; color: #74716A; letter-spacing: .04em;">{{ heroMeta }}</div>
+        </div>
+        <div style="font-size: 10.5px; letter-spacing: .16em; color: #6B6862; margin-bottom: 10px;">UNE ŒUVRE UMBRA</div>
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 68px; line-height: .92; letter-spacing: -.01em;">{{ mangaTitle }}</div>
+        <div style="margin-top: 18px; font-size: 15.5px; line-height: 1.6; color: #B5B1A9; max-width: 460px; text-wrap: pretty;">{{ tagline }}</div>
+        <div style="margin-top: 22px; display: flex; align-items: center; gap: 22px; font-size: 12.5px; color: #8B877F; flex-wrap: wrap;">
+          <div><span style="color: #F2F0EC; font-weight: 800;">{{ totalReads }}</span> lectures cumulées</div>
+          <div><span style="color: #F2F0EC; font-weight: 800;">{{ totalLikes }}</span> likes</div>
+          <div><span style="color: #F2F0EC; font-weight: 800;">{{ videoViews }}</span> vues vidéo</div>
+          <div>{{ tomeCount }} tomes</div>
+        </div>
+        <div style="margin-top: 26px; display: flex; gap: 12px;">
+          <div onClick="{{ readFirst }}" style="padding: 13px 22px; border-radius: 12px; background: #3B8FCB; color: #06131F; font-size: 14px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">{{ readFirstLabel }}</div>
+          <div onClick="{{ goCommunity }}" style="padding: 13px 22px; border-radius: 12px; border: 1px solid #2A3A4A; color: #F2F0EC; font-size: 14px; font-weight: 700; cursor: pointer;" style-hover="border-color: #3B8FCB;">Voir les avis</div>
+        </div>
+      </div>
+      <div style="border-radius: 19px; padding: 3px; background: linear-gradient(150deg, #7CB9E3 0%, #3B8FCB 42%, #1E5F8F 100%); box-shadow: 0 0 0 1px rgba(59,143,203,.35), 0 18px 50px rgba(30,95,143,.28);">
+        <div style="border-radius: 16px; overflow: hidden; background: #0B0B0E; aspect-ratio: 16/9; position: relative; display: flex; align-items: center; justify-content: center;">
+          <sc-if value="{{ hasVideo }}" hint-placeholder-val="{{ false }}">
+            {{ videoEl }}
+          </sc-if>
+          <sc-if value="{{ noVideo }}" hint-placeholder-val="{{ true }}">
+            <div onClick="{{ playTrailer }}" style="position: absolute; inset: 0; background: repeating-linear-gradient(135deg, #0D1218 0 12px, #101620 12px 24px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; cursor: pointer;">
+              <div style="width: 62px; height: 62px; border-radius: 999px; background: #3B8FCB; color: #06131F; display: flex; align-items: center; justify-content: center; font-size: 22px; animation: umbraPulse 2.6s ease-in-out infinite;">{{ trailerIcon }}</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6B7A87; text-align: center; line-height: 1.7;">{{ trailerHint }}</div>
+            </div>
+          </sc-if>
+
+          <div style="position: absolute; bottom: 10px; right: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(6,12,20,.78); font-size: 11px; font-weight: 700; color: #7CB9E3;">{{ videoViews }} vues</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 44px; display: flex; align-items: flex-end; justify-content: space-between;">
+      <div>
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 24px;">Dernières sorties</div>
+        <div style="margin-top: 6px; font-size: 13px; color: #8B877F;">{{ continuityLine }}</div>
+      </div>
+      <div onClick="{{ goLibrary }}" style="font-size: 13px; font-weight: 700; color: #4E9BD4; cursor: pointer;">Voir tout →</div>
+    </div>
+
+    <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(126px, 1fr)); gap: 14px;">
+      <sc-for list="{{ tomes }}" as="tome" hint-placeholder-count="7">
+        <div onClick="{{ tome.open }}" style="cursor: pointer;">
+          <div style="position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 2/3; background: {{ tome.cover }}; border: 1px solid #1F1F26;">
+            <sc-if value="{{ tome.noArt }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.34) 0%, rgba(0,0,0,0) 42%, rgba(0,0,0,.62) 100%);"></div>
+                <div style="position: absolute; top: 9px; left: 10px; font-family: 'Archivo Black', sans-serif; font-size: 8.5px; letter-spacing: .16em; color: rgba(255,255,255,.82);">UMBRA</div>
+                <div style="position: absolute; bottom: 4px; right: 10px; font-family: 'Archivo Black', sans-serif; font-size: 40px; color: rgba(255,255,255,.94); line-height: 1;">{{ tome.num }}</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ tome.isLocked }}" hint-placeholder-val="{{ false }}">
+              <div style="position: absolute; inset: 0; background: rgba(6,8,12,.72); display: flex; align-items: center; justify-content: center;">
+                <div style="width: 34px; height: 34px; border-radius: 999px; background: #3B8FCB; color: #06131F; display: flex; align-items: center; justify-content: center; font-size: 15px;">🔒</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ tome.isHot }}" hint-placeholder-val="{{ false }}">
+              <div style="position: absolute; bottom: 10px; left: 10px; padding: 3px 8px; border-radius: 5px; background: #E8590C; color: #FFF; font-size: 9px; font-weight: 800; letter-spacing: .1em;">HOT</div>
+            </sc-if>
+          </div>
+          <div style="margin-top: 9px; font-size: 13px; font-weight: 700;">{{ tome.label }}</div>
+          <div style="margin-top: 3px; font-size: 11px; color: #74716A;">{{ tome.chapterRange }}</div>
+          <div style="margin-top: 5px; display: flex; gap: 9px; font-size: 10.5px; color: #6E7B87; font-family: 'JetBrains Mono', monospace;">
+            <div>{{ tome.readsLabel }}</div>
+            <div>{{ tome.likesLabel }}</div>
+          </div>
+          <div style="margin-top: 4px; font-size: 10.5px; font-weight: 700; color: {{ tome.statusColor }};">{{ tome.status }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: 44px;">
+      <div style="font-family: 'Archivo Black', sans-serif; font-size: 24px;">Top 5 des chapitres les plus commentés</div>
+      <div style="margin-top: 6px; font-size: 13px; color: #8B877F;">Classement automatique — likes + commentaires · {{ topUpdated }}</div>
+    </div>
+    <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px;">
+      <sc-for list="{{ topChapters }}" as="top" hint-placeholder-count="5">
+        <div onClick="{{ top.open }}" style="border-radius: 14px; border: 1px solid #1F1F26; background: #0E0E12; padding: 14px; display: flex; gap: 12px; align-items: center; cursor: pointer;" style-hover="border-color: #3B8FCB;">
+          <div style="font-family: 'Archivo Black', sans-serif; font-size: 30px; color: {{ top.rankColor }}; line-height: 1;">{{ top.rank }}</div>
+          <div style="width: 38px; height: 54px; border-radius: 7px; background: {{ top.cover }}; flex: none;"></div>
+          <div style="min-width: 0;">
+            <div style="font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ top.title }}</div>
+            <div style="margin-top: 5px; font-size: 11px; color: #74716A;">♡ {{ top.likes }} · 💬 {{ top.comments }}</div>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noRanked }}" hint-placeholder-val="{{ false }}">
+        <div style="grid-column: 1 / -1; border-radius: 14px; border: 1px dashed #1F1F26; background: #0B0B0E; padding: 26px; text-align: center; font-size: 12.5px; color: #57544F;">Aucun chapitre commenté pour le moment — le classement se remplit dès les premières lectures.</div>
+      </sc-if>
+    </div>
+
+    <div style="margin-top: 28px; border-radius: 14px; border: 1px dashed #26262E; background: #0B0B0E; padding: 22px; text-align: center;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5E5B56; letter-spacing: .06em;">{{ adSlotLabel }}</div>
+    </div>
+
+    <div style="margin-top: 44px; border-radius: 20px; border: 1px solid #1F1F26; background: #0C0C0F; padding: 28px; display: grid; grid-template-columns: 260px 1fr; gap: 32px;">
+      <div style="border-radius: 14px; aspect-ratio: 2/3; background: {{ aboutCover }}; position: relative; overflow: hidden;">
+        <sc-if value="{{ aboutNoArt }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="position: absolute; top: 16px; left: 18px; font-family: 'Archivo Black', sans-serif; font-size: 9px; letter-spacing: .18em; color: rgba(255,255,255,.8);">{{ author }}</div>
+            <div style="position: absolute; top: 34px; left: 18px; font-family: 'Archivo Black', sans-serif; font-size: 22px; color: #fff;">{{ mangaTitle }}</div>
+            <div style="position: absolute; bottom: 8px; right: 18px; font-family: 'Archivo Black', sans-serif; font-size: 64px; color: rgba(255,255,255,.92); line-height: 1;">1</div>
+          </div>
+        </sc-if>
+      </div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 11.5px; letter-spacing: .08em;">
+          <div style="color: #4ADE80; font-weight: 800;">● EN COURS</div>
+          <div style="color: #74716A;">{{ genreLine }}</div>
+        </div>
+        <div style="margin-top: 12px; font-family: 'Archivo Black', sans-serif; font-size: 30px;">À propos de {{ mangaTitle }}</div>
+        <div style="margin-top: 14px; font-size: 14.5px; line-height: 1.7; color: #B5B1A9; text-wrap: pretty;">{{ synopsis }}</div>
+        <div style="margin-top: 22px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+          <div style="border-radius: 10px; border: 1px solid #1F1F26; background: #101014; padding: 12px 14px;">
+            <div style="font-size: 9.5px; letter-spacing: .12em; color: #6B6862;">AUTEUR</div>
+            <div style="margin-top: 5px; font-size: 13.5px; font-weight: 700;">{{ author }}</div>
+          </div>
+          <div style="border-radius: 10px; border: 1px solid #1F1F26; background: #101014; padding: 12px 14px;">
+            <div style="font-size: 9.5px; letter-spacing: .12em; color: #6B6862;">ANNÉE</div>
+            <div style="margin-top: 5px; font-size: 13.5px; font-weight: 700;">{{ year }}</div>
+          </div>
+          <div style="border-radius: 10px; border: 1px solid #1F1F26; background: #101014; padding: 12px 14px;">
+            <div style="font-size: 9.5px; letter-spacing: .12em; color: #6B6862;">ÉDITION</div>
+            <div style="margin-top: 5px; font-size: 13.5px; font-weight: 700;">{{ edition }}</div>
+          </div>
+          <div style="border-radius: 10px; border: 1px solid #1F1F26; background: #101014; padding: 12px 14px;">
+            <div style="font-size: 9.5px; letter-spacing: .12em; color: #6B6862;">TOMES</div>
+            <div style="margin-top: 5px; font-size: 13.5px; font-weight: 700;">{{ tomeCount }}</div>
+          </div>
+        </div>
+        <div style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{ genres }}" as="g" hint-placeholder-count="5">
+            <div style="padding: 6px 12px; border-radius: 999px; border: 1px solid #23232B; font-size: 11.5px; color: #A8A49C;">{{ g.name }}</div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+          <div onClick="{{ readFirst }}" style="padding: 12px 20px; border-radius: 11px; background: #3B8FCB; color: #06131F; font-size: 13.5px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">{{ readFirstShort }}</div>
+          <div onClick="{{ goReferral }}" style="padding: 12px 20px; border-radius: 11px; border: 1px solid #2A3A4A; color: #F2F0EC; font-size: 13.5px; font-weight: 700; cursor: pointer;" style-hover="border-color: #3B8FCB;">Partager mon lien</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 44px; display: flex; align-items: flex-end; justify-content: space-between;">
+      <div>
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 24px;">Espace Communauté</div>
+        <div style="margin-top: 6px; font-size: 13px; color: #8B877F;">{{ communityMeta }}</div>
+      </div>
+      <div onClick="{{ goCommunity }}" style="font-size: 13px; font-weight: 700; color: #4E9BD4; cursor: pointer;">Voir tout →</div>
+    </div>
+    <div style="margin-top: 18px; display: grid; gap: 12px;">
+      <sc-if value="{{ noPosts }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ goCommunity }}" style="border-radius: 14px; border: 1px dashed #1F1F26; background: #0B0B0E; padding: 28px 22px; text-align: center; cursor: pointer;" style-hover="border-color: #2A3A4A;">
+          <div style="font-size: 13.5px; font-weight: 800; color: #D6D3CC;">L’espace communauté est vide</div>
+          <div style="margin-top: 7px; font-size: 12.5px; color: #57544F;">Ouvre la discussion : première réaction, première théorie.</div>
+        </div>
+      </sc-if>
+      <sc-for list="{{ homePosts }}" as="p" hint-placeholder-count="3">
+        <div onClick="{{ p.openThread }}" style="border-radius: 14px; border: 1px solid #1B1B21; background: #0E0E12; padding: 16px 18px; cursor: pointer;" style-hover="border-color: #2A3A4A;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 30px; height: 30px; border-radius: 999px; background: {{ p.avatar }};"></div>
+            <div style="font-size: 13px; font-weight: 800; color: #7CB9E3;">{{ p.author }}</div>
+            <div style="flex: 1;"></div>
+            <div style="font-size: 11px; color: #6B6862;">{{ p.time }}</div>
+          </div>
+          <div style="margin-top: 10px; font-size: 14px; line-height: 1.6; color: #DAD7D0;">{{ p.text }}</div>
+          <div style="margin-top: 10px; font-size: 11.5px; color: #74716A;">{{ p.likeLabel }} · 💬 {{ p.replyCount }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isLibrary }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Bibliothèque" style="max-width: 1120px; margin: 0 auto; padding: 32px 24px 0;">
+    <div style="font-family: 'Archivo Black', sans-serif; font-size: 34px;">Tous les tomes</div>
+    <div style="margin-top: 8px; font-size: 13.5px; color: #8B877F;">{{ continuityLine }}</div>
+    <div style="margin-top: 26px; display: grid; gap: 14px;">
+      <sc-for list="{{ tomes }}" as="tome" hint-placeholder-count="7">
+        <div style="border-radius: 16px; border: 1px solid #1B1B21; background: #0D0D11; padding: 18px; display: grid; grid-template-columns: 78px 1fr auto; gap: 20px; align-items: center;">
+          <div style="border-radius: 9px; aspect-ratio: 2/3; background: {{ tome.cover }}; position: relative; overflow: hidden;">
+            <div style="position: absolute; bottom: 2px; right: 7px; font-family: 'Archivo Black', sans-serif; font-size: 26px; color: rgba(255,255,255,.94); line-height: 1;">{{ tome.num }}</div>
+          </div>
+          <div>
+            <div style="font-size: 17px; font-weight: 800;">{{ tome.label }}</div>
+            <div style="margin-top: 5px; font-size: 12.5px; color: #8B877F;">{{ tome.subtitle }}</div>
+            <div style="margin-top: 7px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E7B87;">{{ tome.readsLabel }} · {{ tome.likesLabel }}</div>
+            <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+              <sc-for list="{{ tome.chapters }}" as="ch" hint-placeholder-count="3">
+                <div onClick="{{ ch.open }}" style="padding: 8px 13px; border-radius: 9px; border: 1px solid #23232B; background: #101014; font-size: 12px; font-weight: 600; color: #D6D3CC; cursor: pointer; display: flex; align-items: center; gap: 7px;" style-hover="border-color: #3B8FCB; color: #7CB9E3;">
+                  <div>{{ ch.short }}</div>
+                  <div style="font-size: 10.5px; color: #6B6862;">{{ ch.lockIcon }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 13px; font-weight: 800; color: #4E9BD4;">{{ tome.priceLabel }}</div>
+            <div onClick="{{ tome.open }}" style="margin-top: 10px; padding: 10px 18px; border-radius: 10px; background: #3B8FCB; color: #06131F; font-size: 12.5px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">{{ tome.cta }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isReader }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Lecteur" style="max-width: 1000px; margin: 0 auto; padding: 24px 24px 0;">
+    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <div onClick="{{ goLibrary }}" style="font-size: 13px; font-weight: 700; color: #8B877F; cursor: pointer;" style-hover="color: #7CB9E3;">← Bibliothèque</div>
+      <div style="flex: 1;"></div>
+      <div style="display: flex; border-radius: 999px; border: 1px solid #23232B; overflow: hidden;">
+        <div onClick="{{ setPaged }}" style="padding: 8px 15px; font-size: 12px; font-weight: 700; cursor: pointer; background: {{ pagedBg }}; color: {{ pagedFg }};">Page par page</div>
+        <div onClick="{{ setScroll }}" style="padding: 8px 15px; font-size: 12px; font-weight: 700; cursor: pointer; background: {{ scrollBg }}; color: {{ scrollFg }};">Scroll continu</div>
+      </div>
+    </div>
+    <div style="margin-top: 18px;">
+      <div style="font-size: 12px; letter-spacing: .1em; color: #6B6862;">{{ readerTomeLabel }}</div>
+      <div style="margin-top: 6px; font-family: 'Archivo Black', sans-serif; font-size: 30px;">{{ readerChapterTitle }}</div>
+      <div style="margin-top: 8px; font-size: 12.5px; color: #8B877F;">{{ readerPageMeta }}</div>
+    </div>
+
+    <div style="margin-top: 22px; display: grid; grid-template-columns: 1fr 92px; gap: 18px; align-items: start;">
+      <div style="filter: {{ brightFilter }};">
+        <sc-if value="{{ isScrollMode }}" hint-placeholder-val="{{ false }}">
+          <div style="display: block; overflow-x: auto;">
+            <sc-for list="{{ readerPages }}" as="pg" hint-placeholder-count="3">
+              <div style="width: {{ zoomWidth }}; margin: 0 auto 8px; border-radius: 6px; overflow: hidden; background: #0D0D11; border: 1px solid #17171C; display: flex; align-items: center; justify-content: center;">
+                <sc-if value="{{ pg.hasSrc }}" hint-placeholder-val="{{ false }}">
+                  {{ pg.img }}
+                </sc-if>
+                <sc-if value="{{ pg.isEmpty }}" hint-placeholder-val="{{ true }}">
+                  <div style="width: 100%; aspect-ratio: 2/3; background: repeating-linear-gradient(135deg, #0E0E12 0 14px, #111117 14px 28px); display: flex; align-items: center; justify-content: center;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #57544F; letter-spacing: .08em;">{{ pg.alt }}</div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isPagedMode }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="display: block; overflow-x: auto;">
+              <div onClick="{{ nextPage }}" title="Cliquer pour la page suivante" style="width: {{ zoomWidth }}; margin: 0 auto; border-radius: 8px; overflow: hidden; background: #0D0D11; border: 1px solid #17171C; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                <sc-if value="{{ currentHasSrc }}" hint-placeholder-val="{{ false }}">
+                  {{ currentImg }}
+                </sc-if>
+                <sc-if value="{{ currentIsEmpty }}" hint-placeholder-val="{{ true }}">
+                  <div style="width: 100%; aspect-ratio: 2/3; background: repeating-linear-gradient(135deg, #0E0E12 0 14px, #111117 14px 28px); display: flex; align-items: center; justify-content: center;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #57544F; letter-spacing: .08em;">{{ currentAlt }}</div>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+            <div style="margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 16px;">
+              <div onClick="{{ prevPage }}" style="width: 46px; height: 46px; border-radius: 999px; border: 1px solid #2A3A4A; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #F2F0EC; cursor: pointer;" style-hover="border-color: #3B8FCB; color: #7CB9E3;">←</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #A8A49C; min-width: 90px; text-align: center;">{{ pagedCounter }}</div>
+              <div onClick="{{ nextPage }}" style="width: 46px; height: 46px; border-radius: 999px; border: 1px solid #2A3A4A; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #F2F0EC; cursor: pointer;" style-hover="border-color: #3B8FCB; color: #7CB9E3;">→</div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="position: sticky; top: 90px; border-radius: 14px; border: 1px solid #1B1B21; background: linear-gradient(180deg, #101015, #0A0A0D); padding: 12px 8px 14px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+        <div style="width: 100%; text-align: center; font-size: 8.5px; letter-spacing: .12em; color: #6B6862; padding: 3px 0; background: #131318; border-radius: 5px;">DÉFILEMENT</div>
+        <div onClick="{{ setScroll }}" title="Défilement vertical" style="width: 40px; height: 34px; border-radius: 8px; border: 1px solid {{ scrollBorder }}; color: {{ scrollColor }}; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer;">↕</div>
+        <div onClick="{{ setPaged }}" title="Page par page" style="width: 40px; height: 34px; border-radius: 8px; border: 1px solid {{ pagedBorder }}; color: {{ pagedColor }}; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer;">↔</div>
+
+        <div style="width: 100%; text-align: center; font-size: 8.5px; letter-spacing: .12em; color: #6B6862; padding: 3px 0; background: #131318; border-radius: 5px;">TAILLE</div>
+        <div onClick="{{ fitWidth }}" title="Ajustée sur la largeur" style="width: 40px; height: 34px; border-radius: 8px; border: 1px solid {{ fitWBorder }}; color: {{ fitWColor }}; display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer;">⟷</div>
+        <div onClick="{{ fitHeight }}" title="Ajustée sur la hauteur" style="width: 40px; height: 34px; border-radius: 8px; border: 1px solid {{ fitHBorder }}; color: {{ fitHColor }}; display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer;">⇕</div>
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <div onClick="{{ zoomOut }}" title="Réduire" style="width: 22px; height: 22px; border-radius: 6px; border: 1px solid #2A3A4A; color: #D6D3CC; display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer;">−</div>
+          <div onClick="{{ zoomIn }}" title="Agrandir" style="width: 22px; height: 22px; border-radius: 6px; background: #3B8FCB; color: #06131F; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; cursor: pointer;">+</div>
+        </div>
+        {{ zoomSlider }}
+        <div onClick="{{ zoomReset }}" title="Revenir à 80 %" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E7B87; cursor: pointer;" style-hover="color: #7CB9E3;">{{ zoomLabel }}</div>
+
+        <div style="width: 100%; text-align: center; font-size: 8.5px; letter-spacing: .12em; color: #6B6862; padding: 3px 0; background: #131318; border-radius: 5px;">DONNÉES</div>
+        <div onClick="{{ toggleLowQ }}" title="Économiseur de données" style="padding: 6px 10px; border-radius: 7px; background: {{ lowQBg }}; color: {{ lowQFg }}; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800; cursor: pointer;">LQ</div>
+
+        <div style="width: 100%; text-align: center; font-size: 8.5px; letter-spacing: .12em; color: #6B6862; padding: 3px 0; background: #131318; border-radius: 5px;">CONFORT</div>
+        <div onClick="{{ toggleFull }}" title="Plein écran" style="width: 40px; height: 34px; border-radius: 8px; border: 1px solid #2A3A4A; color: #D6D3CC; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;" style-hover="border-color: #3B8FCB; color: #7CB9E3;">⛶</div>
+        {{ brightSlider }}
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: #57544F;">{{ brightLabel }}</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 34px; border-radius: 16px; border: 1px solid #1F1F26; background: #0C0C0F; padding: 22px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <div onClick="{{ likeChapter }}" style="padding: 11px 18px; border-radius: 11px; border: 1px solid {{ chapterLikeBorder }}; color: {{ chapterLikeColor }}; font-size: 13px; font-weight: 800; cursor: pointer;">{{ chapterLikeLabel }}</div>
+      <div style="font-size: 12.5px; color: #8B877F;">{{ chapterStats }}</div>
+      <div style="flex: 1;"></div>
+      <div onClick="{{ openSupport }}" style="padding: 11px 18px; border-radius: 11px; border: 1px solid #3B8FCB; color: #7CB9E3; font-size: 13px; font-weight: 800; cursor: pointer;" style-hover="background: #12202C;">♥ Soutenir l'auteur</div>
+      <div onClick="{{ nextChapter }}" style="padding: 11px 20px; border-radius: 11px; background: #3B8FCB; color: #06131F; font-size: 13px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">{{ nextChapterLabel }}</div>
+    </div>
+
+    <div style="margin-top: 18px; border-radius: 16px; border: 1px solid #1B2B3A; background: linear-gradient(120deg, #0B1520, #0C0C0F); padding: 22px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
+      <div>
+        <div style="font-size: 15px; font-weight: 800;">Ce chapitre t'a plu ?</div>
+        <div style="margin-top: 6px; font-size: 13px; color: #8B877F; max-width: 520px; line-height: 1.55;">Le prix est libre. Tu donnes ce que tu veux, et le total rejoint la cagnotte publique du créateur.</div>
+      </div>
+      <div style="flex: 1;"></div>
+      <div style="text-align: right;">
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 26px; color: #7CB9E3;">{{ fundTotal }}</div>
+        <div style="font-size: 11px; color: #6B6862;">{{ fundMeta }}</div>
+      </div>
+      <div onClick="{{ openSupport }}" style="padding: 12px 20px; border-radius: 11px; background: #3B8FCB; color: #06131F; font-size: 13px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">Donner ce que je veux</div>
+    </div>
+
+    <div style="margin-top: 26px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: .16em; color: #4A4742;">ANNONCE · INTER-CHAPITRE</div>
+      <div style="width: min(728px, 100%); height: clamp(90px, calc(340px - 30vw), 250px); border-radius: 12px; border: 1px dashed #26262E; background: #0B0B0E; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 12px; text-align: center;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5E5B56; letter-spacing: .06em;">{{ adSlotLabel }}</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #3F3C38;">728×90 desktop · 300×250 mobile</div>
+      </div>
+    </div>
+
+    <sc-if value="{{ showAdBanner }}" hint-placeholder-val="{{ false }}">
+      <div style="position: fixed; left: 0; right: 0; bottom: 0; z-index: 70; display: flex; justify-content: center; padding: 0 10px 10px; pointer-events: none;">
+        <div style="pointer-events: auto; position: relative; width: min(728px, 100%); height: clamp(50px, 9vw, 90px); border-radius: 10px; border: 1px dashed #26262E; background: rgba(11,11,14,.96); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #5E5B56; letter-spacing: .06em; text-align: center; padding: 0 34px;">{{ adBannerLabel }}</div>
+          <div onClick="{{ dismissAdBanner }}" title="Masquer" style="position: absolute; top: 4px; right: 7px; font-size: 13px; color: #57544F; cursor: pointer; line-height: 1;" style-hover="color: #F2F0EC;">✕</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="margin-top: 34px;">
+      <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 22px;">{{ commentsHeading }}</div>
+        <div style="font-size: 12.5px; color: #74716A;">{{ commentCountLabel }}</div>
+      </div>
+      <div style="margin-top: 16px; border-radius: 14px; border: 1px solid #1B1B21; background: #0E0E12; padding: 16px;">
+        <div style="font-size: 12px; color: #8B877F;">Tu publies en tant que <span style="color: #7CB9E3; font-weight: 700;">{{ handle }}</span></div>
+        <div style="margin-top: 10px; display: flex; gap: 10px;">
+          <input value="{{ commentDraft }}" onChange="{{ onCommentDraft }}" placeholder="Ton commentaire sur ce chapitre…" style="flex: 1; padding: 12px 15px; border-radius: 10px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13.5px; outline: none;">
+          <div onClick="{{ postComment }}" style="padding: 12px 20px; border-radius: 10px; background: #3B8FCB; color: #06131F; font-size: 13px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">Publier</div>
+        </div>
+      </div>
+      <div style="margin-top: 14px; display: grid; gap: 12px;">
+        <sc-for list="{{ visibleComments }}" as="c" hint-placeholder-count="3">
+          <div>
+            <div style="border-radius: 14px; border: 1px solid #1B1B21; background: #0E0E12; padding: 16px 18px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 30px; height: 30px; border-radius: 999px; background: {{ c.avatar }};"></div>
+                <div style="font-size: 13px; font-weight: 800; color: #7CB9E3;">{{ c.author }}</div>
+                <div style="padding: 2px 7px; border-radius: 5px; background: #17171C; font-size: 10px; color: #74716A; font-weight: 700;">{{ c.badge }}</div>
+                <div style="flex: 1;"></div>
+                <div style="font-size: 11px; color: #6B6862;">{{ c.time }}</div>
+              </div>
+              <div style="margin-top: 10px; font-size: 14px; line-height: 1.6; color: #DAD7D0;">{{ c.text }}</div>
+              <div style="margin-top: 12px; display: flex; align-items: center; gap: 18px;">
+                <div onClick="{{ c.like }}" style="font-size: 12px; font-weight: 700; color: {{ c.likeColor }}; cursor: pointer;">{{ c.likeLabel }}</div>
+                <div onClick="{{ c.reply }}" style="font-size: 12px; font-weight: 700; color: #74716A; cursor: pointer;" style-hover="color: #F2F0EC;">Répondre</div>
+                <div onClick="{{ c.report }}" style="font-size: 12px; color: #4E4B47; cursor: pointer;" style-hover="color: #E5484D;">{{ c.reportLabel }}</div>
+              </div>
+            </div>
+            <div style="margin-left: 34px; margin-top: 10px; display: grid; gap: 10px;">
+              <sc-for list="{{ c.replies }}" as="r" hint-placeholder-count="1">
+                <div style="border-radius: 12px; border: 1px solid #17171C; background: #0B0B0E; padding: 13px 16px;">
+                  <div style="display: flex; align-items: center; gap: 9px;">
+                    <div style="width: 24px; height: 24px; border-radius: 999px; background: {{ r.avatar }};"></div>
+                    <div style="font-size: 12px; font-weight: 800; color: #4E9BD4;">{{ r.author }}</div>
+                    <div style="flex: 1;"></div>
+                    <div style="font-size: 10.5px; color: #5E5B56;">{{ r.time }}</div>
+                  </div>
+                  <div style="margin-top: 8px; font-size: 13px; line-height: 1.55; color: #C9C6BF;">{{ r.text }}</div>
+                  <div style="margin-top: 9px;">
+                    <div onClick="{{ r.like }}" style="display: inline-block; font-size: 11.5px; font-weight: 700; color: {{ r.likeColor }}; cursor: pointer;">{{ r.likeLabel }}</div>
+                  </div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ c.isReplying }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; gap: 9px;">
+                  <input value="{{ replyDraft }}" onChange="{{ onReplyDraft }}" placeholder="Ta réponse…" style="flex: 1; padding: 10px 14px; border-radius: 10px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13px; outline: none;">
+                  <div onClick="{{ c.sendReply }}" style="padding: 10px 16px; border-radius: 10px; border: 1px solid #3B8FCB; color: #7CB9E3; font-size: 12.5px; font-weight: 800; cursor: pointer;">Répondre</div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div onClick="{{ toggleAllComments }}" style="margin-top: 18px; padding: 13px; border-radius: 11px; border: 1px solid #2A3A4A; text-align: center; font-size: 13px; font-weight: 800; color: #7CB9E3; cursor: pointer;" style-hover="background: #12202C; border-color: #3B8FCB;">{{ allCommentsLabel }}</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isCommunity }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Communauté" style="max-width: 1120px; margin: 0 auto; padding: 32px 24px 0; display: grid; grid-template-columns: 1fr 300px; gap: 28px; align-items: start;">
+    <div>
+      <div style="font-family: 'Archivo Black', sans-serif; font-size: 34px;">Espace Communauté</div>
+      <div style="margin-top: 8px; font-size: 13.5px; color: #8B877F;">{{ communityMeta }}</div>
+
+      <div style="position: sticky; top: 78px; z-index: 30; padding-top: 14px; background: linear-gradient(180deg, #08080A 72%, rgba(8,8,10,0) 100%);">
+        <div style="border-radius: 16px; border: 1px solid #1B2B3A; background: #0B1218; padding: 18px; display: grid; grid-template-columns: 40px 1fr; gap: 14px;">
+          <div style="width: 40px; height: 40px; border-radius: 999px; background: linear-gradient(140deg, #7CB9E3, #1E5F8F);"></div>
+          <div>
+            <div style="font-size: 12px; color: #8B877F;">Tu publies en tant que <span style="color: #7CB9E3; font-weight: 700;">{{ handle }}</span></div>
+            <textarea value="{{ composeDraft }}" onChange="{{ onCompose }}" placeholder="Quoi de neuf sur UMBRA ?" rows="2" style="margin-top: 10px; width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid #23323F; background: #0A1016; color: #F2F0EC; font-size: 15px; line-height: 1.55; outline: none; resize: vertical;"></textarea>
+            <div style="margin-top: 10px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <div onClick="{{ toggleTheory }}" style="padding: 7px 13px; border-radius: 999px; border: 1px solid {{ theoryFlagBorder }}; color: {{ theoryFlagColor }}; font-size: 11.5px; font-weight: 800; cursor: pointer;">Theory Space</div>
+              <div style="font-size: 11.5px; color: #6B6862;">{{ composeCounter }}</div>
+              <div style="flex: 1;"></div>
+              <div onClick="{{ post }}" style="padding: 10px 22px; border-radius: 999px; background: #3B8FCB; color: #06131F; font-size: 13px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">Publier</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 12px; display: flex; border-bottom: 1px solid #1B1B21; background: #08080A;">
+          <div onClick="{{ setPopular }}" style="padding: 13px 20px; font-size: 13.5px; font-weight: 800; cursor: pointer; color: {{ popularFg }}; border-bottom: 2px solid {{ popularBorder }};">Populaire</div>
+          <div onClick="{{ setTheory }}" style="padding: 13px 20px; font-size: 13.5px; font-weight: 800; cursor: pointer; color: {{ theoryFg }}; border-bottom: 2px solid {{ theoryBorder }};">Theory Space</div>
+          <div onClick="{{ setRecent }}" style="padding: 13px 20px; font-size: 13.5px; font-weight: 800; cursor: pointer; color: {{ recentFg }}; border-bottom: 2px solid {{ recentBorder }};">Récent</div>
+        </div>
+      </div>
+
+      <div style="display: grid;">
+        <sc-for list="{{ posts }}" as="p" hint-placeholder-count="5">
+          <div style="border-bottom: 1px solid #16161B; padding: 18px 4px;">
+            <div style="display: grid; grid-template-columns: 40px 1fr; gap: 14px;">
+              <div style="width: 40px; height: 40px; border-radius: 999px; background: {{ p.avatar }};"></div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div onClick="{{ p.openThread }}" style="font-size: 14px; font-weight: 800; cursor: pointer;">{{ p.author }}</div>
+                  <div style="font-size: 12px; color: #6B6862;">· {{ p.time }}</div>
+                  <sc-if value="{{ p.isTheory }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding: 2px 8px; border-radius: 5px; background: #12202C; font-size: 10px; font-weight: 800; color: #7CB9E3;">THEORY</div>
+                  </sc-if>
+                  <div style="flex: 1;"></div>
+                  <div onClick="{{ p.report }}" style="font-size: 11.5px; color: #4E4B47; cursor: pointer;" style-hover="color: #E5484D;">{{ p.reportLabel }}</div>
+                </div>
+                <div onClick="{{ p.openThread }}" style="margin-top: 6px; font-size: 15px; line-height: 1.6; color: #E4E1DA; text-wrap: pretty; cursor: pointer;">{{ p.text }}</div>
+                <div style="margin-top: 12px; display: flex; align-items: center; gap: 26px;">
+                  <div onClick="{{ p.like }}" style="font-size: 12.5px; font-weight: 700; color: {{ p.likeColor }}; cursor: pointer;">{{ p.likeLabel }}</div>
+                  <div onClick="{{ p.openThread }}" style="font-size: 12.5px; font-weight: 700; color: #74716A; cursor: pointer;" style-hover="color: #F2F0EC;">💬 {{ p.replyCount }}</div>
+                  <div onClick="{{ p.reply }}" style="font-size: 12.5px; font-weight: 700; color: #74716A; cursor: pointer;" style-hover="color: #F2F0EC;">Répondre</div>
+                </div>
+                <div style="margin-top: 12px; display: grid; gap: 10px;">
+                  <sc-for list="{{ p.previewReplies }}" as="r" hint-placeholder-count="1">
+                    <div style="border-left: 2px solid #1F2A33; padding-left: 14px;">
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 22px; height: 22px; border-radius: 999px; background: {{ r.avatar }};"></div>
+                        <div style="font-size: 12.5px; font-weight: 800; color: #4E9BD4;">{{ r.author }}</div>
+                        <div style="font-size: 11px; color: #5E5B56;">· {{ r.time }}</div>
+                      </div>
+                      <div style="margin-top: 7px; font-size: 13.5px; line-height: 1.55; color: #C9C6BF;">{{ r.text }}</div>
+                      <div style="margin-top: 8px;">
+                        <div onClick="{{ r.like }}" style="display: inline-block; font-size: 11.5px; font-weight: 700; color: {{ r.likeColor }}; cursor: pointer;">{{ r.likeLabel }}</div>
+                      </div>
+                    </div>
+                  </sc-for>
+                  <sc-if value="{{ p.hasMore }}" hint-placeholder-val="{{ false }}">
+                    <div onClick="{{ p.openThread }}" style="font-size: 12.5px; font-weight: 700; color: #4E9BD4; cursor: pointer; padding-left: 16px;">{{ p.moreLabel }}</div>
+                  </sc-if>
+                  <sc-if value="{{ p.isReplying }}" hint-placeholder-val="{{ false }}">
+                    <div style="display: flex; gap: 9px;">
+                      <input value="{{ replyDraft }}" onChange="{{ onReplyDraft }}" placeholder="Ta réponse…" style="flex: 1; padding: 10px 14px; border-radius: 999px; border: 1px solid #23323F; background: #101014; color: #F2F0EC; font-size: 13px; outline: none;">
+                      <div onClick="{{ p.sendReply }}" style="padding: 10px 18px; border-radius: 999px; background: #3B8FCB; color: #06131F; font-size: 12.5px; font-weight: 800; cursor: pointer;">Répondre</div>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ moreToLoad }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 26px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #57544F;">chargement des posts suivants…</div>
+        </sc-if>
+        <sc-if value="{{ noPosts }}" hint-placeholder-val="{{ false }}">
+          <div style="border-radius: 14px; border: 1px dashed #1F1F26; background: #0B0B0E; padding: 34px 24px; text-align: center;">
+            <div style="font-size: 14px; font-weight: 800; color: #D6D3CC;">Personne n’a encore parlé</div>
+            <div style="margin-top: 8px; font-size: 12.5px; line-height: 1.6; color: #57544F;">Sois le premier à publier une réaction ou une théorie sur UMBRA.</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ feedEnd }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 26px; text-align: center; font-size: 12px; color: #57544F;">Tu as tout lu.</div>
+        </sc-if>
+      </div>
+    </div>
+
+    <div style="display: grid; gap: 16px; position: sticky; top: 96px;">
+      <div style="border-radius: 16px; border: 1px solid #1B2B3A; background: #0B1218; padding: 18px;">
+        <div style="font-size: 15px; font-weight: 800;">Commentaires les plus engageants</div>
+        <div style="margin-top: 6px; font-size: 12px; color: #74716A; line-height: 1.5;">Ce que les lecteurs disent sous les planches, classé par likes et réponses.</div>
+        <div style="margin-top: 14px; display: grid; gap: 10px;">
+          <sc-if value="{{ noTopComments }}" hint-placeholder-val="{{ true }}">
+            <div style="font-size: 12.5px; line-height: 1.6; color: #57544F;">Aucun commentaire pour l’instant — les premiers apparaîtront ici.</div>
+          </sc-if>
+          <sc-for list="{{ topComments }}" as="tc" hint-placeholder-count="3">
+            <div onClick="{{ tc.open }}" style="border-radius: 12px; border: 1px solid #1B2B3A; background: #0A1016; padding: 12px 13px; cursor: pointer;" style-hover="border-color: #3B8FCB;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #7CB9E3;">{{ tc.author }}</div>
+                <div style="flex: 1;"></div>
+                <div style="font-size: 11px; color: #74716A;">{{ tc.stats }}</div>
+              </div>
+              <div style="margin-top: 6px; font-size: 12.5px; line-height: 1.55; color: #D6D3CC; text-wrap: pretty;">{{ tc.text }}</div>
+              <div style="margin-top: 7px; font-size: 11px; color: #57544F;">{{ tc.where }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="border-radius: 16px; border: 1px solid #1B1B21; background: #0C0C0F; padding: 18px;">
+        <div style="font-size: 15px; font-weight: 800;">Chapitres les plus commentés</div>
+        <div style="margin-top: 14px; display: grid; gap: 12px;">
+          <sc-if value="{{ noRanked }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size: 12.5px; line-height: 1.6; color: #57544F;">Le classement se remplit dès les premiers commentaires.</div>
+          </sc-if>
+          <sc-for list="{{ topChapters }}" as="top" hint-placeholder-count="5">
+            <div onClick="{{ top.open }}" style="display: flex; align-items: center; gap: 11px; cursor: pointer;">
+              <div style="font-family: 'Archivo Black', sans-serif; font-size: 17px; color: {{ top.rankColor }}; width: 18px;">{{ top.rank }}</div>
+              <div style="min-width: 0;">
+                <div style="font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ top.title }}</div>
+                <div style="margin-top: 3px; font-size: 11px; color: #74716A;">♡ {{ top.likes }} · 💬 {{ top.comments }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="border-radius: 16px; border: 1px solid #1B2B3A; background: #0B1218; padding: 18px;">
+        <div style="font-size: 15px; font-weight: 800;">Cagnotte soutien créateur</div>
+        <div style="margin-top: 10px; font-family: 'Archivo Black', sans-serif; font-size: 28px; color: #7CB9E3;">{{ fundTotal }}</div>
+        <div style="margin-top: 6px; font-size: 11.5px; color: #6B6862;">{{ fundMeta }}</div>
+        <div onClick="{{ openSupport }}" style="margin-top: 12px; padding: 10px 14px; border-radius: 9px; background: #3B8FCB; color: #06131F; font-size: 12.5px; font-weight: 800; text-align: center; cursor: pointer;" style-hover="background: #5BA6DC;">Soutenir</div>
+      </div>
+      <div style="border-radius: 16px; border: 1px solid #1B1B21; background: #0C0C0F; padding: 18px;">
+        <div style="font-size: 15px; font-weight: 800;">Ton pseudo anonyme</div>
+        <div style="margin-top: 10px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #7CB9E3;">{{ handle }}</div>
+        <div style="margin-top: 8px; font-size: 12px; line-height: 1.55; color: #74716A;">Généré automatiquement. Personne ne voit ton identité réelle.</div>
+        <div onClick="{{ regenHandle }}" style="margin-top: 12px; padding: 9px 14px; border-radius: 9px; border: 1px solid #23323F; font-size: 12px; font-weight: 700; color: #D6D3CC; text-align: center; cursor: pointer;" style-hover="border-color: #3B8FCB; color: #7CB9E3;">Changer de pseudo</div>
+      </div>
+      <div style="border-radius: 14px; border: 1px dashed #26262E; background: #0B0B0E; padding: 26px 16px; text-align: center;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #5E5B56; letter-spacing: .06em; line-height: 1.7;">{{ adSlotLabel }}</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isThread }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Fil de discussion" style="max-width: 720px; margin: 0 auto; padding: 26px 24px 0;">
+    <div onClick="{{ goCommunity }}" style="font-size: 13px; font-weight: 700; color: #8B877F; cursor: pointer;" style-hover="color: #7CB9E3;">← Espace Communauté</div>
+    <div style="margin-top: 20px; border-radius: 16px; border: 1px solid #1B2B3A; background: #0B1218; padding: 22px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 46px; height: 46px; border-radius: 999px; background: {{ thread.avatar }};"></div>
+        <div>
+          <div style="font-size: 15px; font-weight: 800;">{{ thread.author }}</div>
+          <div style="margin-top: 3px; font-size: 11.5px; color: #6B6862;">{{ thread.time }}</div>
+        </div>
+      </div>
+      <div style="margin-top: 16px; font-size: 19px; line-height: 1.55; color: #F2F0EC; text-wrap: pretty;">{{ thread.text }}</div>
+      <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid #1B2B3A; display: flex; align-items: center; gap: 26px;">
+        <div onClick="{{ thread.like }}" style="font-size: 13px; font-weight: 800; color: {{ thread.likeColor }}; cursor: pointer;">{{ thread.likeLabel }}</div>
+        <div style="font-size: 13px; color: #74716A;">💬 {{ thread.replyCount }} réponses</div>
+      </div>
+    </div>
+    <div style="margin-top: 16px; display: flex; gap: 10px;">
+      <input value="{{ replyDraft }}" onChange="{{ onReplyDraft }}" placeholder="Répondre à ce post…" style="flex: 1; padding: 13px 16px; border-radius: 999px; border: 1px solid #23323F; background: #0A1016; color: #F2F0EC; font-size: 14px; outline: none;">
+      <div onClick="{{ thread.sendReply }}" style="padding: 13px 22px; border-radius: 999px; background: #3B8FCB; color: #06131F; font-size: 13px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">Répondre</div>
+    </div>
+    <div style="margin-top: 18px; display: grid;">
+      <sc-for list="{{ thread.replies }}" as="r" hint-placeholder-count="3">
+        <div style="border-bottom: 1px solid #16161B; padding: 16px 2px; display: grid; grid-template-columns: 34px 1fr; gap: 12px;">
+          <div style="width: 34px; height: 34px; border-radius: 999px; background: {{ r.avatar }};"></div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="font-size: 13.5px; font-weight: 800;">{{ r.author }}</div>
+              <div style="font-size: 11.5px; color: #6B6862;">· {{ r.time }}</div>
+            </div>
+            <div style="margin-top: 6px; font-size: 14.5px; line-height: 1.6; color: #DAD7D0;">{{ r.text }}</div>
+            <div style="margin-top: 10px;">
+              <div onClick="{{ r.like }}" style="display: inline-block; font-size: 12px; font-weight: 700; color: {{ r.likeColor }}; cursor: pointer;">{{ r.likeLabel }}</div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isReferral }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Parrainage" style="max-width: 820px; margin: 0 auto; padding: 40px 24px 0;">
+    <div style="font-family: 'Archivo Black', sans-serif; font-size: 34px;">Parrainage</div>
+    <div style="margin-top: 8px; font-size: 14px; color: #8B877F; line-height: 1.6;">Partage ton lien. Le <span style="color: #7CB9E3; font-weight: 700;">Tome 3</span> se débloque automatiquement dès qu'une personne ouvre ton lien — une seule fois, uniquement pour ce tome. Les autres tomes restent payants.</div>
+
+    <div style="margin-top: 26px; border-radius: 18px; border: 1px solid #23323F; background: linear-gradient(120deg, #0B1520, #0C0C0F); padding: 26px;">
+      <div style="font-size: 11px; letter-spacing: .12em; color: #6B6862;">TON LIEN</div>
+      <div style="margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 260px; padding: 14px 16px; border-radius: 11px; border: 1px solid #2A3A4A; background: #0A0A0C; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #F2F0EC; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ refLink }}</div>
+        <div onClick="{{ copyRef }}" style="padding: 14px 22px; border-radius: 11px; background: #3B8FCB; color: #06131F; font-size: 13.5px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">{{ copyLabel }}</div>
+      </div>
+      <div style="margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="{{ shareX }}" target="_blank" style="padding: 10px 16px; border-radius: 10px; border: 1px solid #2A3A4A; font-size: 12.5px; font-weight: 700; color: #D6D3CC;">Partager sur X</a>
+        <a href="{{ shareWhatsapp }}" target="_blank" style="padding: 10px 16px; border-radius: 10px; border: 1px solid #2A3A4A; font-size: 12.5px; font-weight: 700; color: #D6D3CC;">WhatsApp</a>
+        <a href="{{ shareMail }}" style="padding: 10px 16px; border-radius: 10px; border: 1px solid #2A3A4A; font-size: 12.5px; font-weight: 700; color: #D6D3CC;">E-mail</a>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+      <div style="border-radius: 14px; border: 1px solid #1B1B21; background: #0D0D11; padding: 18px;">
+        <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">FILLEULS</div>
+        <div style="margin-top: 8px; font-family: 'Archivo Black', sans-serif; font-size: 30px;">{{ referralCount }}</div>
+      </div>
+      <div style="border-radius: 14px; border: 1px solid #1B1B21; background: #0D0D11; padding: 18px;">
+        <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">CLICS SUR TON LIEN</div>
+        <div style="margin-top: 8px; font-family: 'Archivo Black', sans-serif; font-size: 30px;">{{ referralClicks }}</div>
+      </div>
+      <div style="border-radius: 14px; border: 1px solid #1B1B21; background: #0D0D11; padding: 18px;">
+        <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">TOME 3</div>
+        <div style="margin-top: 8px; font-size: 15px; font-weight: 800; color: {{ affiliateColor }};">{{ affiliateState }}</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; border-radius: 18px; border: 1px solid #1B2B3A; background: linear-gradient(120deg, #0B1520, #0C0C0F); padding: 26px;">
+      <div style="display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap;">
+        <div>
+          <div style="font-size: 11px; letter-spacing: .12em; color: #6B6862;">CAGNOTTE — SOUTIEN CRÉATEUR</div>
+          <div style="margin-top: 10px; font-family: 'Archivo Black', sans-serif; font-size: 46px; color: #7CB9E3; line-height: 1;">{{ fundTotal }}</div>
+          <div style="margin-top: 8px; font-size: 12.5px; color: #8B877F;">{{ fundMeta }}</div>
+        </div>
+        <div style="flex: 1;"></div>
+        <div onClick="{{ openSupport }}" style="padding: 14px 24px; border-radius: 12px; background: #3B8FCB; color: #06131F; font-size: 14px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">Participer à la cagnotte</div>
+      </div>
+      <div style="margin-top: 20px; display: grid; gap: 10px;">
+        <sc-for list="{{ donations }}" as="don" hint-placeholder-count="3">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; background: #0A1016; border: 1px solid #17222C;">
+            <div style="width: 26px; height: 26px; border-radius: 999px; background: {{ don.avatar }};"></div>
+            <div style="font-size: 12.5px; font-weight: 700; color: #D6D3CC;">{{ don.author }}</div>
+            <div style="flex: 1;"></div>
+            <div style="font-size: 11.5px; color: #6B6862;">{{ don.time }}</div>
+            <div style="font-size: 13px; font-weight: 800; color: #7CB9E3;">{{ don.amount }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Panneau créateur" style="max-width: 1000px; margin: 0 auto; padding: 32px 24px 0;">
+    <div style="display: flex; align-items: flex-end; gap: 16px;">
+      <div>
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 32px;">Panneau créateur</div>
+        <div style="margin-top: 7px; font-size: 13px; color: #8B877F;">Tomes, chapitres, pages, prix et monétisation. Tout ce que tu changes ici s'applique au site.</div>
+      </div>
+      <div style="flex: 1;"></div>
+      <div onClick="{{ goHome }}" style="padding: 10px 18px; border-radius: 10px; border: 1px solid #2A3A4A; font-size: 12.5px; font-weight: 700; color: #D6D3CC; cursor: pointer;" style-hover="border-color: #3B8FCB;">Voir le site</div>
+    </div>
+
+    <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+      <div style="border-radius: 12px; border: 1px solid #1B1B21; background: #0D0D11; padding: 16px;">
+        <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">LECTURES CUMULÉES</div>
+        <div style="margin-top: 7px; font-family: 'Archivo Black', sans-serif; font-size: 22px;">{{ totalReads }}</div>
+      </div>
+      <div style="border-radius: 12px; border: 1px solid #1B1B21; background: #0D0D11; padding: 16px;">
+        <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">VUES VIDÉO</div>
+        <div style="margin-top: 7px; font-family: 'Archivo Black', sans-serif; font-size: 22px;">{{ videoViews }}</div>
+      </div>
+      <div style="border-radius: 12px; border: 1px solid #1B1B21; background: #0D0D11; padding: 16px;">
+        <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">CAGNOTTE</div>
+        <div style="margin-top: 7px; font-family: 'Archivo Black', sans-serif; font-size: 22px; color: #7CB9E3;">{{ fundTotal }}</div>
+      </div>
+      <div style="border-radius: 12px; border: 1px solid #1B1B21; background: #0D0D11; padding: 16px;">
+        <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">TOMES ACHETÉS</div>
+        <div style="margin-top: 7px; font-family: 'Archivo Black', sans-serif; font-size: 22px;">{{ purchasedCount }}</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; border-radius: 16px; border: 1px solid #1B1B21; background: #0D0D11; padding: 22px;">
+      <div style="font-size: 15px; font-weight: 800;">Réglages du site</div>
+      <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div>
+          <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">VIDÉO D'ACCUEIL (URL MP4)</div>
+          <input value="{{ videoDraft }}" onChange="{{ onVideoDraft }}" placeholder="https://…/opening.mp4" style="margin-top: 7px; width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13px; outline: none;">
+        </div>
+        <div>
+          <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">GOOGLE ADSENSE — ID CLIENT</div>
+          <input value="{{ adsenseDraft }}" onChange="{{ onAdsenseDraft }}" placeholder="ca-pub-0000000000000000" style="margin-top: 7px; width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13px; outline: none;">
+        </div>
+        <div>
+          <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">LIEN COMPTE X</div>
+          <input value="{{ twitterDraft }}" onChange="{{ onTwitterDraft }}" placeholder="https://x.com/…" style="margin-top: 7px; width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13px; outline: none;">
+        </div>
+        <div>
+          <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">LIEN COMPTE TIKTOK</div>
+          <input value="{{ tiktokDraft }}" onChange="{{ onTiktokDraft }}" placeholder="https://tiktok.com/@…" style="margin-top: 7px; width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13px; outline: none;">
+        </div>
+        <div>
+          <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">AUTEUR</div>
+          <input value="{{ authorDraft }}" onChange="{{ onAuthorDraft }}" style="margin-top: 7px; width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13px; outline: none;">
+        </div>
+        <div>
+          <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">PRIX DU PACK 2 TOMES (€)</div>
+          <input value="{{ packPriceDraft }}" onChange="{{ onPackPriceDraft }}" placeholder="6.99" style="margin-top: 7px; width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13px; outline: none;">
+        </div>
+        <div>
+          <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">VISIBILITÉ DU PANNEAU CRÉATEUR</div>
+          <div onClick="{{ toggleHideAdmin }}" style="margin-top: 7px; padding: 11px 14px; border-radius: 10px; border: 1px solid {{ hideAdminBorder }}; background: #101014; color: {{ hideAdminColor }}; font-size: 12.5px; font-weight: 700; cursor: pointer;">{{ hideAdminLabel }}</div>
+        </div>
+      </div>
+      <div style="margin-top: 14px;">
+        <div style="font-size: 10.5px; letter-spacing: .12em; color: #6B6862;">SYNOPSIS</div>
+        <textarea value="{{ synopsisDraft }}" onChange="{{ onSynopsisDraft }}" rows="3" style="margin-top: 7px; width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13.5px; line-height: 1.6; outline: none; resize: vertical;"></textarea>
+      </div>
+      <div style="margin-top: 16px; display: flex; align-items: center; gap: 12px;">
+        <div onClick="{{ saveSettings }}" style="padding: 11px 20px; border-radius: 10px; background: #3B8FCB; color: #06131F; font-size: 13px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">Enregistrer</div>
+        <div style="font-size: 12px; color: #6B6862;">{{ saveHint }}</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; align-items: center; gap: 14px;">
+      <div style="font-size: 15px; font-weight: 800;">Tomes &amp; chapitres</div>
+      <div style="flex: 1;"></div>
+      <div onClick="{{ addTome }}" style="padding: 10px 16px; border-radius: 10px; border: 1px solid #3B8FCB; color: #7CB9E3; font-size: 12.5px; font-weight: 800; cursor: pointer;">+ Nouveau tome</div>
+    </div>
+
+    <div style="margin-top: 14px; display: grid; gap: 14px;">
+      <sc-for list="{{ adminTomes }}" as="t" hint-placeholder-count="3">
+        <div style="border-radius: 16px; border: 1px solid #1B1B21; background: #0D0D11; padding: 20px;">
+          <div style="display: grid; grid-template-columns: 52px 1fr auto auto auto auto; gap: 14px; align-items: center;">
+            <div style="border-radius: 8px; aspect-ratio: 2/3; background: {{ t.cover }};"></div>
+            <div>
+              <input value="{{ t.title }}" onChange="{{ t.onTitle }}" style="width: 100%; padding: 9px 12px; border-radius: 9px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 14px; font-weight: 700; outline: none;">
+              <div style="margin-top: 7px; font-size: 11.5px; color: #6B6862;">{{ t.meta }}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 10px; letter-spacing: .1em; color: #6B6862;">PRIX (€)</div>
+              <input value="{{ t.price }}" onChange="{{ t.onPrice }}" style="margin-top: 6px; width: 78px; padding: 9px 11px; border-radius: 9px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13px; text-align: right; outline: none;">
+            </div>
+            <div onClick="{{ t.togglePaid }}" style="padding: 10px 15px; border-radius: 999px; border: 1px solid {{ t.paidBorder }}; color: {{ t.paidColor }}; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap;">{{ t.paidLabel }}</div>
+            <div onClick="{{ t.toggleReleased }}" style="padding: 10px 15px; border-radius: 999px; border: 1px solid #23323F; color: {{ t.releasedColor }}; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap;">{{ t.releasedLabel }}</div>
+            <div onClick="{{ t.remove }}" title="Supprimer ce tome" style="width: 34px; height: 34px; border-radius: 9px; border: 1px solid #2A1D1D; color: #6B4444; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;" style-hover="border-color: #E5484D; color: #E5484D;">🗑</div>
+          </div>
+          <div style="margin-top: 16px; display: grid; gap: 10px;">
+            <sc-for list="{{ t.chapters }}" as="ch" hint-placeholder-count="2">
+              <div style="border-radius: 12px; border: 1px solid #17171C; background: #0A0A0C; padding: 14px 16px;">
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                  <div style="flex: 1 1 200px; min-width: 160px;">
+                    <input value="{{ ch.title }}" onChange="{{ ch.onTitle }}" style="width: 100%; padding: 8px 11px; border-radius: 8px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13px; outline: none;">
+                    <div style="margin-top: 6px; font-size: 11px; color: #6B6862;">{{ ch.pageMeta }}</div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <input value="{{ ch.insertAt }}" onChange="{{ ch.onInsertAt }}" placeholder="pos." title="Insérer à cette position (vide = à la fin)" style="width: 62px; padding: 10px 8px; border-radius: 9px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-family: 'JetBrains Mono', monospace; font-size: 12px; text-align: center; outline: none;">
+                    <label style="padding: 10px 16px; border-radius: 9px; border: 1px dashed #33434F; font-size: 12px; font-weight: 700; color: #D6D3CC; cursor: pointer; white-space: nowrap;">
+                      + Insérer des pages
+                      <input type="file" accept="image/*" multiple="{{ true }}" onChange="{{ ch.onAppend }}" style="display: none;">
+                    </label>
+                  </div>
+                  <label style="padding: 10px 16px; border-radius: 9px; border: 1px dashed #2A2A33; font-size: 12px; font-weight: 700; color: #8B877F; cursor: pointer; white-space: nowrap;">
+                    Tout remplacer
+                    <input type="file" accept="image/*" multiple="{{ true }}" onChange="{{ ch.onUpload }}" style="display: none;">
+                  </label>
+                  <div style="display: flex; gap: 12px; align-items: center;">
+                    <div onClick="{{ ch.clear }}" style="font-size: 11.5px; color: #4E4B47; cursor: pointer; white-space: nowrap;" style-hover="color: #E5484D;">Vider</div>
+                    <div onClick="{{ ch.remove }}" title="Supprimer ce chapitre" style="font-size: 11.5px; font-weight: 700; color: #6B4444; cursor: pointer; white-space: nowrap;" style-hover="color: #E5484D;">Supprimer</div>
+                  </div>
+                </div>
+
+                <sc-if value="{{ ch.hasPages }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px;">
+                    <sc-for list="{{ ch.pageList }}" as="pg" hint-placeholder-count="4">
+                      <div style="position: relative; border-radius: 8px; overflow: hidden; border: 1px solid #23232B; background: #101014; aspect-ratio: 2/3;">
+                        {{ pg.thumb }}
+                        <div style="position: absolute; left: 0; top: 0; padding: 2px 5px; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; background: rgba(0,0,0,.72); color: #D6D3CC;">{{ pg.n }}</div>
+                        <div onClick="{{ pg.del }}" title="Supprimer cette page" style="position: absolute; right: 3px; top: 3px; width: 20px; height: 20px; border-radius: 999px; background: rgba(10,10,12,.85); color: #C98A8A; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer;" style-hover="background: #E5484D; color: #fff;">✕</div>
+                        <div style="position: absolute; left: 0; right: 0; bottom: 0; display: flex; background: rgba(10,10,12,.85);">
+                          <div onClick="{{ pg.up }}" title="Déplacer avant" style="flex: 1; text-align: center; font-size: 11px; color: #8B877F; padding: 3px 0; cursor: pointer;" style-hover="color: #7CB9E3;">↑</div>
+                          <label title="Remplacer cette page" style="flex: 1; text-align: center; font-size: 10px; color: #8B877F; padding: 3px 0; cursor: pointer;" style-hover="color: #7CB9E3;">
+                            ⟳
+                            <input type="file" accept="image/*" onChange="{{ pg.onReplace }}" style="display: none;">
+                          </label>
+                          <div onClick="{{ pg.down }}" title="Déplacer après" style="flex: 1; text-align: center; font-size: 11px; color: #8B877F; padding: 3px 0; cursor: pointer;" style-hover="color: #7CB9E3;">↓</div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <div onClick="{{ t.addChapter }}" style="font-size: 12px; font-weight: 700; color: #74716A; cursor: pointer; padding: 4px;" style-hover="color: #7CB9E3;">+ Ajouter un chapitre</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: 20px; border-radius: 16px; border: 1px solid #1B1B21; background: #0C0C0F; padding: 22px;">
+      <div style="font-size: 15px; font-weight: 800;">Signalements</div>
+      <div style="margin-top: 12px; display: grid; gap: 10px;">
+        <sc-for list="{{ reports }}" as="rep" hint-placeholder-count="1">
+          <div style="border-radius: 11px; border: 1px solid #2A1D1D; background: #100C0C; padding: 13px 16px; display: flex; align-items: center; gap: 14px;">
+            <div style="font-size: 12.5px; color: #E5484D; font-weight: 700;">{{ rep.author }}</div>
+            <div style="font-size: 12.5px; color: #A8A49C; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ rep.text }}</div>
+            <div style="flex: 1;"></div>
+            <div onClick="{{ rep.remove }}" style="font-size: 12px; font-weight: 700; color: #E5484D; cursor: pointer; white-space: nowrap;">Supprimer</div>
+            <div onClick="{{ rep.keep }}" style="font-size: 12px; font-weight: 700; color: #74716A; cursor: pointer; white-space: nowrap;">Ignorer</div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noReports }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size: 12.5px; color: #6B6862;">Aucun signalement en attente.</div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isAdminLocked }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Accès administrateur" style="max-width: 460px; margin: 0 auto; padding: 60px 24px 0;">
+    <div style="width: 44px; height: 44px; border-radius: 12px; border: 1px solid #23323F; background: #0D1218; display: flex; align-items: center; justify-content: center; font-size: 18px;">🔒</div>
+    <div style="margin-top: 18px; font-family: 'Archivo Black', sans-serif; font-size: clamp(22px, 6vw, 30px);">Espace réservé</div>
+    <div style="margin-top: 10px; font-size: 13.5px; line-height: 1.65; color: #8B877F;">Le panneau créateur n’est accessible qu’au compte administrateur du site. Les lecteurs connectés n’y ont aucun accès.</div>
+    <div style="margin-top: 22px;">
+      <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">CODE D'ACCÈS</div>
+      <input type="password" value="{{ adminCode }}" onChange="{{ onAdminCode }}" placeholder="••••••••••••" style="margin-top: 6px; width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #23323F; background: #0A0A0C; color: #F2F0EC; font-family: 'JetBrains Mono', monospace; font-size: 14px; letter-spacing: .1em; outline: none;">
+    </div>
+    <div onClick="{{ adminUnlock }}" style="margin-top: 16px; padding: 15px; border-radius: 12px; background: #3B8FCB; color: #06131F; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer;" style-hover="background: #5BA6DC;">Ouvrir le panneau créateur</div>
+    <div onClick="{{ goHome }}" style="margin-top: 12px; font-size: 12.5px; color: #74716A; cursor: pointer; text-align: center;" style-hover="color: #7CB9E3;">Retour au site</div>
+    <div style="margin-top: 22px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; line-height: 1.8; color: #3F3C38;">Accès par code uniquement. Quand le lien est masqué, cette page reste joignable via /?admin=1 ou #admin.</div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showAuth }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 94; background: rgba(4,6,10,.86); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 18px; overflow: auto;">
+      <div style="width: 420px; max-width: 100%; border-radius: 20px; border: 1px solid #23323F; background: #0D1218; padding: 26px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="font-size: 11px; letter-spacing: .12em; color: #6B6862;">COMPTE UMBRA</div>
+          <div style="flex: 1;"></div>
+          <div onClick="{{ closeAuth }}" style="font-size: 18px; color: #6B6862; cursor: pointer;" style-hover="color: #F2F0EC;">✕</div>
+        </div>
+
+        <sc-if value="{{ isSignedIn }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="margin-top: 14px; font-family: 'Archivo Black', sans-serif; font-size: 22px;">Mon compte</div>
+            <div style="margin-top: 16px; border-radius: 12px; border: 1px solid #1B2B3A; background: #0A1016; padding: 16px; display: grid; gap: 7px;">
+              <div style="font-size: 13.5px; font-weight: 700; color: #F2F0EC; overflow: hidden; text-overflow: ellipsis;">{{ accountEmail }}</div>
+              <div style="font-size: 12px; color: #74716A;">{{ accountVia }}</div>
+              <div style="font-size: 12px; color: #7CB9E3;">{{ accountRole }}</div>
+              <div style="font-size: 12px; color: #74716A;">Pseudo public : {{ handle }}</div>
+            </div>
+            <div onClick="{{ signOut }}" style="margin-top: 16px; padding: 14px; border-radius: 12px; border: 1px solid #2A3A4A; color: #D6D3CC; font-size: 13.5px; font-weight: 700; text-align: center; cursor: pointer;" style-hover="border-color: #E5484D; color: #E5484D;">Se déconnecter</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isSignedOut }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="margin-top: 14px; font-family: 'Archivo Black', sans-serif; font-size: 23px;">{{ authTitle }}</div>
+            <div style="margin-top: 9px; font-size: 13px; line-height: 1.6; color: #8B877F;">Un compte sert à retrouver tes tomes achetés, commenter et suivre la communauté.</div>
+
+            <div onClick="{{ googleSignIn }}" style="margin-top: 18px; padding: 14px; border-radius: 12px; background: #F2F0EC; color: #11151A; font-size: 13.5px; font-weight: 800; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;" style-hover="background: #FFFFFF;">
+              <div style="font-family: 'Archivo Black', sans-serif; font-size: 15px; color: #1A73E8;">G</div>
+              <div>Continuer avec Google</div>
+            </div>
+
+            <div style="margin: 16px 0; display: flex; align-items: center; gap: 10px;">
+              <div style="flex: 1; height: 1px; background: #1B2B3A;"></div>
+              <div style="font-size: 11px; color: #57544F;">ou</div>
+              <div style="flex: 1; height: 1px; background: #1B2B3A;"></div>
+            </div>
+
+            <div style="display: grid; gap: 10px;">
+              <div>
+                <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">E-MAIL</div>
+                <input value="{{ authEmail }}" onChange="{{ onAuthEmail }}" placeholder="toi@exemple.com" style="margin-top: 6px; width: 100%; padding: 13px 14px; border-radius: 10px; border: 1px solid #23323F; background: #0A0A0C; color: #F2F0EC; font-size: 13.5px; outline: none;">
+              </div>
+              <div>
+                <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">MOT DE PASSE</div>
+                <input type="password" value="{{ authPass }}" onChange="{{ onAuthPass }}" placeholder="••••••••" style="margin-top: 6px; width: 100%; padding: 13px 14px; border-radius: 10px; border: 1px solid #23323F; background: #0A0A0C; color: #F2F0EC; font-size: 13.5px; outline: none;">
+              </div>
+            </div>
+
+            <div onClick="{{ authSubmit }}" style="margin-top: 16px; padding: 15px; border-radius: 12px; background: {{ authSubmitBg }}; color: {{ authSubmitFg }}; font-size: 13.5px; font-weight: 800; text-align: center; cursor: pointer;">{{ authSubmitLabel }}</div>
+            <div onClick="{{ authSwitch }}" style="margin-top: 12px; font-size: 12.5px; font-weight: 700; color: #7CB9E3; text-align: center; cursor: pointer;">{{ authSwitchLabel }}</div>
+            <div style="margin-top: 14px; font-size: 11px; line-height: 1.7; color: #57544F; text-align: center;">En continuant, tu acceptes les CGV et la politique de confidentialité d’Umbra.</div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isSuccess }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Commande confirmée" style="max-width: 720px; margin: 0 auto; padding: 40px 24px 0;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="width: 46px; height: 46px; border-radius: 999px; background: #1E5F8F; color: #EAF4FB; display: flex; align-items: center; justify-content: center; font-size: 21px; flex: none;">✓</div>
+      <div>
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: clamp(24px, 6vw, 32px); line-height: 1.1;">Paiement confirmé</div>
+        <div style="margin-top: 6px; font-size: 13px; color: #8B877F;">{{ successSub }}</div>
+      </div>
+    </div>
+
+    <div onClick="{{ readPurchase }}" style="margin-top: 26px; padding: 18px; border-radius: 14px; background: #3B8FCB; color: #06131F; font-size: 15.5px; font-weight: 800; text-align: center; cursor: pointer;" style-hover="background: #5BA6DC;">Lire directement sur le site</div>
+    <div style="margin-top: 8px; font-size: 12px; color: #6B6862; text-align: center;">Accès instantané, aucune installation. Le tome reste dans ta bibliothèque à vie.</div>
+
+    <div style="margin-top: 28px; border-radius: 16px; border: 1px solid #1B1B21; background: #0C0C0F; padding: 20px;">
+      <div style="font-size: 10px; letter-spacing: .14em; color: #6B6862;">TÉLÉCHARGEMENTS</div>
+      <div style="margin-top: 4px; font-size: 12.5px; color: #8B877F; line-height: 1.6;">Trois formats, sans DRM. Les fichiers restent disponibles depuis ton compte.</div>
+      <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+        <sc-for list="{{ downloads }}" as="dl" hint-placeholder-count="3">
+          <div onClick="{{ dl.go }}" style="padding: 14px 12px; border-radius: 11px; border: 1px solid #2A3A4A; background: #0A0F14; cursor: pointer; text-align: center; min-height: 48px;" style-hover="border-color: #3B8FCB; background: #0E1A24;">
+            <div style="font-size: 13px; font-weight: 800; color: #F2F0EC;">{{ dl.label }}</div>
+            <div style="margin-top: 3px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #6E7B87;">{{ dl.meta }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; border-radius: 16px; border: 1px solid #1B2B3A; background: #0A1016; padding: 20px;">
+      <div style="font-size: 10px; letter-spacing: .14em; color: #6B6862;">RÉCAPITULATIF</div>
+      <div style="margin-top: 12px; display: grid; gap: 9px;">
+        <sc-for list="{{ receiptRows }}" as="row" hint-placeholder-count="4">
+          <div style="display: flex; align-items: baseline; gap: 12px;">
+            <div style="font-size: 12.5px; color: #74716A;">{{ row.k }}</div>
+            <div style="flex: 1; border-bottom: 1px dotted #1E2A34;"></div>
+            <div style="font-size: 12.5px; font-weight: 700; color: #D6D3CC; font-family: 'JetBrains Mono', monospace;">{{ row.v }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top: 14px; font-size: 11.5px; line-height: 1.6; color: #8B877F;">Transaction sécurisée par <span style="color: #F2F0EC; font-weight: 700;">Stripe</span> — apparaîtra sous le libellé <span style="font-family: 'JetBrains Mono', monospace; color: #D6D3CC;">UMBRA</span> sur votre relevé bancaire. Un reçu a été envoyé par e-mail.</div>
+    </div>
+
+    <div style="margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap;">
+      <div onClick="{{ goLibrary }}" style="flex: 1; min-width: 150px; padding: 13px; border-radius: 11px; border: 1px solid #23232B; color: #D6D3CC; font-size: 13px; font-weight: 700; text-align: center; cursor: pointer;" style-hover="border-color: #3B8FCB; color: #7CB9E3;">Retour à la bibliothèque</div>
+      <div onClick="{{ goLegalContact }}" style="flex: 1; min-width: 150px; padding: 13px; border-radius: 11px; border: 1px solid #23232B; color: #74716A; font-size: 13px; font-weight: 700; text-align: center; cursor: pointer;" style-hover="border-color: #3B8FCB; color: #7CB9E3;">Un problème ? Nous contacter</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isLegal }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Pages légales" style="max-width: 820px; margin: 0 auto; padding: 34px 24px 0;">
+    <div style="font-family: 'Archivo Black', sans-serif; font-size: clamp(24px, 6vw, 34px);">{{ legalTitle }}</div>
+    <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+      <sc-for list="{{ legalTabs }}" as="lt" hint-placeholder-count="3">
+        <div onClick="{{ lt.pick }}" style="padding: 9px 15px; border-radius: 999px; border: 1px solid {{ lt.border }}; background: {{ lt.bg }}; color: {{ lt.color }}; font-size: 12.5px; font-weight: 700; cursor: pointer;">{{ lt.label }}</div>
+      </sc-for>
+    </div>
+    <div style="margin-top: 20px; display: grid; gap: 12px;">
+      <sc-for list="{{ legalBlocks }}" as="lb" hint-placeholder-count="4">
+        <div style="border-radius: 14px; border: 1px solid #1B1B21; background: #0C0C0F; padding: 20px;">
+          <div style="font-size: 14px; font-weight: 800; color: #F2F0EC;">{{ lb.h }}</div>
+          <div style="margin-top: 8px; font-size: 13.5px; line-height: 1.7; color: #9C9891; text-wrap: pretty;">{{ lb.p }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top: 16px; border-radius: 14px; border: 1px dashed #26262E; background: #0B0B0E; padding: 18px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.8; color: #57544F;">Gabarits de conformité Stripe / AdSense — remplacer par les textes juridiques définitifs avant mise en production.</div>
+    </div>
+    <div onClick="{{ openConsent }}" style="margin-top: 14px; padding: 13px; border-radius: 11px; border: 1px solid #23232B; color: #7CB9E3; font-size: 13px; font-weight: 700; text-align: center; cursor: pointer;" style-hover="border-color: #3B8FCB;">Gérer mes préférences cookies</div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ scrollTop }}" title="Revenir en haut" style="position: fixed; right: 18px; bottom: 96px; z-index: 80; display: flex; align-items: center; gap: 8px; padding: 11px 15px; border-radius: 999px; border: 1px solid #23323F; background: rgba(13,19,26,.94); backdrop-filter: blur(8px); color: #D6D3CC; font-size: 12.5px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,.5);" style-hover="border-color: #3B8FCB; color: #7CB9E3;">
+      <span style="font-size: 14px;">↑</span>
+      <span>Haut de page</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showConsent }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; left: 0; right: 0; bottom: 0; z-index: 96; padding: 12px; display: flex; justify-content: center;">
+      <div style="width: min(880px, 100%); border-radius: 16px; border: 1px solid #23323F; background: rgba(11,14,18,.97); backdrop-filter: blur(12px); padding: 20px; box-shadow: 0 18px 60px rgba(0,0,0,.6); display: flex; gap: 18px; flex-wrap: wrap; align-items: center;">
+        <div style="flex: 1 1 320px; min-width: 240px;">
+          <div style="font-size: 14px; font-weight: 800;">Cookies et publicité</div>
+          <div style="margin-top: 7px; font-size: 12.5px; line-height: 1.65; color: #8B877F; text-wrap: pretty;">Umbra utilise des cookies essentiels au fonctionnement du site, et des cookies publicitaires Google AdSense pour financer la publication de la série. Tu peux refuser la publicité personnalisée à tout moment.</div>
+          <div onClick="{{ goLegalPrivacy }}" style="margin-top: 8px; font-size: 12px; font-weight: 700; color: #7CB9E3; cursor: pointer; display: inline-block;">Politique de confidentialité →</div>
+        </div>
+        <div style="display: flex; gap: 9px; flex-wrap: wrap; flex: 1 1 240px;">
+          <div onClick="{{ consentEssential }}" style="flex: 1; min-width: 130px; padding: 13px 14px; border-radius: 11px; border: 1px solid #2A3A4A; color: #D6D3CC; font-size: 12.5px; font-weight: 700; text-align: center; cursor: pointer;" style-hover="border-color: #3B8FCB;">Essentiels seulement</div>
+          <div onClick="{{ consentAll }}" style="flex: 1; min-width: 130px; padding: 13px 14px; border-radius: 11px; background: #3B8FCB; color: #06131F; font-size: 12.5px; font-weight: 800; text-align: center; cursor: pointer;" style-hover="background: #5BA6DC;">Tout accepter</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showPaywall }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 90; background: rgba(4,6,10,.84); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 24px; overflow: auto;">
+      <div style="width: 460px; max-width: 100%; border-radius: 20px; border: 1px solid #23323F; background: #0D1218; padding: 28px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="font-size: 11px; letter-spacing: .12em; color: #6B6862;">{{ paywallKicker }}</div>
+          <div style="flex: 1;"></div>
+          <div onClick="{{ closePaywall }}" style="font-size: 18px; color: #6B6862; cursor: pointer;" style-hover="color: #F2F0EC;">✕</div>
+        </div>
+        <div style="margin-top: 12px; font-family: 'Archivo Black', sans-serif; font-size: 25px;">{{ paywallTitle }}</div>
+        <div style="margin-top: 10px; font-size: 13.5px; line-height: 1.6; color: #8B877F;">{{ paywallText }}</div>
+
+        <sc-if value="{{ paywallBuyable }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="margin-top: 18px; display: grid; gap: 9px;">
+              <sc-for list="{{ offers }}" as="of" hint-placeholder-count="2">
+                <div onClick="{{ of.pick }}" style="border-radius: 12px; border: 1px solid {{ of.border }}; background: {{ of.bg }}; padding: 14px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                  <div style="width: 17px; height: 17px; border-radius: 999px; border: 2px solid {{ of.dot }}; flex: none; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 7px; height: 7px; border-radius: 999px; background: {{ of.dotFill }};"></div>
+                  </div>
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="font-size: 13.5px; font-weight: 800; color: #F2F0EC;">{{ of.title }}</div>
+                    <div style="margin-top: 3px; font-size: 11.5px; color: #74716A;">{{ of.sub }}</div>
+                  </div>
+                  <div style="font-family: 'Archivo Black', sans-serif; font-size: 18px; color: #7CB9E3; white-space: nowrap;">{{ of.price }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top: 16px; display: grid; gap: 10px;">
+              <div>
+                <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">NUMÉRO DE CARTE</div>
+                <input value="{{ cardNumber }}" onChange="{{ onCardNumber }}" placeholder="4242 4242 4242 4242" style="margin-top: 6px; width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #23323F; background: #0A0A0C; color: #F2F0EC; font-family: 'JetBrains Mono', monospace; font-size: 13.5px; outline: none;">
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                  <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">EXPIRATION</div>
+                  <input value="{{ cardExp }}" onChange="{{ onCardExp }}" placeholder="MM/AA" style="margin-top: 6px; width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #23323F; background: #0A0A0C; color: #F2F0EC; font-family: 'JetBrains Mono', monospace; font-size: 13.5px; outline: none;">
+                </div>
+                <div>
+                  <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">CVC</div>
+                  <input value="{{ cardCvc }}" onChange="{{ onCardCvc }}" placeholder="123" style="margin-top: 6px; width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #23323F; background: #0A0A0C; color: #F2F0EC; font-family: 'JetBrains Mono', monospace; font-size: 13.5px; outline: none;">
+                </div>
+              </div>
+            </div>
+            <div onClick="{{ confirmPay }}" style="margin-top: 18px; padding: 15px; border-radius: 12px; background: {{ payBg }}; color: {{ payFg }}; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer;">{{ payLabel }}</div>
+            <div style="margin-top: 12px; border-radius: 11px; border: 1px solid #1B2B3A; background: #0A1016; padding: 13px 14px; display: flex; gap: 10px; align-items: flex-start;">
+              <div style="font-size: 13px; color: #7CB9E3; line-height: 1.3;">🔒</div>
+              <div style="font-size: 11.5px; line-height: 1.6; color: #8B877F;">Transaction sécurisée par <span style="color: #F2F0EC; font-weight: 700;">Stripe</span> — apparaîtra sous le libellé <span style="font-family: 'JetBrains Mono', monospace; color: #D6D3CC;">UMBRA</span> sur votre relevé bancaire.</div>
+            </div>
+            <div style="margin-top: 8px; font-size: 11.5px; color: #6B6862; text-align: center;">{{ payHint }}</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ paywallAffiliate }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 18px; border-radius: 12px; border: 1px solid #1E4A6B; background: #0A1520; padding: 16px;">
+            <div style="font-size: 12.5px; font-weight: 800; color: #7CB9E3;">Ou débloque-le gratuitement</div>
+            <div style="margin-top: 7px; font-size: 12.5px; line-height: 1.6; color: #8B877F;">{{ affiliateExplain }}</div>
+            <div style="margin-top: 12px; padding: 11px 13px; border-radius: 9px; background: #06101A; border: 1px solid #1E4A6B; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #D6D3CC; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ refLink }}</div>
+            <div onClick="{{ copyRef }}" style="margin-top: 10px; padding: 11px; border-radius: 10px; border: 1px solid #3B8FCB; color: #7CB9E3; font-size: 12.5px; font-weight: 800; text-align: center; cursor: pointer;" style-hover="background: #12202C;">{{ copyLabel }}</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ paywallSoon }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <a href="{{ twitterUrl }}" target="_blank" style="margin-top: 18px; display: block; padding: 15px; border-radius: 12px; background: #3B8FCB; color: #06131F; font-size: 13.5px; font-weight: 800; text-align: center; text-decoration: none;" style-hover="background: #5BA6DC;">Voir les dates de sortie sur X</a>
+            <div onClick="{{ openSupport }}" style="margin-top: 10px; padding: 13px; border-radius: 12px; border: 1px solid #2A3A4A; color: #D6D3CC; font-size: 13px; font-weight: 700; text-align: center; cursor: pointer;" style-hover="border-color: #3B8FCB;">Soutenir l'auteur en attendant</div>
+          </div>
+        </sc-if>
+
+        <div style="margin-top: 14px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #57544F; text-align: center; line-height: 1.7;">paiement simulé — brancher Stripe Checkout ici</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showSupport }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 92; background: rgba(4,6,10,.84); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 24px;">
+      <div style="width: 420px; max-width: 100%; border-radius: 20px; border: 1px solid #23323F; background: #0D1218; padding: 28px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="font-size: 11px; letter-spacing: .12em; color: #6B6862;">CAGNOTTE — SOUTIEN CRÉATEUR</div>
+          <div style="flex: 1;"></div>
+          <div onClick="{{ closeSupport }}" style="font-size: 18px; color: #6B6862; cursor: pointer;" style-hover="color: #F2F0EC;">✕</div>
+        </div>
+        <div style="margin-top: 12px; font-family: 'Archivo Black', sans-serif; font-size: 24px;">Donne ce que tu veux</div>
+        <div style="margin-top: 10px; font-size: 13.5px; line-height: 1.6; color: #8B877F;">Le montant est libre. Chaque don s'ajoute au total public de la cagnotte. La cagnotte sert aussi de moyen de paiement : le crédit accumulé peut être utilisé pour débloquer les tomes.</div>
+        <div style="margin-top: 18px; display: flex; gap: 9px;">
+          <sc-for list="{{ presets }}" as="pr" hint-placeholder-count="4">
+            <div onClick="{{ pr.pick }}" style="flex: 1; padding: 13px 0; border-radius: 10px; border: 1px solid {{ pr.border }}; background: {{ pr.bg }}; color: {{ pr.color }}; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer;">{{ pr.label }}</div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 12px;">
+          <div style="font-size: 10px; letter-spacing: .12em; color: #6B6862;">MONTANT LIBRE (€)</div>
+          <input value="{{ supportAmount }}" onChange="{{ onSupportAmount }}" placeholder="ex. 7" style="margin-top: 6px; width: 100%; padding: 13px 14px; border-radius: 10px; border: 1px solid #23323F; background: #0A0A0C; color: #F2F0EC; font-family: 'JetBrains Mono', monospace; font-size: 15px; outline: none;">
+        </div>
+        <div onClick="{{ confirmSupport }}" style="margin-top: 18px; padding: 14px; border-radius: 12px; background: {{ supportBg }}; color: {{ supportFg }}; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer;">{{ supportLabel }}</div>
+        <div style="margin-top: 14px; display: flex; align-items: baseline; gap: 8px; justify-content: center;">
+          <div style="font-size: 12px; color: #6B6862;">Total actuel</div>
+          <div style="font-size: 15px; font-weight: 800; color: #7CB9E3;">{{ fundTotal }}</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 95; padding: 13px 22px; border-radius: 999px; background: #3B8FCB; color: #06131F; font-size: 13px; font-weight: 800; box-shadow: 0 12px 40px rgba(0,0,0,.5);">{{ toast }}</div>
+  </sc-if>
+
+  <div style="max-width: 1120px; margin: 56px auto 0; padding: 26px 24px 0; border-top: 1px solid #16161B;">
+    <div style="display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start;">
+      <div style="flex: 1 1 220px; min-width: 200px;">
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 14px; letter-spacing: .14em;">UMBRA</div>
+        <div style="margin-top: 8px; font-size: 12px; color: #57544F; line-height: 1.7;">{{ footerLine }}</div>
+      </div>
+      <div style="flex: 0 1 auto;">
+        <div style="font-size: 10px; letter-spacing: .14em; color: #4A4742;">INFORMATIONS LÉGALES</div>
+        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+          <sc-for list="{{ footerLegal }}" as="fl" hint-placeholder-count="3">
+            <div onClick="{{ fl.go }}" style="font-size: 12.5px; color: #74716A; cursor: pointer;" style-hover="color: #7CB9E3;">{{ fl.label }}</div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="flex: 0 1 auto;">
+        <div style="font-size: 10px; letter-spacing: .14em; color: #4A4742;">CRÉATEUR</div>
+        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+          <sc-if value="{{ showAdminLink }}" hint-placeholder-val="{{ true }}">
+            <div onClick="{{ goAdmin }}" style="font-size: 12.5px; color: #74716A; cursor: pointer;" style-hover="color: #7CB9E3;">Panneau créateur</div>
+          </sc-if>
+          <div onClick="{{ goReferral }}" style="font-size: 12.5px; color: #74716A; cursor: pointer;" style-hover="color: #7CB9E3;">Parrainage</div>
+          <div onClick="{{ openConsent }}" style="font-size: 12.5px; color: #74716A; cursor: pointer;" style-hover="color: #7CB9E3;">Préférences cookies</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 22px; padding-top: 16px; border-top: 1px solid #131317; display: flex; gap: 14px; flex-wrap: wrap; align-items: center;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #3F3C38;">Paiements traités par Stripe · Publicité Google AdSense</div>
+      <div style="flex: 1;"></div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #3F3C38;">{{ consentStatusLabel }}</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:900}}">
+const COVERS = [
+  'linear-gradient(150deg,#3B8FCB,#12405F)',
+  'linear-gradient(150deg,#6B4DF6,#3A1FA8)',
+  'linear-gradient(150deg,#F0327A,#8E1046)',
+  'linear-gradient(150deg,#2E3C4A,#141A20)',
+  'linear-gradient(150deg,#4A2E5C,#1E1226)',
+  'linear-gradient(150deg,#5C2E2E,#241010)',
+  'linear-gradient(150deg,#2E4A44,#101E1B)',
+  'linear-gradient(150deg,#3A3A5C,#151526)'
+];
+const AV = ['linear-gradient(140deg,#7CB9E3,#1E5F8F)','linear-gradient(140deg,#6B4DF6,#2A1B7A)','linear-gradient(140deg,#F0327A,#7A0F3C)','linear-gradient(140deg,#4ADE80,#12703C)','linear-gradient(140deg,#38BDF8,#0C4A6E)','linear-gradient(140deg,#F0761E,#7A3208)'];
+const NAMES = ['Whitebeard','Roger','Kuro','Mihawk','Ace','Shanks','Buggy','Zoro','Nami','Law','Robin','Doflamingo','Sabo','Jinbe','Vivi'];
+
+function uid() { return Math.random().toString(36).slice(2, 9); }
+function handleGen() { return '@Umbra' + NAMES[Math.floor(Math.random() * NAMES.length)] + '_' + Math.floor(100 + Math.random() * 900); }
+function fmt(n) { return n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace('.0', '') + 'K' : String(n); }
+function eur(n) { return (Math.round(n * 100) / 100).toFixed(2).replace('.00', '') + ' €'; }
+function natSort(a, b) { return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }); }
+
+const CTXT = [
+  "L'opening m'a donné des frissons. Le worldbuilding d'UMBRA est incroyable, hâte de voir la suite.",
+  "Le style graphique mêlé à cette ambiance sombre, ça change vraiment du shonen classique.",
+  "Quand sort le tome suivant ? J'ai déjà tout fini en une nuit.",
+  "La double page du combat final est une claque. Sow Wele au sommet.",
+  "Petit détail que personne ne relève : les symboles sur les murs annoncent la suite.",
+  "Le rythme du chapitre est parfait, aucune page de remplissage.",
+  "J'ai relu trois fois la scène du passage entre les mondes, le découpage est fou.",
+  "Le personnage secondaire mérite son propre arc, franchement."
+];
+const RTXT = ["Pareil, j'ai relu 3 fois.", 'Patience jeune padawan.', '+1 même état', 'Exactement ce que je pensais.', "T'as vu le détail page 34 ?", 'Grosse théorie, ça tient debout.'];
+const THEORIES = [
+  "Théorie : les symboles gravés sur les murs du tome 2 annoncent déjà le retournement du tome 5.",
+  "Théorie : le héros n'est pas le premier à traverser. Les fresques montrent quatre silhouettes.",
+  "Théorie : les mondes ne s'effondrent pas, ils fusionnent. Les cases se superposent à chaque saut.",
+  "Théorie : le mentor est le grand méchant du tome 6, regardez ses mains dans chaque plan.",
+  "Théorie : la fille du chapitre 12 est la version adulte de la gamine du prologue."
+];
+
+function mkComments(scale, count) {
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    const t = CTXT[i % CTXT.length];
+    const replies = [];
+    const rn = i % 3 === 0 ? 2 : (i % 2 === 0 ? 1 : 0);
+    for (let r = 0; r < rn; r++) {
+      replies.push({ id: uid(), author: handleGen(), text: RTXT[(i + r) % RTXT.length], time: 'il y a ' + (r + 1) + ' h', likes: 4 + ((i * 7 + r * 3) % 30), liked: false, av: (i + r) % AV.length });
+    }
+    out.push({
+      id: uid(), author: handleGen(), text: t, time: 'il y a ' + (i + 1) + ' h',
+      likes: Math.max(4, Math.round((260 - i * 24) * scale)), liked: false, reported: false, av: i % AV.length, replies: replies
+    });
+  }
+  return out;
+}
+
+function seed() {
+  const T1C1 = [], T1C2 = [], T1C3 = [];
+  for (let p = 1; p <= 21; p++) T1C1.push('pages/t1c1/' + String(p).padStart(2, '0') + '.jpg');
+  for (let p = 1; p <= 36; p++) T1C2.push('pages/t1c2/' + String(p).padStart(2, '0') + '.jpg');
+  for (let p = 1; p <= 19; p++) T1C3.push('pages/t1c3/' + String(p).padStart(2, '0') + '.jpg');
+  const tomes = [];
+  for (let i = 1; i <= 7; i++) {
+    const chapters = [];
+    for (let c = 0; c < (i === 1 ? 3 : 1); c++) {
+      const num = c + 1;
+      const scale = Math.max(0.12, (8 - i) / 8) * (1 - c * 0.18);
+      chapters.push({
+        id: 't' + i + 'c' + num, num: num, title: 'Chapitre ' + num,
+        pageCount: 0, pages: (i === 1 && c === 0) ? T1C1.slice() : ((i === 1 && c === 1) ? T1C2.slice() : ((i === 1 && c === 2) ? T1C3.slice() : [])), liked: false, likes: 0, comments: []
+      });
+    }
+    tomes.push({
+      id: 't' + i, num: i, title: 'Tome ' + i,
+      price: i === 1 ? 0 : 4, paid: i !== 1,
+      released: i === 1, cover: i === 1 ? 'url("covers/tome1.jpg") center/cover no-repeat' : (i === 2 ? 'url("covers/tome2.jpg") center/cover no-repeat' : COVERS[(i - 1) % COVERS.length]),
+      reads: 0,
+      chapters: chapters
+    });
+  }
+  const posts = [];
+  return {
+    site: {
+      mangaTitle: 'THE WORLD', author: 'Amadon', year: '2026', edition: 'Umbra',
+      genres: ['Shonen', 'Thriller politique', 'Action', 'Aventure', 'Mystère'],
+      synopsis: "Un explorateur a fait ce que personne n'osait tenter, le tour du monde ! Il en revient avec une vérité que l'humanité n'est pas prête à entendre... La Terre n'est pas plate ! Refusant d'y croire, le monde préfère le faire taire en rendant toute navigation illégale, et quiconque prend la mer devient pirate aux yeux de l'Instance mondiale. Pendant que le temps s'écoule, expéditions, guerres de succession, batailles navales, vengeances et combats déchirent les mers. The World n'a pas un héros car raconte comment des dizaines de destins s'entrechoquent, sans qu'aucun d'eux ne sache encore que le monde entier joue sa survie. Manga seinen français original, écrit par Amadon.",
+      videoUrl: '', adsense: '', defaultPageCount: 0, videoViews: 0, packPrice: 6.99, hideAdmin: false,
+      twitter: 'https://x.com/ThreadToon_', tiktok: 'https://www.tiktok.com/@umbra_editions?_r=1&_t=ZN-99TV3AbN61e'
+    },
+    tomes: tomes, posts: posts,
+    fund: { total: 0, count: 0, donations: [] },
+    user: { handle: handleGen(), refCode: 'UMB-' + uid().toUpperCase().slice(0, 5), referrals: 0, clicks: 0, purchased: [], affiliateUsed: false },
+    affiliateTome: 't3'
+  };
+}
+
+const LEGAL = {
+  cgv: {
+    title: 'CGV & mentions légales',
+    blocks: [
+      { h: 'Objet', p: 'Umbra vend des œuvres numériques (mangas et ebooks originaux) accessibles en lecture en ligne et en téléchargement aux formats PDF, EPUB et CBZ. L’achat d’un tome donne un accès à vie au compte acheteur.' },
+      { h: 'Prix et paiement', p: 'Les prix sont indiqués en euros toutes taxes comprises. Les paiements sont traités par Stripe Payments Europe. Aucune donnée de carte n’est stockée par Umbra. Le libellé UMBRA apparaît sur le relevé bancaire.' },
+      { h: 'Droit de rétractation', p: 'Conformément à l’article L221-28 du Code de la consommation, le droit de rétractation ne s’applique pas aux contenus numériques fournis immédiatement après l’achat, avec accord exprès de l’acheteur.' },
+      { h: 'Éditeur', p: 'Éditeur du site, statut juridique, adresse du siège, numéro SIRET, responsable de la publication et hébergeur : à compléter avant mise en production.' }
+    ]
+  },
+  privacy: {
+    title: 'Politique de confidentialité',
+    blocks: [
+      { h: 'Données collectées', p: 'Adresse e-mail et identifiant de compte, historique d’achats, pseudonyme de commentaire, données techniques de connexion. Les données de paiement sont collectées et traitées directement par Stripe.' },
+      { h: 'Publicité et mesure', p: 'Google AdSense dépose des cookies publicitaires pour diffuser des annonces et en mesurer la performance. Ces cookies ne sont activés qu’après consentement explicite via la bannière de gestion des cookies.' },
+      { h: 'Tes droits', p: 'Accès, rectification, effacement, portabilité et opposition. Une demande suffit depuis la page Contact ; le consentement publicitaire est révocable à tout moment depuis « Préférences cookies » en pied de page.' },
+      { h: 'Conservation', p: 'Les données de compte sont conservées tant que le compte existe, les justificatifs de transaction dix ans conformément aux obligations comptables.' }
+    ]
+  },
+  contact: {
+    title: 'À propos / Contact',
+    blocks: [
+      { h: 'Le projet', p: 'Umbra est une série indépendante publiée directement par son auteur. Les tomes sont vendus à l’unité ou en pack, sans abonnement, et la publicité finance la lecture en ligne.' },
+      { h: 'Contact', p: 'Support commande, question technique ou demande RGPD : contact@umbra.example — réponse sous 48 h ouvrées. Les demandes presse et partenariats passent par la même adresse.' },
+      { h: 'Modération', p: 'L’espace communauté est modéré. Tout commentaire signalé est revu depuis le panneau créateur, et les contenus haineux ou spoilers non balisés sont retirés.' }
+    ]
+  }
+};
+
+const KEY = 'umbra_state_v12';
+const AUTH_KEY = 'umbra_auth_v1';
+const ADMIN_CODE = 'WBAwbbWBCwbd17$';
+
+function loadAuth() {
+  try { const r = localStorage.getItem(AUTH_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; }
+}
+
+class Component extends DCLogic {
+  state = {
+    route: 'home', tomeId: null, chapterId: null, mode: 'scroll', page: 0, zoom: 80, showTop: false, insertAt: {}, fit: 'width', lowQ: false, bright: 100,
+    tab: 'popular', threadId: null, feedCount: 6, showAllComments: false,
+    search: '', compose: '', composeTheory: false, commentDraft: '', replyDraft: '', replyTo: null,
+    paywallTome: null, showSupport: false, supportAmount: '', card: { n: '', e: '', c: '' },
+    toast: '', copied: false, drafts: null, data: seed(),
+    offer: 'single', lastPurchase: null, legalTab: 'cgv', adDismissed: false,
+    auth: loadAuth(), authOpen: false, authMode: 'signin', authEmail: '', authPass: '', adminCode: '',
+    consentOpen: false, consent: (function () { try { return localStorage.getItem('umbra_consent') || null; } catch (e) { return null; } })()
+  };
+
+  startOpening() {
+    const tryPlay = () => {
+      const a = this.audioRef && this.audioRef.current;
+      if (!a) { setTimeout(tryPlay, 120); return; }
+      a.loop = true; a.muted = false;
+      a.play().then(() => this.setState({ audioPlaying: true, audioStarted: true, audioMuted: false }))
+        .catch(() => {
+          a.muted = true;
+          a.play().catch(() => {});
+          this.setState({ audioPlaying: true, audioStarted: true, audioMuted: true });
+          const unmute = () => {
+            const el = this.audioRef.current;
+            if (el) { el.muted = false; el.play().catch(() => {}); }
+            this.setState({ audioMuted: false, audioPlaying: true });
+            window.removeEventListener('pointerdown', unmute);
+            window.removeEventListener('keydown', unmute);
+          };
+          window.addEventListener('pointerdown', unmute, { once: true });
+          window.addEventListener('keydown', unmute, { once: true });
+        });
+    };
+    tryPlay();
+  }
+
+  componentDidMount() {
+    this.startOpening();
+    let d = this.state.data;
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        if (saved && saved.tomes) {
+          const fresh = seed();
+          saved.tomes.forEach(t => {
+            const ft = fresh.tomes.find(x => x.id === t.id);
+            if (!ft) return;
+            t.chapters.forEach(c => {
+              const fc = ft.chapters.find(x => x.id === c.id);
+              if (fc && fc.pages.length && (!c.pages || !c.pages.length)) c.pages = fc.pages.slice();
+            });
+          });
+          d = saved; this.setState({ data: saved });
+        }
+      }
+    } catch (e) {}
+    const m = /[?&]ref=([A-Za-z0-9-]+)/.exec(location.search);
+    if (m) {
+      if (!d.user.affiliateUsed) {
+        d.user.affiliateUsed = true;
+        d.user.referrals += 1;
+        d.user.clicks += 1;
+        if (d.user.purchased.indexOf(d.affiliateTome) < 0) d.user.purchased.push(d.affiliateTome);
+        this.save(d);
+        this.flash('Lien de parrainage validé — Tome 3 débloqué');
+      } else {
+        this.flash('Lien déjà utilisé — le Tome 3 est déjà débloqué');
+      }
+    }
+    if (/[?&]admin=1/.test(location.search) || location.hash === '#admin') this.setState({ route: 'admin' });
+    this._onScroll = () => {
+      const up = window.scrollY > 600;
+      if (up !== this.state.showTop) this.setState({ showTop: up });
+      if (this.state.route !== 'community') return;
+      if (window.innerHeight + window.scrollY > document.body.offsetHeight - 500) {
+        const total = this.filtered().length;
+        if (this.state.feedCount < total) this.setState(s => ({ feedCount: Math.min(total, s.feedCount + 5) }));
+      }
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+  }
+
+  componentWillUnmount() { window.removeEventListener('scroll', this._onScroll); }
+
+  save(data) {
+    this.setState({ data: data });
+    try {
+      const clone = JSON.parse(JSON.stringify(data, function (k, v) {
+        if (k !== 'pages' || !Array.isArray(v)) return v;
+        return v.filter(p => typeof p === 'string' && p.slice(0, 5) !== 'data:');
+      }));
+      localStorage.setItem(KEY, JSON.stringify(clone));
+    } catch (e) {}
+  }
+
+  saveAuth(a) {
+    try { a ? localStorage.setItem(AUTH_KEY, JSON.stringify(a)) : localStorage.removeItem(AUTH_KEY); } catch (e) {}
+    this.setState({ auth: a, authOpen: false, authEmail: '', authPass: '', adminCode: '' });
+  }
+
+  requireAuth(msg) {
+    if (this.state.auth) return true;
+    this.setState({ authOpen: true, authMode: 'signin' });
+    this.flash(msg || 'Connecte-toi pour participer');
+    return false;
+  }
+
+  setConsent(v) {
+    try { localStorage.setItem('umbra_consent', v); } catch (e) {}
+    this.setState({ consent: v, consentOpen: false });
+    this.flash(v === 'all' ? 'Cookies publicitaires activés' : 'Cookies essentiels uniquement');
+  }
+
+  flash(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: '' }), 2600);
+  }
+
+  mutate(fn) { const d = this.state.data; fn(d); this.save(d); }
+
+  allChapters() {
+    const out = [];
+    this.state.data.tomes.forEach(t => t.chapters.forEach(c => out.push({ tome: t, ch: c })));
+    return out;
+  }
+  findChapter(id) { return this.allChapters().find(x => x.ch.id === id) || null; }
+  tomeLikes(t) { return t.chapters.reduce((a, c) => a + c.likes, 0); }
+  hasPages(t) { return t.chapters.some(c => c.pages.length > 0); }
+  isAvailable(t) { return !!t.released && this.hasPages(t); }
+  isUnlocked(t) { return !t.paid || t.price === 0 || this.state.data.user.purchased.indexOf(t.id) >= 0; }
+
+  filtered() {
+    const d = this.state.data, tab = this.state.tab;
+    let list = d.posts.slice();
+    if (tab === 'theory') list = list.filter(p => p.kind === 'theory');
+    if (tab === 'popular') list.sort((a, b) => (b.likes + b.replies.length * 25) - (a.likes + a.replies.length * 25));
+    return list;
+  }
+
+  openTome(t) {
+    if (!this.isAvailable(t) || !this.isUnlocked(t)) return this.setState({ paywallTome: t.id, card: { n: '', e: '', c: '' } });
+    this.openChapter(t.chapters[0].id);
+  }
+
+  openChapter(id) {
+    const f = this.findChapter(id);
+    if (!f) return;
+    if (!this.isAvailable(f.tome) || !this.isUnlocked(f.tome)) return this.setState({ paywallTome: f.tome.id, card: { n: '', e: '', c: '' } });
+    this.mutate(() => { f.tome.reads += 1; });
+    this.setState({ route: 'reader', chapterId: id, tomeId: f.tome.id, page: 0, replyTo: null, showAllComments: false });
+    window.scrollTo(0, 0);
+  }
+
+  nav(route) { this.setState({ route: route, replyTo: null, threadId: null }); window.scrollTo(0, 0); }
+
+  upload(chapterId, e, mode) {
+    const files = Array.prototype.slice.call(e.target.files || []);
+    if (!files.length) return;
+    files.sort(natSort);
+    const urls = files.map(f => URL.createObjectURL(f));
+    const raw = (this.state.insertAt || {})[chapterId];
+    this.mutate(d => {
+      d.tomes.forEach(t => t.chapters.forEach(c => {
+        if (c.id !== chapterId) return;
+        if (mode !== 'append') { c.pages = urls; }
+        else {
+          const n = parseInt(raw, 10);
+          const at = (isNaN(n) || n < 1) ? c.pages.length : Math.min(c.pages.length, n - 1);
+          c.pages = c.pages.slice(0, at).concat(urls, c.pages.slice(at));
+        }
+        c.pageCount = c.pages.length;
+      }));
+    });
+    e.target.value = '';
+    this.flash(urls.length + (mode === 'append' ? ' pages insérées' : ' pages importées'));
+  }
+
+  replacePage(chapterId, idx, e) {
+    const f = (e.target.files || [])[0];
+    if (!f) return;
+    const url = URL.createObjectURL(f);
+    this.mutate(d => {
+      d.tomes.forEach(t => t.chapters.forEach(c => { if (c.id === chapterId) c.pages[idx] = url; }));
+    });
+    e.target.value = '';
+    this.flash('Page ' + (idx + 1) + ' remplacée');
+  }
+
+  setZoom(v) {
+    const h = document.body.scrollHeight || 1;
+    const ratio = window.scrollY / h;
+    this.setState({ zoom: v }, () => {
+      requestAnimationFrame(() => window.scrollTo(0, ratio * (document.body.scrollHeight || 1)));
+    });
+  }
+
+  renderVals() {
+    const s = this.state, d = s.data, site = d.site, u = d.user;
+    const dr = s.drafts || {};
+    const route = s.route;
+    const cur = s.chapterId ? this.findChapter(s.chapterId) : null;
+    const maxLikes = Math.max.apply(null, d.tomes.map(t => this.tomeLikes(t)));
+
+    const tomes = d.tomes.map(t => {
+      const unlocked = this.isUnlocked(t);
+      const avail = this.isAvailable(t);
+      const likes = this.tomeLikes(t);
+      const first = t.chapters[0].num, last = t.chapters[t.chapters.length - 1].num;
+      return {
+        id: t.id, num: t.num, label: t.title, cover: t.cover,
+        isLocked: this.isAvailable(t) ? !unlocked : true,
+        noArt: t.cover.indexOf('url(') < 0,
+        isHot: t.released && likes > 0 && likes === maxLikes,
+        chapterRange: 'Ch. ' + first + '–' + last,
+        readsLabel: '👁 ' + fmt(t.reads),
+        likesLabel: '♡ ' + fmt(likes),
+        status: avail ? (unlocked ? (t.paid ? 'débloqué' : 'accès libre') : t.price.toFixed(2) + ' €') : 'à venir',
+        statusColor: avail ? (unlocked ? '#4ADE80' : '#7CB9E3') : '#57544F',
+        subtitle: t.num === 1 ? "Le début de l'histoire" : 'Suite directe du Tome ' + (t.num - 1) + ' — même récit, même héros',
+        priceLabel: !avail ? 'À venir' : (!t.paid || t.price === 0 ? 'Gratuit' : (unlocked ? 'Débloqué' : t.price.toFixed(2) + ' €')),
+        cta: !avail ? 'À venir' : (unlocked ? 'Lire' : 'Débloquer'),
+        open: () => this.openTome(t),
+        chapters: t.chapters.map(c => ({
+          short: 'Ch. ' + c.num,
+          lockIcon: t.released ? (unlocked ? '' : '🔒') : '·',
+          open: () => this.openChapter(c.id)
+        }))
+      };
+    });
+
+    const ranked = this.allChapters()
+      .map(x => ({ x: x, score: x.ch.likes + x.ch.comments.length * 120 }))
+      .filter(r => r.score > 0)
+      .sort((a, b) => b.score - a.score).slice(0, 5)
+      .map((it, i) => ({
+        rank: i + 1,
+        rankColor: i === 0 ? '#7CB9E3' : i === 1 ? '#D6D3CC' : i === 2 ? '#3B8FCB' : '#3A3A42',
+        cover: it.x.tome.cover,
+        title: 'Tome ' + it.x.tome.num + ' · Ch. ' + it.x.ch.num,
+        likes: fmt(it.x.ch.likes), comments: it.x.ch.comments.length,
+        open: () => this.openChapter(it.x.ch.id)
+      }));
+
+    const mapReplies = list => list.map(r => ({
+      author: r.author, text: r.text, time: r.time, avatar: AV[r.av % AV.length],
+      likeLabel: '♡ ' + r.likes, likeColor: r.liked ? '#7CB9E3' : '#74716A',
+      like: () => this.mutate(() => { r.liked = !r.liked; r.likes += r.liked ? 1 : -1; })
+    }));
+
+    const mapComment = c => ({
+      author: c.author, text: c.text, time: c.time, avatar: AV[c.av % AV.length],
+      badge: c.likes > 150 ? 'top fan' : 'lecteur',
+      likeLabel: '♡ ' + fmt(c.likes), likeColor: c.liked ? '#7CB9E3' : '#74716A',
+      reportLabel: c.reported ? 'signalé' : 'Signaler',
+      isReplying: s.replyTo === c.id,
+      like: () => this.mutate(() => { c.liked = !c.liked; c.likes += c.liked ? 1 : -1; }),
+      reply: () => this.setState({ replyTo: s.replyTo === c.id ? null : c.id, replyDraft: '' }),
+      report: () => { this.mutate(() => { c.reported = true; }); this.flash('Commentaire signalé'); },
+      sendReply: () => {
+        if (!s.replyDraft.trim()) return;
+        this.mutate(() => { c.replies.push({ id: uid(), author: u.handle, text: s.replyDraft.trim(), time: "à l'instant", likes: 0, liked: false, av: 0 }); });
+        this.setState({ replyDraft: '', replyTo: null });
+      },
+      replies: mapReplies(c.replies)
+    });
+
+    const sortedComments = cur ? cur.ch.comments.slice().sort((a, b) => b.likes - a.likes) : [];
+    const visibleComments = (s.showAllComments ? sortedComments : sortedComments.slice(0, 5)).map(mapComment);
+
+    const mapPost = p => ({
+      author: p.author, text: p.text, time: p.time, avatar: AV[p.av % AV.length],
+      isTheory: p.kind === 'theory',
+      likeLabel: '♡ ' + fmt(p.likes), likeColor: p.liked ? '#7CB9E3' : '#74716A',
+      replyCount: p.replies.length,
+      reportLabel: p.reported ? 'signalé' : 'Signaler',
+      isReplying: s.replyTo === p.id,
+      hasMore: p.replies.length > 1,
+      moreLabel: 'Voir les ' + p.replies.length + ' réponses →',
+      previewReplies: mapReplies(p.replies.slice(0, 1)),
+      openThread: () => { this.setState({ route: 'thread', threadId: p.id, replyDraft: '' }); window.scrollTo(0, 0); },
+      like: () => this.mutate(() => { p.liked = !p.liked; p.likes += p.liked ? 1 : -1; }),
+      reply: () => this.setState({ replyTo: s.replyTo === p.id ? null : p.id, replyDraft: '' }),
+      report: () => { this.mutate(() => { p.reported = true; }); this.flash('Post signalé — visible dans le panneau créateur'); },
+      sendReply: () => {
+        if (!s.replyDraft.trim()) return;
+        this.mutate(() => { p.replies.push({ id: uid(), author: u.handle, text: s.replyDraft.trim(), time: "à l'instant", likes: 0, liked: false, av: 0 }); });
+        this.setState({ replyDraft: '', replyTo: null });
+      }
+    });
+
+    const topComments = this.allChapters()
+      .reduce((acc, x) => acc.concat(x.ch.comments.map(c => ({ c: c, x: x }))), [])
+      .map(o => ({ o: o, score: o.c.likes + (o.c.replies ? o.c.replies.length * 20 : 0) }))
+      .sort((a, b) => b.score - a.score).slice(0, 4)
+      .map(r => ({
+        author: r.o.c.author,
+        text: r.o.c.text,
+        stats: '♡ ' + fmt(r.o.c.likes) + ' · ' + ((r.o.c.replies || []).length) + ' rép.',
+        where: 'Tome ' + r.o.x.tome.num + ' · ' + r.o.x.ch.title,
+        open: () => this.openChapter(r.o.x.ch.id)
+      }));
+
+    const feedAll = this.filtered();
+    const posts = feedAll.slice(0, s.feedCount).map(mapPost);
+    const threadPost = s.threadId ? d.posts.find(p => p.id === s.threadId) : null;
+
+    const imgStyle = s.fit === 'height'
+      ? { height: Math.round(s.zoom * 1.05) + 'vh', width: 'auto', maxWidth: 'none', display: 'block', imageRendering: s.lowQ ? 'pixelated' : 'auto' }
+      : { width: '100%', display: 'block', imageRendering: s.lowQ ? 'pixelated' : 'auto' };
+    const pagesOf = ch => {
+      const n = ch.pages.length || ch.pageCount || 1;
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const src = ch.pages[i];
+        const alt = src ? 'page ' + (i + 1) + ' / ' + n : 'aucune planche importée';
+        out.push({
+          n: i + 1, src: src, hasSrc: !!src, isEmpty: !src, alt: alt,
+          img: src ? React.createElement('img', { src: src, alt: alt, loading: (i < 2 && !s.lowQ) ? 'eager' : 'lazy', decoding: 'async', style: imgStyle }) : null
+        });
+      }
+      return out;
+    };
+    const rPages = cur ? pagesOf(cur.ch) : [];
+    const pageIdx = Math.min(s.page, Math.max(0, rPages.length - 1));
+    const curPage = rPages[pageIdx] || { alt: '', src: '', hasSrc: false, isEmpty: true, img: null };
+    if (curPage.src) {
+      curPage.img = React.createElement('img', { src: curPage.src, alt: curPage.alt, loading: 'eager', decoding: 'async', style: imgStyle });
+      const nxt = rPages[pageIdx + 1];
+      if (nxt && nxt.src && !s.lowQ) { const pre = new Image(); pre.src = nxt.src; }
+    }
+
+    const nextCh = (() => {
+      if (!cur) return null;
+      const all = this.allChapters();
+      const i = all.findIndex(x => x.ch.id === cur.ch.id);
+      return all[i + 1] || null;
+    })();
+
+    const pT = s.paywallTome ? d.tomes.find(t => t.id === s.paywallTome) : null;
+    const isAff = pT && pT.id === d.affiliateTome && !u.affiliateUsed;
+    const cardOk = s.card.n.replace(/\s/g, '').length >= 14 && s.card.e.length >= 4 && s.card.c.length >= 3;
+    const paidTomes = d.tomes.filter(t => t.paid && this.isAvailable(t));
+    const paidCount = paidTomes.length;
+    const packPrice = paidCount >= 2 ? Math.max(site.packPrice || 6.99, Math.max.apply(null, paidTomes.map(t => t.price)) + 0.01) : 0;
+    const pAvailable = !!(pT && this.isAvailable(pT));
+    const offerAmount = (s.offer === 'pack' && paidCount >= 2) ? packPrice : (pT ? pT.price : 0);
+    const lp = s.lastPurchase;
+    const auth = s.auth;
+    const isOwner = !!(auth && auth.admin);
+    const emailOk = /.+@.+\..+/.test(s.authEmail) && s.authPass.length >= 6;
+    const base = location.origin + location.pathname;
+    const refLink = base + '?ref=' + u.refCode;
+    const supAmt = parseFloat(String(s.supportAmount).replace(',', '.'));
+    const supOk = !isNaN(supAmt) && supAmt > 0;
+
+    const reports = [];
+    d.posts.forEach(p => { if (p.reported) reports.push({ author: p.author, text: p.text, remove: () => this.mutate(dd => { dd.posts = dd.posts.filter(x => x.id !== p.id); }), keep: () => this.mutate(() => { p.reported = false; }) }); });
+
+    const countView = () => this.mutate(dd => { dd.site.videoViews += 1; });
+
+    if (!this.audioRef) this.audioRef = React.createRef();
+    const playing = !!this.state.audioPlaying, muted = !!this.state.audioMuted;
+    const playTrailer = () => {
+      const a = this.audioRef.current;
+      countView();
+      if (!a) return;
+      if (a.paused) { a.loop = true; a.muted = muted; a.play().catch(() => {}); this.setState({ audioPlaying: true, audioStarted: true }); }
+      else { a.pause(); this.setState({ audioPlaying: false }); }
+    };
+    const toggleMute = () => {
+      const a = this.audioRef.current, next = !muted;
+      if (a) { a.muted = next; if (a.paused && !next) { a.loop = true; a.play().catch(() => {}); this.setState({ audioPlaying: true, audioStarted: true, audioMuted: next }); return; } }
+      this.setState({ audioMuted: next });
+    };
+
+    return {
+      isHome: route === 'home', isLibrary: route === 'library', isReader: route === 'reader',
+      isCommunity: route === 'community', isThread: route === 'thread', isReferral: route === 'referral',
+      isAdmin: route === 'admin' && isOwner, isAdminLocked: route === 'admin' && !isOwner,
+      goHome: () => this.nav('home'), goLibrary: () => this.nav('library'),
+      goCommunity: () => { this.setState({ feedCount: 6 }); this.nav('community'); },
+      goReferral: () => { this.setState({ paywallTome: null, showSupport: false }); this.nav('referral'); },
+      goAdmin: () => this.nav('admin'),
+      search: s.search, onSearch: e => this.setState({ search: e.target.value }),
+      twitterUrl: site.twitter, tiktokUrl: site.tiktok,
+
+      mangaTitle: site.mangaTitle, author: site.author, year: site.year, edition: site.edition,
+      synopsis: site.synopsis, genres: site.genres.map(g => ({ name: g })),
+      genreLine: 'Manga / Seinen', tomeCount: d.tomes.length,
+      heroMeta: 'Nouveau chapitre · Seinen / Thriller',
+      tagline: "Quand un explorateur revient d'une expédition, il découvre pas mal de secrets dont celle que la planète terre n'est pas plate mais ronde ! Manga Shonen français original, écrit par Amadon, entre pirates, complot d'État et course contre le temps.",
+      totalReads: fmt(d.tomes.reduce((a, t) => a + t.reads, 0)),
+      totalLikes: fmt(d.tomes.reduce((a, t) => a + this.tomeLikes(t), 0)),
+      videoViews: fmt(site.videoViews),
+      countView: countView,
+      audioRef: this.audioRef,
+      audioStarted: !!this.state.audioStarted,
+      playTrailer: playTrailer,
+      toggleMute: toggleMute,
+      muteIcon: muted ? '🔇' : '🔊',
+      trailerIcon: playing ? '❚❚' : '▶',
+      trailerHint: playing ? "opening en cours — musique en boucle" : "bande-annonce / opening — clique pour lancer la musique",
+      continuityLine: "Tous les tomes de " + site.mangaTitle + " forment une seule et même histoire — chaque tome reprend là où le précédent s'arrête.",
+      topUpdated: 'mis à jour en temps réel',
+      aboutCover: d.tomes[0].cover,
+      aboutNoArt: d.tomes[0].cover.indexOf('url(') < 0,
+      hasVideo: !!site.videoUrl, noVideo: !site.videoUrl,
+      videoEl: site.videoUrl ? React.createElement('video', { src: site.videoUrl, controls: true, onPlay: countView, style: { width: '100%', height: '100%', objectFit: 'cover', background: '#000' } }) : null,
+      adSlotLabel: site.adsense ? 'Google AdSense · ' + site.adsense + ' — emplacement annonce' : 'emplacement Google AdSense — ajoute ton ID client dans ⚙ Panneau créateur',
+      footerLine: site.mangaTitle + ' © ' + site.year + ' ' + site.author + ' · prototype',
+
+      tomes: tomes, topChapters: ranked, noRanked: ranked.length === 0,
+      readFirst: () => this.openChapter(d.tomes[0].chapters[0].id),
+      readFirstLabel: this.isAvailable(d.tomes[0]) ? 'Lire le chapitre 1 · gratuit' : 'Chapitre 1 · à venir',
+      readFirstShort: this.isAvailable(d.tomes[0]) ? 'Lire le chapitre 1' : 'Chapitre 1 · à venir',
+
+      handle: u.handle,
+      regenHandle: () => this.mutate(dd => { dd.user.handle = handleGen(); }),
+      communityMeta: d.posts.length + ' posts · pseudo anonyme, connexion requise pour publier',
+      homePosts: d.posts.slice().sort((a, b) => (b.likes + b.replies.length * 25) - (a.likes + a.replies.length * 25)).slice(0, 3).map(mapPost),
+      topComments: topComments, noTopComments: topComments.length === 0,
+      posts: posts, noPosts: feedAll.length === 0,
+      moreToLoad: s.feedCount < feedAll.length, feedEnd: s.feedCount >= feedAll.length && feedAll.length > 0,
+      composeDraft: s.compose, onCompose: e => this.setState({ compose: e.target.value }),
+      composeCounter: s.compose.length + ' / 280',
+      toggleTheory: () => this.setState({ composeTheory: !s.composeTheory }),
+      theoryFlagBorder: s.composeTheory ? '#3B8FCB' : '#23323F',
+      theoryFlagColor: s.composeTheory ? '#7CB9E3' : '#6B6862',
+      post: () => {
+        if (!this.requireAuth('Connecte-toi pour publier')) return;
+        if (!s.compose.trim()) return;
+        const kind = s.composeTheory ? 'theory' : 'post';
+        this.mutate(dd => { dd.posts.unshift({ id: uid(), author: u.handle, kind: kind, text: s.compose.trim(), time: "à l'instant", likes: 0, liked: false, reported: false, av: 0, replies: [] }); });
+        this.setState({ compose: '', composeTheory: false, tab: kind === 'theory' ? 'theory' : 'recent', feedCount: 6 });
+      },
+      setPopular: () => this.setState({ tab: 'popular', feedCount: 6 }),
+      setTheory: () => this.setState({ tab: 'theory', feedCount: 6 }),
+      setRecent: () => this.setState({ tab: 'recent', feedCount: 6 }),
+      popularFg: s.tab === 'popular' ? '#F2F0EC' : '#74716A', popularBorder: s.tab === 'popular' ? '#3B8FCB' : 'transparent',
+      theoryFg: s.tab === 'theory' ? '#F2F0EC' : '#74716A', theoryBorder: s.tab === 'theory' ? '#3B8FCB' : 'transparent',
+      recentFg: s.tab === 'recent' ? '#F2F0EC' : '#74716A', recentBorder: s.tab === 'recent' ? '#3B8FCB' : 'transparent',
+      replyDraft: s.replyDraft, onReplyDraft: e => this.setState({ replyDraft: e.target.value }),
+
+      thread: threadPost ? {
+        author: threadPost.author, text: threadPost.text, time: threadPost.time, avatar: AV[threadPost.av % AV.length],
+        likeLabel: '♡ ' + fmt(threadPost.likes), likeColor: threadPost.liked ? '#7CB9E3' : '#74716A',
+        like: () => this.mutate(() => { threadPost.liked = !threadPost.liked; threadPost.likes += threadPost.liked ? 1 : -1; }),
+        replyCount: threadPost.replies.length,
+        replies: mapReplies(threadPost.replies),
+        sendReply: () => {
+          if (!s.replyDraft.trim()) return;
+          this.mutate(() => { threadPost.replies.push({ id: uid(), author: u.handle, text: s.replyDraft.trim(), time: "à l'instant", likes: 0, liked: false, av: 0 }); });
+          this.setState({ replyDraft: '' });
+        }
+      } : { author: '', text: '', time: '', avatar: AV[0], likeLabel: '', likeColor: '#74716A', like: () => {}, replyCount: 0, replies: [], sendReply: () => {} },
+
+      readerTomeLabel: cur ? 'TOME ' + cur.tome.num + ' · ' + cur.tome.title : '',
+      readerChapterTitle: cur ? cur.ch.title : '',
+      readerPageMeta: cur ? (cur.ch.pages.length ? cur.ch.pages.length + ' pages' : 'aucune page importée — dépose tes planches dans le panneau créateur') : '',
+      isScrollMode: s.mode === 'scroll', isPagedMode: s.mode === 'paged',
+      setScroll: () => this.setState({ mode: 'scroll' }), setPaged: () => this.setState({ mode: 'paged' }),
+      scrollBg: s.mode === 'scroll' ? '#3B8FCB' : 'transparent', scrollFg: s.mode === 'scroll' ? '#06131F' : '#A8A49C',
+      pagedBg: s.mode === 'paged' ? '#3B8FCB' : 'transparent', pagedFg: s.mode === 'paged' ? '#06131F' : '#A8A49C',
+      readerPages: s.mode === 'scroll' ? rPages : [],
+      currentSrc: curPage.src, currentAlt: curPage.alt, currentHasSrc: curPage.hasSrc, currentIsEmpty: curPage.isEmpty, currentImg: curPage.img,
+      pagedCounter: (pageIdx + 1) + ' / ' + rPages.length,
+      prevPage: () => this.setState({ page: Math.max(0, pageIdx - 1) }),
+      nextPage: () => this.setState({ page: Math.min(rPages.length - 1, pageIdx + 1) }),
+      zoomWidth: s.fit === 'height' ? 'fit-content' : s.zoom + '%', zoomLabel: s.zoom + '%',
+      zoomIn: () => this.setZoom(Math.min(180, this.state.zoom + 5)),
+      zoomOut: () => this.setZoom(Math.max(50, this.state.zoom - 5)),
+      zoomReset: () => this.setZoom(80),
+      scrollBorder: s.mode === 'scroll' ? '#3B8FCB' : '#2A3A4A', scrollColor: s.mode === 'scroll' ? '#7CB9E3' : '#74716A',
+      pagedBorder: s.mode === 'paged' ? '#3B8FCB' : '#2A3A4A', pagedColor: s.mode === 'paged' ? '#7CB9E3' : '#74716A',
+      fitWidth: () => this.setState({ fit: 'width' }), fitHeight: () => this.setState({ fit: 'height' }),
+      fitWBorder: s.fit === 'width' ? '#3B8FCB' : '#2A3A4A', fitWColor: s.fit === 'width' ? '#7CB9E3' : '#74716A',
+      fitHBorder: s.fit === 'height' ? '#3B8FCB' : '#2A3A4A', fitHColor: s.fit === 'height' ? '#7CB9E3' : '#74716A',
+      toggleLowQ: () => { this.setState({ lowQ: !s.lowQ }); this.flash(s.lowQ ? 'Qualité normale' : 'Économiseur de données activé'); },
+      lowQBg: s.lowQ ? '#3B8FCB' : '#1B1B21', lowQFg: s.lowQ ? '#06131F' : '#8B877F',
+      toggleFull: () => {
+        const el = document.documentElement;
+        if (document.fullscreenElement) { document.exitFullscreen(); }
+        else if (el.requestFullscreen) {
+          const p = el.requestFullscreen();
+          if (p && p.catch) p.catch(() => this.flash('Plein écran indisponible ici'));
+        }
+      },
+      brightFilter: 'brightness(' + (s.bright / 100) + ')',
+      brightLabel: s.bright + '%',
+      brightSlider: React.createElement('input', {
+        type: 'range', min: 40, max: 100, step: 1, value: s.bright,
+        title: 'Luminosité',
+        onChange: e => this.setState({ bright: parseInt(e.target.value, 10) }),
+        style: { writingMode: 'vertical-lr', direction: 'rtl', width: '22px', height: '86px', accentColor: '#7CB9E3', cursor: 'pointer' }
+      }),
+      showTop: s.showTop,
+      scrollTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+      zoomSlider: React.createElement('input', {
+        type: 'range', min: 50, max: 180, step: 1, value: s.zoom,
+        onChange: e => this.setZoom(parseInt(e.target.value, 10)),
+        style: { writingMode: 'vertical-lr', direction: 'rtl', width: '28px', height: '210px', accentColor: '#3B8FCB', cursor: 'pointer' }
+      }),
+      likeChapter: () => { if (!this.requireAuth('Connecte-toi pour liker')) return; this.mutate(() => { if (cur) { cur.ch.liked = !cur.ch.liked; cur.ch.likes += cur.ch.liked ? 1 : -1; } }); },
+      chapterLikeLabel: cur ? (cur.ch.liked ? '♥ Chapitre liké' : '♡ Liker ce chapitre') : '',
+      chapterLikeBorder: cur && cur.ch.liked ? '#3B8FCB' : '#2A3A4A',
+      chapterLikeColor: cur && cur.ch.liked ? '#7CB9E3' : '#F2F0EC',
+      chapterStats: cur ? fmt(cur.ch.likes) + ' likes · ' + cur.ch.comments.length + ' commentaires' : '',
+      nextChapterLabel: nextCh ? 'Chapitre suivant · Ch. ' + nextCh.ch.num + ' →' : 'Retour à la bibliothèque →',
+      nextChapter: () => nextCh ? this.openChapter(nextCh.ch.id) : this.nav('library'),
+      commentsHeading: s.showAllComments ? 'Tous les commentaires' : 'Top 5 commentaires',
+      commentCountLabel: cur ? cur.ch.comments.length + ' commentaires' : '',
+      visibleComments: visibleComments,
+      allCommentsLabel: s.showAllComments ? 'Revenir au top 5' : 'Voir tous les commentaires (' + sortedComments.length + ')',
+      toggleAllComments: () => this.setState({ showAllComments: !s.showAllComments }),
+      commentDraft: s.commentDraft, onCommentDraft: e => this.setState({ commentDraft: e.target.value }),
+      postComment: () => {
+        if (!this.requireAuth('Connecte-toi pour commenter')) return;
+        if (!s.commentDraft.trim() || !cur) return;
+        this.mutate(() => { cur.ch.comments.unshift({ id: uid(), author: u.handle, text: s.commentDraft.trim(), time: "à l'instant", likes: 1, liked: false, reported: false, av: 0, replies: [] }); });
+        this.setState({ commentDraft: '' });
+      },
+
+      refLink: refLink, copyLabel: s.copied ? 'Copié ✓' : 'Copier le lien',
+      copyRef: () => {
+        const done = () => { this.setState({ copied: true }); clearTimeout(this._c); this._c = setTimeout(() => this.setState({ copied: false }), 2000); };
+        if (navigator.clipboard) navigator.clipboard.writeText(refLink).then(done, done); else done();
+      },
+      shareX: 'https://twitter.com/intent/tweet?text=' + encodeURIComponent('Je lis ' + site.mangaTitle + ' de ' + site.author) + '&url=' + encodeURIComponent(refLink),
+      shareWhatsapp: 'https://wa.me/?text=' + encodeURIComponent('Lis ' + site.mangaTitle + ' : ' + refLink),
+      shareMail: 'mailto:?subject=' + encodeURIComponent(site.mangaTitle) + '&body=' + encodeURIComponent(refLink),
+      referralCount: u.referrals, referralClicks: u.clicks,
+      affiliateState: u.affiliateUsed ? 'Débloqué par parrainage' : 'Se débloque au 1er clic',
+      affiliateColor: u.affiliateUsed ? '#4ADE80' : '#7CB9E3',
+
+      fundTotal: eur(d.fund.total), fundMeta: d.fund.count + ' contribution' + (d.fund.count === 1 ? '' : 's'),
+      donations: d.fund.donations.slice(0, 6).map((x, i) => ({ author: x.author, amount: eur(x.amount), time: x.time, avatar: AV[i % AV.length] })),
+      openSupport: () => this.setState({ showSupport: true, supportAmount: '', paywallTome: null }),
+      closeSupport: () => this.setState({ showSupport: false }),
+      showSupport: s.showSupport,
+      supportAmount: s.supportAmount, onSupportAmount: e => this.setState({ supportAmount: e.target.value }),
+      presets: [1, 2, 5, 10].map(v => ({
+        label: v + ' €', pick: () => this.setState({ supportAmount: String(v) }),
+        border: String(v) === String(s.supportAmount) ? '#3B8FCB' : '#23323F',
+        bg: String(v) === String(s.supportAmount) ? '#12202C' : '#0A0A0C',
+        color: String(v) === String(s.supportAmount) ? '#7CB9E3' : '#D6D3CC'
+      })),
+      supportBg: supOk ? '#3B8FCB' : '#182028', supportFg: supOk ? '#06131F' : '#57544F',
+      supportLabel: supOk ? 'Donner ' + eur(supAmt) : 'Choisis un montant',
+      confirmSupport: () => {
+        if (!this.requireAuth('Connecte-toi pour soutenir l’auteur')) return;
+        if (!supOk) return;
+        this.mutate(dd => {
+          dd.fund.total += supAmt; dd.fund.count += 1;
+          dd.fund.donations.unshift({ author: u.handle, amount: supAmt, time: "à l'instant" });
+        });
+        this.setState({ showSupport: false, supportAmount: '' });
+        this.flash('Merci ! ' + eur(supAmt) + ' ajoutés à la cagnotte');
+      },
+
+      showPaywall: !!pT,
+      paywallKicker: pT ? (pAvailable ? 'DÉBLOQUER' : 'PAS ENCORE DISPONIBLE') : '',
+      paywallTitle: pT ? pT.title : '',
+      paywallText: pT ? (pAvailable
+        ? 'Ce tome est payant. Tu le gardes à vie après paiement, en lecture web et en téléchargement PDF, EPUB et CBZ.'
+        : pT.title + " n'est pas encore disponible. Les dates de sortie sont annoncées sur le compte X d'UMBRA.") : '',
+      paywallBuyable: !!(pT && pAvailable),
+      paywallSoon: !!(pT && !pAvailable),
+      paywallAffiliate: !!isAff,
+      paywallSupport: !!(pT && !pAvailable),
+      affiliateExplain: 'Le Tome 3 est le seul débloquable par parrainage, et une seule fois : dès qu’une personne ouvre ton lien, il s’ouvre automatiquement.',
+      paywallPrice: pT ? pT.price.toFixed(2) + ' €' : '',
+      closePaywall: () => this.setState({ paywallTome: null }),
+      cardNumber: s.card.n, onCardNumber: e => this.setState({ card: Object.assign({}, s.card, { n: e.target.value }) }),
+      cardExp: s.card.e, onCardExp: e => this.setState({ card: Object.assign({}, s.card, { e: e.target.value }) }),
+      cardCvc: s.card.c, onCardCvc: e => this.setState({ card: Object.assign({}, s.card, { c: e.target.value }) }),
+      payBg: cardOk ? '#3B8FCB' : '#182028', payFg: cardOk ? '#06131F' : '#57544F',
+      payLabel: pT ? (cardOk ? 'Payer ' + offerAmount.toFixed(2) + ' € · Stripe' : 'Renseigne ta carte') : '',
+      payHint: cardOk ? 'Débit unique, accès immédiat, aucun abonnement.' : 'Le tome reste verrouillé tant que le paiement n’est pas validé.',
+      confirmPay: () => {
+        if (!pT || !cardOk) return this.flash('Paiement requis pour débloquer ce tome');
+        const isPack = s.offer === 'pack' && paidCount >= 2;
+        const ids = isPack ? paidTomes.map(t => t.id) : [pT.id];
+        this.mutate(dd => { ids.forEach(id => { if (dd.user.purchased.indexOf(id) < 0) dd.user.purchased.push(id); }); });
+        this.setState({
+          paywallTome: null, card: { n: '', e: '', c: '' }, route: 'success',
+          lastPurchase: {
+            label: isPack ? 'Pack intégral UMBRA' : pT.title,
+            amount: offerAmount, tomeId: pT.id, chapterId: pT.chapters[0].id,
+            count: ids.length, ref: 'UMB-' + Date.now().toString(36).toUpperCase().slice(-6),
+            last4: s.card.n.replace(/\D/g, '').slice(-4) || '4242'
+          }
+        });
+        window.scrollTo(0, 0);
+      },
+
+      offers: pT ? [
+        { id: 'single', title: pT.title, sub: pT.chapters.length + (pT.chapters.length === 1 ? ' chapitre' : ' chapitres') + ' · accès à vie', price: pT.price.toFixed(2) + ' €' }
+      ].concat(paidCount >= 2 ? [
+        { id: 'pack', title: 'Pack intégral', sub: paidCount + ' tomes disponibles · un seul paiement', price: packPrice.toFixed(2) + ' €' }
+      ] : []).map(o => {
+        const on = s.offer === o.id;
+        return Object.assign({}, o, {
+          border: on ? '#3B8FCB' : '#23323F', bg: on ? '#0E1A24' : '#0A1016',
+          dot: on ? '#3B8FCB' : '#2A3A4A', dotFill: on ? '#3B8FCB' : 'transparent',
+          pick: () => this.setState({ offer: o.id })
+        });
+      }) : [],
+
+      isSuccess: s.route === 'success',
+      successSub: lp ? lp.label + ' · accès débloqué immédiatement' : 'Accès débloqué immédiatement',
+      readPurchase: () => { if (lp) this.openChapter(lp.chapterId); else this.nav('library'); },
+      downloads: [
+        { label: 'Télécharger PDF', meta: 'impression · 42 Mo' },
+        { label: 'Télécharger EPUB', meta: 'e-reader · 18 Mo' },
+        { label: 'Télécharger CBZ', meta: 'apps manga · 51 Mo' }
+      ].map(x => Object.assign({}, x, { go: () => this.flash(x.label.replace('Télécharger ', '') + ' — export à brancher au stockage') })),
+      receiptRows: lp ? [
+        { k: 'Article', v: lp.label },
+        { k: 'Tomes débloqués', v: String(lp.count) },
+        { k: 'Montant', v: lp.amount.toFixed(2) + ' €' },
+        { k: 'Carte', v: '•••• ' + lp.last4 },
+        { k: 'Référence', v: lp.ref }
+      ] : [],
+
+      isLegal: s.route === 'legal',
+      legalTitle: LEGAL[s.legalTab] ? LEGAL[s.legalTab].title : '',
+      legalTabs: [
+        { id: 'cgv', label: 'CGV & mentions légales' },
+        { id: 'privacy', label: 'Confidentialité (RGPD)' },
+        { id: 'contact', label: 'À propos / Contact' }
+      ].map(t => {
+        const on = s.legalTab === t.id;
+        return Object.assign({}, t, {
+          border: on ? '#3B8FCB' : '#23232B', bg: on ? '#12202C' : 'transparent',
+          color: on ? '#7CB9E3' : '#8B877F', pick: () => this.setState({ legalTab: t.id })
+        });
+      }),
+      legalBlocks: LEGAL[s.legalTab] ? LEGAL[s.legalTab].blocks : [],
+      footerLegal: [
+        { label: 'Conditions générales de vente', tab: 'cgv' },
+        { label: 'Mentions légales', tab: 'cgv' },
+        { label: 'Politique de confidentialité', tab: 'privacy' },
+        { label: 'À propos / Contact', tab: 'contact' }
+      ].map(x => Object.assign({}, x, { go: () => { this.setState({ legalTab: x.tab }); this.nav('legal'); } })),
+      goLegalContact: () => { this.setState({ legalTab: 'contact' }); this.nav('legal'); },
+      goLegalPrivacy: () => { this.setState({ legalTab: 'privacy' }); this.nav('legal'); },
+
+      showConsent: !s.consent || s.consentOpen,
+      openConsent: () => this.setState({ consentOpen: true }),
+      consentAll: () => this.setConsent('all'),
+      consentEssential: () => this.setConsent('essential'),
+      consentStatusLabel: s.consent === 'all' ? 'Cookies : tout accepté' : (s.consent === 'essential' ? 'Cookies : essentiels seulement' : 'Cookies : en attente de choix'),
+
+      showAdBanner: s.route === 'reader' && !s.adDismissed && !(!s.consent || s.consentOpen),
+      adBannerLabel: site.adsense ? 'Google AdSense · ' + site.adsense + ' — bannière 728×90 / 320×50' : 'bannière AdSense 728×90 desktop · 320×50 mobile',
+      dismissAdBanner: () => this.setState({ adDismissed: true }),
+
+
+      purchasedCount: u.purchased.length,
+      videoDraft: dr.videoUrl !== undefined ? dr.videoUrl : site.videoUrl,
+      onVideoDraft: e => this.setState({ drafts: Object.assign({}, dr, { videoUrl: e.target.value }) }),
+      adsenseDraft: dr.adsense !== undefined ? dr.adsense : site.adsense,
+      onAdsenseDraft: e => this.setState({ drafts: Object.assign({}, dr, { adsense: e.target.value }) }),
+      twitterDraft: dr.twitter !== undefined ? dr.twitter : site.twitter,
+      onTwitterDraft: e => this.setState({ drafts: Object.assign({}, dr, { twitter: e.target.value }) }),
+      tiktokDraft: dr.tiktok !== undefined ? dr.tiktok : site.tiktok,
+      onTiktokDraft: e => this.setState({ drafts: Object.assign({}, dr, { tiktok: e.target.value }) }),
+      authorDraft: dr.author !== undefined ? dr.author : site.author,
+      onAuthorDraft: e => this.setState({ drafts: Object.assign({}, dr, { author: e.target.value }) }),
+      pageCountDraft: dr.defaultPageCount !== undefined ? dr.defaultPageCount : String(site.defaultPageCount),
+      onPageCountDraft: e => this.setState({ drafts: Object.assign({}, dr, { defaultPageCount: e.target.value }) }),
+      synopsisDraft: dr.synopsis !== undefined ? dr.synopsis : site.synopsis,
+      onSynopsisDraft: e => this.setState({ drafts: Object.assign({}, dr, { synopsis: e.target.value }) }),
+      saveHint: 'Réglages conservés dans ce navigateur.',
+      saveSettings: () => {
+        this.mutate(dd => {
+          Object.keys(dr).forEach(k => {
+            if (k === 'defaultPageCount') dd.site[k] = parseInt(dr[k], 10) || 0;
+            else if (k === 'packPrice') dd.site[k] = parseFloat(String(dr[k]).replace(',', '.')) || 6.99;
+            else dd.site[k] = dr[k];
+          });
+        });
+        this.setState({ drafts: null });
+        this.flash('Réglages enregistrés');
+      },
+
+      adminTomes: d.tomes.map(t => ({
+        cover: t.cover, title: t.title, price: String(t.price),
+        meta: 'Tome ' + t.num + ' · ' + t.chapters.length + ' chapitres · ' + (this.hasPages(t) ? 'planches importées' : 'aucune planche — non vendable') + (t.released ? '' : ' · marqué non dispo'),
+        paidLabel: t.paid ? 'Payant' : 'Gratuit',
+        paidBorder: t.paid ? '#3B8FCB' : '#2A6B3C', paidColor: t.paid ? '#7CB9E3' : '#4ADE80',
+        releasedLabel: t.released ? 'Marqué dispo' : 'Non dispo',
+        releasedColor: t.released ? '#D6D3CC' : '#6B6862',
+        onTitle: e => { const v = e.target.value; this.mutate(() => { t.title = v; }); },
+        onPrice: e => { const v = parseFloat(e.target.value.replace(',', '.')); this.mutate(() => { t.price = isNaN(v) ? 0 : v; }); },
+        togglePaid: () => this.mutate(() => { t.paid = !t.paid; if (!t.paid) t.price = 0; else if (!t.price) t.price = 3.99; }),
+        toggleReleased: () => this.mutate(() => { t.released = !t.released; }),
+        remove: () => { this.mutate(dd => { dd.tomes = dd.tomes.filter(x => x.id !== t.id); }); this.flash(t.title + ' supprimé'); },
+        addChapter: () => this.mutate(() => {
+          const last = t.chapters[t.chapters.length - 1];
+          const num = (last ? last.num : 0) + 1;
+          t.chapters.push({ id: t.id + 'c' + num + uid(), num: num, title: 'Chapitre ' + num, pageCount: site.defaultPageCount, pages: [], likes: 0, liked: false, comments: [] });
+        }),
+        chapters: t.chapters.map(c => ({
+          title: c.title,
+          pageMeta: c.pages.length ? c.pages.length + ' pages importées · ordre par nom de fichier' : 'aucune page — dépose autant de pages que tu veux',
+          remove: () => { if (t.chapters.length <= 1) return this.flash('Un tome garde au moins un chapitre'); this.mutate(() => { t.chapters = t.chapters.filter(x => x.id !== c.id); }); this.flash(c.title + ' supprimé'); },
+          onTitle: e => { const v = e.target.value; this.mutate(() => { c.title = v; }); },
+          onUpload: e => this.upload(c.id, e, 'replace'),
+          onAppend: e => this.upload(c.id, e, 'append'),
+          insertAt: (s.insertAt || {})[c.id] || '',
+          onInsertAt: e => { const v = e.target.value; this.setState(st => ({ insertAt: Object.assign({}, st.insertAt, { [c.id]: v }) })); },
+          hasPages: c.pages.length > 0,
+          pageList: c.pages.map((p, i) => ({
+            n: i + 1, src: p,
+            thumb: React.createElement('img', { src: p, alt: 'page ' + (i + 1), loading: 'lazy', style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } }),
+            onReplace: e => this.replacePage(c.id, i, e),
+            del: () => { this.mutate(() => { c.pages = c.pages.filter((_, j) => j !== i); c.pageCount = c.pages.length; }); this.flash('Page ' + (i + 1) + ' supprimée'); },
+            up: () => { if (i === 0) return; this.mutate(() => { const a = c.pages; const t2 = a[i - 1]; a[i - 1] = a[i]; a[i] = t2; }); },
+            down: () => { if (i === c.pages.length - 1) return; this.mutate(() => { const a = c.pages; const t2 = a[i + 1]; a[i + 1] = a[i]; a[i] = t2; }); }
+          })),
+          clear: () => this.mutate(() => { c.pages = []; c.pageCount = site.defaultPageCount; })
+        }))
+      })),
+      addTome: () => this.mutate(dd => {
+        const n = dd.tomes.length + 1;
+        dd.tomes.push({ id: 't' + n + uid(), num: n, title: 'Tome ' + n, price: 4, paid: true, released: false, cover: COVERS[(n - 1) % COVERS.length], reads: 0, chapters: [{ id: 'nt' + uid(), num: 1, title: 'Chapitre 1', pageCount: site.defaultPageCount, pages: [], likes: 0, liked: false, comments: [] }] });
+      }),
+      reports: reports, noReports: reports.length === 0,
+      isSignedIn: !!auth, isSignedOut: !auth,
+      authLabel: auth ? (auth.admin ? 'Espace créateur' : auth.email) : 'Se connecter',
+      authChipBorder: auth ? '#1E5F8F' : '#22222A',
+      authChipColor: auth ? '#7CB9E3' : '#A8A49C',
+      showAuth: s.authOpen,
+      openAuth: () => this.setState({ authOpen: true, authMode: 'signin' }),
+      closeAuth: () => this.setState({ authOpen: false, authEmail: '', authPass: '' }),
+      authIsSignin: s.authMode === 'signin', authIsSignup: s.authMode === 'signup',
+      authTitle: s.authMode === 'signup' ? 'Créer un compte' : 'Se connecter',
+      authSwitchLabel: s.authMode === 'signup' ? 'J’ai déjà un compte — me connecter' : 'Pas encore de compte ? En créer un',
+      authSwitch: () => this.setState({ authMode: s.authMode === 'signup' ? 'signin' : 'signup' }),
+      authEmail: s.authEmail, onAuthEmail: e => this.setState({ authEmail: e.target.value }),
+      authPass: s.authPass, onAuthPass: e => this.setState({ authPass: e.target.value }),
+      authSubmitLabel: emailOk ? (s.authMode === 'signup' ? 'Créer mon compte' : 'Continuer par e-mail') : 'E-mail et mot de passe (6 car.)',
+      authSubmitBg: emailOk ? '#3B8FCB' : '#182028',
+      authSubmitFg: emailOk ? '#06131F' : '#57544F',
+      authSubmit: () => {
+        if (!emailOk) return;
+        const em = s.authEmail.trim().toLowerCase();
+        this.saveAuth({ email: em, admin: em === ADMIN_EMAIL, via: 'email' });
+        this.flash(s.authMode === 'signup' ? 'Compte créé' : 'Connecté');
+      },
+      googleSignIn: () => {
+        this.saveAuth({ email: 'lecteur@gmail.com', admin: false, via: 'google' });
+        this.flash('Connecté avec Google');
+      },
+      signOut: () => { this.saveAuth(null); this.flash('Déconnecté'); this.nav('home'); },
+      accountEmail: auth ? auth.email : '',
+      accountVia: auth ? (auth.via === 'google' ? 'Compte Google' : (auth.via === 'code' ? 'Code administrateur' : 'Compte e-mail')) : '',
+      accountRole: isOwner ? 'Administrateur — accès au panneau créateur' : 'Lecteur',
+
+      isOwner: isOwner,
+      adminCode: s.adminCode, onAdminCode: e => this.setState({ adminCode: e.target.value }),
+      adminUnlock: () => {
+        if (s.adminCode !== ADMIN_CODE) return this.flash('Code d’accès invalide');
+        this.saveAuth({ email: site.author, admin: true, via: 'code' });
+        this.flash('Accès administrateur ouvert');
+      },
+
+      showAdminLink: !(site.hideAdmin && !isOwner),
+      hideAdminLabel: (dr.hideAdmin !== undefined ? dr.hideAdmin : !!site.hideAdmin) ? 'Lien masqué — accès par /?admin=1' : 'Lien visible dans la barre et le pied de page',
+      hideAdminBorder: (dr.hideAdmin !== undefined ? dr.hideAdmin : !!site.hideAdmin) ? '#3B8FCB' : '#23232B',
+      hideAdminColor: (dr.hideAdmin !== undefined ? dr.hideAdmin : !!site.hideAdmin) ? '#7CB9E3' : '#A8A49C',
+      toggleHideAdmin: () => this.setState({ drafts: Object.assign({}, dr, { hideAdmin: !(dr.hideAdmin !== undefined ? dr.hideAdmin : !!site.hideAdmin) }) }),
+      packPriceDraft: dr.packPrice !== undefined ? dr.packPrice : String(site.packPrice),
+      onPackPriceDraft: e => this.setState({ drafts: Object.assign({}, dr, { packPrice: e.target.value }) }),
+      toast: s.toast
+    };
+  }
+}
+</script>
+</body>
 </html>
