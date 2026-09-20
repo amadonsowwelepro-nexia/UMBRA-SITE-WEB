@@ -1,0 +1,12 @@
+{
+  "name": "umbra-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "UMBRA — site du manga THE WORLD (site statique + fonctions serveur Vercel)",
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.8.0"
+  }
+}

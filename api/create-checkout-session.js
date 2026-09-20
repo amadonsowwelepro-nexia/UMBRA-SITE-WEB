@@ -1,6 +1,8 @@
-// Vercel Serverless Function — Node.js runtime, CommonJS, no npm deps.
-// Creates a Stripe Checkout Session (hosted payment page) server-side,
-// keeping the secret key off the client entirely.
+// Vercel Serverless Function — Node.js runtime, CommonJS.
+// Crée une session Stripe Checkout (page de paiement hébergée par Stripe) côté serveur :
+// la clé secrète ne touche jamais le navigateur.
+//   - achat de tome(s) : { title, amountCents, tomeIds[], uid }
+//   - don à la cagnotte : { kind: 'donation', title, amountCents, uid, handle }
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -17,15 +19,18 @@ module.exports = async function handler(req, res) {
   if (typeof body === 'string') {
     try { body = JSON.parse(body); } catch (e) { body = {}; }
   }
-  const { title, amountCents, tomeIds, uid } = body || {};
+  const { title, amountCents, tomeIds, uid, kind, handle } = body || {};
+  const isDonation = kind === 'donation';
 
   if (typeof title !== 'string' || !title.trim() || title.length > 200) {
     return res.status(400).json({ error: 'invalid title' });
   }
-  if (!Number.isInteger(amountCents) || amountCents < 50 || amountCents > 100000) {
+  const minCents = isDonation ? 100 : 50;
+  const maxCents = isDonation ? 50000 : 100000;
+  if (!Number.isInteger(amountCents) || amountCents < minCents || amountCents > maxCents) {
     return res.status(400).json({ error: 'invalid amount' });
   }
-  if (!Array.isArray(tomeIds) || tomeIds.length === 0 || tomeIds.some((t) => typeof t !== 'string')) {
+  if (!isDonation && (!Array.isArray(tomeIds) || tomeIds.length === 0 || tomeIds.some((t) => typeof t !== 'string'))) {
     return res.status(400).json({ error: 'invalid tomeIds' });
   }
   if (typeof uid !== 'string' || !/^UMB-[A-Za-z0-9]{1,20}$/.test(uid)) {
@@ -43,7 +48,14 @@ module.exports = async function handler(req, res) {
   params.set('line_items[0][price_data][product_data][name]', title.slice(0, 120));
   params.set('line_items[0][quantity]', '1');
   params.set('metadata[uid]', uid);
-  params.set('metadata[tomeIds]', JSON.stringify(tomeIds).slice(0, 490));
+  params.set('metadata[kind]', isDonation ? 'donation' : 'purchase');
+  if (isDonation) {
+    const cleanHandle = typeof handle === 'string' ? handle.replace(/[^A-Za-z0-9_@.\- ]/g, '').trim().slice(0, 40) : '';
+    params.set('metadata[handle]', cleanHandle || 'Anonyme');
+    params.set('metadata[tomeIds]', '[]');
+  } else {
+    params.set('metadata[tomeIds]', JSON.stringify(tomeIds).slice(0, 490));
+  }
 
   try {
     const stripeResp = await fetch('https://api.stripe.com/v1/checkout/sessions', {

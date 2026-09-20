@@ -1,5 +1,7 @@
-// Vercel Serverless Function — confirms a Checkout Session was actually
-// paid before the client is allowed to unlock any content.
+// Vercel Serverless Function — confirme qu'une session Checkout a réellement été payée
+// avant que le site ne débloque quoi que ce soit (ou n'ajoute un don à la cagnotte).
+
+const { recordDonation } = require('./_lib/fund');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -28,12 +30,24 @@ module.exports = async function handler(req, res) {
     if (session.payment_status !== 'paid') {
       return res.status(200).json({ paid: false });
     }
+
+    const meta = session.metadata || {};
+    const kind = meta.kind === 'donation' ? 'donation' : 'purchase';
+
+    if (kind === 'donation') {
+      try {
+        await recordDonation({ sessionId: session.id, amountCents: session.amount_total, handle: meta.handle });
+      } catch (e) { /* le webhook prendra le relais */ }
+      return res.status(200).json({ paid: true, kind: 'donation', amountTotal: session.amount_total });
+    }
+
     let tomeIds = [];
-    try { tomeIds = JSON.parse((session.metadata && session.metadata.tomeIds) || '[]'); } catch (e) {}
+    try { tomeIds = JSON.parse(meta.tomeIds || '[]'); } catch (e) {}
     return res.status(200).json({
       paid: true,
+      kind: 'purchase',
       tomeIds,
-      uid: (session.metadata && session.metadata.uid) || session.client_reference_id || null,
+      uid: meta.uid || session.client_reference_id || null,
       amountTotal: session.amount_total,
     });
   } catch (e) {

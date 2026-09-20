@@ -12,13 +12,16 @@
 <meta property="og:site_name" content="UMBRA">
 <meta property="og:title" content="THE WORLD — Manga original par Amadon">
 <meta property="og:description" content="Manga seinen français original écrit par Amadon. Lis les chapitres en ligne, rejoins la communauté et découvre l'univers d'UMBRA.">
-<meta property="og:image" content="https://umbra-site-web.vercel.app/covers/tome1.jpg">
+<meta property="og:image" content="https://umbra-site-web.vercel.app/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="THE WORLD — manga original par Amadon, publié sur UMBRA">
 <meta property="og:url" content="https://umbra-site-web.vercel.app/">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="THE WORLD — Manga original par Amadon">
 <meta name="twitter:description" content="Manga seinen français original écrit par Amadon. Lis les chapitres en ligne sur UMBRA.">
-<meta name="twitter:image" content="https://umbra-site-web.vercel.app/covers/tome1.jpg">
+<meta name="twitter:image" content="https://umbra-site-web.vercel.app/og-image.jpg">
 
 <script src="./support.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7929476813798444"
@@ -972,12 +975,14 @@
 
   <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
   <div data-screen-label="Panneau créateur" style="max-width: 1000px; margin: 0 auto; padding: 32px 24px 0;">
-    <div style="display: flex; align-items: flex-end; gap: 16px;">
+    <div style="display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap;">
       <div>
         <div style="font-family: 'Archivo Black', sans-serif; font-size: 32px;">Panneau créateur</div>
         <div style="margin-top: 7px; font-size: 13px; color: #8B877F;">Tomes, chapitres, pages, prix et monétisation. Tout ce que tu changes ici s'applique au site.</div>
       </div>
       <div style="flex: 1;"></div>
+      <div style="font-size: 12px; font-weight: 700; color: {{ publishColor }};">{{ publishLabel }}</div>
+      <div onClick="{{ adminLogout }}" style="padding: 10px 18px; border-radius: 10px; border: 1px solid #2A3A4A; font-size: 12.5px; font-weight: 700; color: #D6D3CC; cursor: pointer;" style-hover="border-color: #E5484D;">🔒 Verrouiller</div>
       <div onClick="{{ goHome }}" style="padding: 10px 18px; border-radius: 10px; border: 1px solid #2A3A4A; font-size: 12.5px; font-weight: 700; color: #D6D3CC; cursor: pointer;" style-hover="border-color: #3B8FCB;">Voir le site</div>
     </div>
 
@@ -1052,7 +1057,11 @@
       <sc-for list="{{ adminTomes }}" as="t" hint-placeholder-count="3">
         <div style="border-radius: 16px; border: 1px solid #1B1B21; background: #0D0D11; padding: 20px;">
           <div style="display: grid; grid-template-columns: 52px 1fr auto auto auto auto; gap: 14px; align-items: center;">
-            <div style="border-radius: 8px; aspect-ratio: 2/3; background: {{ t.cover }};"></div>
+            <label title="Changer la couverture" style="position: relative; display: block; cursor: pointer;">
+              <div style="border-radius: 8px; aspect-ratio: 2/3; background: {{ t.cover }};"></div>
+              <div style="position: absolute; right: -5px; bottom: -5px; width: 22px; height: 22px; border-radius: 999px; background: #3B8FCB; color: #06131F; font-size: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,.5);">✎</div>
+              <input type="file" accept="image/*" onChange="{{ t.onCover }}" style="display: none;">
+            </label>
             <div>
               <input value="{{ t.title }}" onChange="{{ t.onTitle }}" style="width: 100%; padding: 9px 12px; border-radius: 9px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 14px; font-weight: 700; outline: none;">
               <div style="margin-top: 7px; font-size: 11.5px; color: #8B877F;">{{ t.meta }}</div>
@@ -1143,12 +1152,12 @@
     <div style="margin-top: 18px; font-family: 'Archivo Black', sans-serif; font-size: clamp(22px, 6vw, 30px);">Espace réservé</div>
     <div style="margin-top: 10px; font-size: 13.5px; line-height: 1.65; color: #8B877F;">Le panneau créateur n’est accessible qu’au compte administrateur du site. Les lecteurs connectés n’y ont aucun accès.</div>
     <div style="margin-top: 22px;">
-      <div style="font-size: 10px; letter-spacing: .12em; color: #8B877F;">CODE D'ACCÈS</div>
+      <div style="font-size: 10px; letter-spacing: .12em; color: #8B877F;">MOT DE PASSE CRÉATEUR</div>
       <input type="password" value="{{ adminCode }}" onChange="{{ onAdminCode }}" placeholder="••••••••••••" style="margin-top: 6px; width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #23323F; background: #0A0A0C; color: #F2F0EC; font-family: 'JetBrains Mono', monospace; font-size: 14px; letter-spacing: .1em; outline: none;">
     </div>
-    <div onClick="{{ adminUnlock }}" style="margin-top: 16px; padding: 15px; border-radius: 12px; background: #3B8FCB; color: #06131F; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer;" style-hover="background: #5BA6DC;">Ouvrir le panneau créateur</div>
+    <div onClick="{{ adminUnlock }}" style="margin-top: 16px; padding: 15px; border-radius: 12px; background: #3B8FCB; color: #06131F; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer;" style-hover="background: #5BA6DC;">{{ adminUnlockLabel }}</div>
     <div onClick="{{ goHome }}" style="margin-top: 12px; font-size: 12.5px; color: #96918A; cursor: pointer; text-align: center;" style-hover="color: #7CB9E3;">Retour au site</div>
-    <div style="margin-top: 22px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; line-height: 1.8; color: #817C75;">Accès par code uniquement. Quand le lien est masqué, cette page reste joignable via /?admin=1 ou #admin.</div>
+    <div style="margin-top: 22px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; line-height: 1.8; color: #817C75;">Mot de passe vérifié côté serveur — rien n'est stocké dans le code du site. Quand le lien est masqué, cette page reste joignable via /?admin=1 ou #admin.</div>
   </div>
   </sc-if>
 
@@ -1443,6 +1452,36 @@ function handleGen() { return '@Umbra' + NAMES[Math.floor(Math.random() * NAMES.
 function fmt(n) { return n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace('.0', '') + 'K' : String(n); }
 function eur(n) { return (Math.round(n * 100) / 100).toFixed(2).replace('.00', '') + ' €'; }
 function natSort(a, b) { return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }); }
+function relTime(iso) {
+  const t = Date.parse(iso);
+  if (!t) return '';
+  const m = Math.max(0, Math.round((Date.now() - t) / 60000));
+  if (m < 1) return "à l'instant";
+  if (m < 60) return 'il y a ' + m + ' min';
+  const h = Math.round(m / 60);
+  if (h < 24) return 'il y a ' + h + ' h';
+  const j = Math.round(h / 24);
+  return 'il y a ' + j + (j > 1 ? ' jours' : ' jour');
+}
+function compressImage(file, maxW, quality) {
+  return new Promise((resolve, reject) => {
+    const objUrl = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxW / img.naturalWidth);
+      const w = Math.max(1, Math.round(img.naturalWidth * scale)), h = Math.max(1, Math.round(img.naturalHeight * scale));
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(objUrl);
+      c.toBlob(b => b ? resolve(b) : reject(new Error('Compression impossible')), 'image/jpeg', quality);
+    };
+    img.onerror = () => { URL.revokeObjectURL(objUrl); reject(new Error('Image illisible : ' + file.name)); };
+    img.src = objUrl;
+  });
+}
 
 const CTXT = [
   "L'opening m'a donné des frissons. Le worldbuilding d'UMBRA est incroyable, hâte de voir la suite.",
@@ -1551,7 +1590,7 @@ const LEGAL = {
 
 const KEY = 'umbra_state_v12';
 const AUTH_KEY = 'umbra_auth_v1';
-const ADMIN_CODE = 'WBAwbbWBCwbd17$';
+const ADMIN_TOKEN_KEY = 'umbra_admin_session_v1';
 
 function loadAuth() {
   try { const r = localStorage.getItem(AUTH_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; }
@@ -1562,7 +1601,7 @@ class Component extends DCLogic {
     route: 'home', tomeId: null, chapterId: null, mode: 'scroll', page: 0, zoom: 80, showTop: false, insertAt: {}, fit: 'width', lowQ: false, bright: 100,
     tab: 'popular', threadId: null, feedCount: 6, showAllComments: false,
     search: '', compose: '', composeTheory: false, commentDraft: '', replyDraft: '', replyTo: null,
-    paywallTome: null, showSupport: false, supportAmount: '', payLoading: false,
+    paywallTome: null, showSupport: false, supportAmount: '', payLoading: false, supportBusy: false, adminVerified: false, adminBusy: false, publishState: '',
     toast: '', copied: false, drafts: null, data: seed(),
     offer: 'single', lastPurchase: null, legalTab: 'cgv', adDismissed: false,
     auth: loadAuth(), authOpen: false, authMode: 'signin', authEmail: '', authPass: '', adminCode: '',
@@ -1638,6 +1677,11 @@ class Component extends DCLogic {
         fetch('/api/verify-session?session_id=' + encodeURIComponent(sessionId))
           .then(r => r.json())
           .then(data => {
+            if (data && data.paid && data.kind === 'donation') {
+              this.loadFund();
+              this.flash('Merci ! Ton don de ' + eur((data.amountTotal || 0) / 100) + ' a bien été reçu ❤');
+              return;
+            }
             if (data && data.paid && Array.isArray(data.tomeIds) && data.tomeIds.length) {
               const dd = this.state.data;
               data.tomeIds.forEach(id => { if (dd.user.purchased.indexOf(id) < 0) dd.user.purchased.push(id); });
@@ -1676,6 +1720,7 @@ class Component extends DCLogic {
       }
     };
     window.addEventListener('scroll', this._onScroll, { passive: true });
+    this.loadRemote();
   }
 
   componentWillUnmount() { window.removeEventListener('scroll', this._onScroll); }
@@ -1717,6 +1762,125 @@ class Component extends DCLogic {
 
   mutate(fn) { const d = this.state.data; fn(d); this.save(d); }
 
+  /* ===== Panneau créateur : session serveur, publication, envoi d'images ===== */
+  adminToken() {
+    try {
+      const raw = localStorage.getItem(ADMIN_TOKEN_KEY);
+      if (!raw) return '';
+      const o = JSON.parse(raw);
+      if (!o || !o.token || !o.expiresAt || o.expiresAt < Date.now()) { localStorage.removeItem(ADMIN_TOKEN_KEY); return ''; }
+      return o.token;
+    } catch (e) { return ''; }
+  }
+
+  adminFetch(url, opts) {
+    opts = Object.assign({}, opts);
+    opts.headers = Object.assign({}, opts.headers, { Authorization: 'Bearer ' + this.adminToken() });
+    return fetch(url, opts).then(r => r.json().catch(() => ({})).then(j => {
+      if (r.status === 401) { this.adminLogout(true); throw new Error('Session créateur expirée — reconnecte-toi'); }
+      if (!r.ok) throw new Error(j.error || ('Erreur ' + r.status));
+      return j;
+    }));
+  }
+
+  adminLogout(expired) {
+    try { localStorage.removeItem(ADMIN_TOKEN_KEY); } catch (e) {}
+    this.setState({ adminVerified: false, publishState: '' });
+    if (expired) this.flash('Session créateur expirée — reconnecte-toi');
+  }
+
+  verifyAdminSession() {
+    const token = this.adminToken();
+    if (!token) return;
+    fetch('/api/admin-verify', { headers: { Authorization: 'Bearer ' + token } })
+      .then(r => { if (r.ok) this.setState({ adminVerified: true }); else { try { localStorage.removeItem(ADMIN_TOKEN_KEY); } catch (e) {} } })
+      .catch(() => {});
+  }
+
+  loadRemote() {
+    fetch('/api/site-data').then(r => r.json()).then(j => { if (j && j.catalog) this.applyCatalog(j.catalog); }).catch(() => {});
+    this.loadFund();
+    this.verifyAdminSession();
+  }
+
+  loadFund() {
+    fetch('/api/fund').then(r => r.json()).then(j => {
+      if (!j || !j.configured || !j.fund) return;
+      const d = this.state.data;
+      d.fund = { total: j.fund.total || 0, count: j.fund.count || 0, donations: (j.fund.donations || []).map(x => ({ author: x.author, amount: x.amount, time: relTime(x.at) })) };
+      this.setState({ data: d });
+    }).catch(() => {});
+  }
+
+  applyCatalog(cat) {
+    const d = this.state.data;
+    if (cat.site) ['author', 'synopsis', 'videoUrl', 'adsense', 'defaultPageCount', 'packPrice', 'hideAdmin', 'twitter', 'tiktok'].forEach(k => { if (cat.site[k] !== undefined) d.site[k] = cat.site[k]; });
+    if (Array.isArray(cat.tomes) && cat.tomes.length) {
+      const old = {};
+      d.tomes.forEach(t => { old[t.id] = t; });
+      d.tomes = cat.tomes.map(ct => {
+        const ot = old[ct.id];
+        const oc = {};
+        if (ot) ot.chapters.forEach(c => { oc[c.id] = c; });
+        return {
+          id: ct.id, num: ct.num, title: ct.title, price: ct.price, paid: ct.paid, released: ct.released, cover: ct.cover,
+          reads: ot ? ot.reads : 0,
+          chapters: ct.chapters.map(cc => {
+            const o = oc[cc.id];
+            return { id: cc.id, num: cc.num, title: cc.title, pageCount: cc.pages.length, pages: cc.pages.slice(), likes: o ? o.likes : 0, liked: o ? o.liked : false, comments: o ? o.comments : [] };
+          })
+        };
+      });
+    }
+    this.setState({ data: d });
+  }
+
+  buildCatalog() {
+    const d = this.state.data, st = d.site;
+    const okImg = p => typeof p === 'string' && p.slice(0, 5) !== 'blob:' && p.slice(0, 5) !== 'data:';
+    return {
+      site: { author: st.author, synopsis: st.synopsis, videoUrl: st.videoUrl, adsense: st.adsense, defaultPageCount: st.defaultPageCount, packPrice: st.packPrice, hideAdmin: !!st.hideAdmin, twitter: st.twitter, tiktok: st.tiktok },
+      tomes: d.tomes.map(t => ({
+        id: t.id, num: t.num, title: t.title, price: t.price, paid: t.paid, released: t.released, cover: t.cover,
+        chapters: t.chapters.map(c => ({ id: c.id, num: c.num, title: c.title, pages: c.pages.filter(okImg) }))
+      }))
+    };
+  }
+
+  queuePush() {
+    this.setState({ publishState: 'saving' });
+    clearTimeout(this._pushT);
+    this._pushT = setTimeout(() => this.pushCatalog(), 700);
+  }
+
+  pushCatalog() {
+    return this.adminFetch('/api/site-data', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.buildCatalog()) })
+      .then(() => this.setState({ publishState: 'saved' }))
+      .catch(e => { this.setState({ publishState: 'error' }); this.flash((e && e.message) || 'Publication impossible'); });
+  }
+
+  adminMutate(fn) { this.mutate(fn); this.queuePush(); }
+
+  uploadBlob(file, kind) {
+    const attempts = kind === 'cover' ? [[900, 0.88], [700, 0.78]] : [[2000, 0.9], [1600, 0.82], [1200, 0.72]];
+    const tryOne = i => compressImage(file, attempts[i][0], attempts[i][1]).then(blob => {
+      if (blob.size > 4000000 && i + 1 < attempts.length) return tryOne(i + 1);
+      return this.adminFetch('/api/admin-upload?kind=' + kind + '&name=' + encodeURIComponent(file.name), { method: 'POST', headers: { 'Content-Type': 'image/jpeg' }, body: blob });
+    });
+    return tryOne(0).then(j => j.url);
+  }
+
+  uploadCover(tomeId, e) {
+    const f = (e.target.files || [])[0];
+    e.target.value = '';
+    if (!f) return;
+    this.flash('Envoi de la couverture…');
+    this.uploadBlob(f, 'cover').then(url => {
+      this.adminMutate(d => { const t = d.tomes.find(x => x.id === tomeId); if (t) t.cover = 'url("' + url + '") center/cover no-repeat'; });
+      this.flash('Couverture mise à jour');
+    }).catch(err => this.flash((err && err.message) || 'Envoi impossible'));
+  }
+
   allChapters() {
     const out = [];
     this.state.data.tomes.forEach(t => t.chapters.forEach(c => out.push({ tome: t, ch: c })));
@@ -1754,35 +1918,47 @@ class Component extends DCLogic {
 
   upload(chapterId, e, mode) {
     const files = Array.prototype.slice.call(e.target.files || []);
+    e.target.value = '';
     if (!files.length) return;
     files.sort(natSort);
-    const urls = files.map(f => URL.createObjectURL(f));
     const raw = (this.state.insertAt || {})[chapterId];
-    this.mutate(d => {
-      d.tomes.forEach(t => t.chapters.forEach(c => {
-        if (c.id !== chapterId) return;
-        if (mode !== 'append') { c.pages = urls; }
-        else {
-          const n = parseInt(raw, 10);
-          const at = (isNaN(n) || n < 1) ? c.pages.length : Math.min(c.pages.length, n - 1);
-          c.pages = c.pages.slice(0, at).concat(urls, c.pages.slice(at));
-        }
-        c.pageCount = c.pages.length;
-      }));
-    });
-    e.target.value = '';
-    this.flash(urls.length + (mode === 'append' ? ' pages insérées' : ' pages importées'));
+    const urls = new Array(files.length);
+    let done = 0, next = 0, failed = null;
+    this.flash('Envoi de ' + files.length + ' page' + (files.length > 1 ? 's' : '') + '…');
+    const worker = () => {
+      if (failed || next >= files.length) return Promise.resolve();
+      const i = next++;
+      return this.uploadBlob(files[i], 'page').then(url => {
+        urls[i] = url; done += 1;
+        if (done % 3 === 0 && done < files.length) this.flash('Envoi… ' + done + '/' + files.length);
+      }).then(worker);
+    };
+    Promise.all([worker(), worker(), worker()]).then(() => {
+      this.adminMutate(d => {
+        d.tomes.forEach(t => t.chapters.forEach(c => {
+          if (c.id !== chapterId) return;
+          if (mode !== 'append') { c.pages = urls.slice(); }
+          else {
+            const n = parseInt(raw, 10);
+            const at = (isNaN(n) || n < 1) ? c.pages.length : Math.min(c.pages.length, n - 1);
+            c.pages = c.pages.slice(0, at).concat(urls, c.pages.slice(at));
+          }
+          c.pageCount = c.pages.length;
+        }));
+      });
+      this.flash(files.length + (mode === 'append' ? ' pages insérées' : ' pages importées'));
+    }).catch(err => { failed = err; this.flash((err && err.message) || 'Envoi impossible'); });
   }
 
   replacePage(chapterId, idx, e) {
     const f = (e.target.files || [])[0];
-    if (!f) return;
-    const url = URL.createObjectURL(f);
-    this.mutate(d => {
-      d.tomes.forEach(t => t.chapters.forEach(c => { if (c.id === chapterId) c.pages[idx] = url; }));
-    });
     e.target.value = '';
-    this.flash('Page ' + (idx + 1) + ' remplacée');
+    if (!f) return;
+    this.flash('Envoi de la page ' + (idx + 1) + '…');
+    this.uploadBlob(f, 'page').then(url => {
+      this.adminMutate(d => { d.tomes.forEach(t => t.chapters.forEach(c => { if (c.id === chapterId) c.pages[idx] = url; })); });
+      this.flash('Page ' + (idx + 1) + ' remplacée');
+    }).catch(err => this.flash((err && err.message) || 'Envoi impossible'));
   }
 
   setZoom(v) {
@@ -1814,7 +1990,7 @@ class Component extends DCLogic {
         readsLabel: '👁 ' + fmt(t.reads),
         likesLabel: '♡ ' + fmt(likes),
         status: avail ? (unlocked ? (t.paid ? 'débloqué' : 'accès libre') : t.price.toFixed(2) + ' €') : 'à venir',
-        statusColor: avail ? (unlocked ? '#4ADE80' : '#7CB9E3') : '#57544F',
+        statusColor: avail ? (unlocked ? '#4ADE80' : '#7CB9E3') : '#817C75',
         subtitle: t.num === 1 ? "Le début de l'histoire" : 'Suite directe du Tome ' + (t.num - 1) + ' — même récit, même héros',
         priceLabel: !avail ? 'À venir' : (!t.paid || t.price === 0 ? 'Gratuit' : (unlocked ? 'Débloqué' : t.price.toFixed(2) + ' €')),
         cta: !avail ? 'À venir' : (unlocked ? 'Lire' : 'Débloquer'),
@@ -1842,14 +2018,14 @@ class Component extends DCLogic {
 
     const mapReplies = list => list.map(r => ({
       author: r.author, text: r.text, time: r.time, avatar: AV[r.av % AV.length],
-      likeLabel: '♡ ' + r.likes, likeColor: r.liked ? '#7CB9E3' : '#74716A',
+      likeLabel: '♡ ' + r.likes, likeColor: r.liked ? '#7CB9E3' : '#96918A',
       like: () => this.mutate(() => { r.liked = !r.liked; r.likes += r.liked ? 1 : -1; })
     }));
 
     const mapComment = c => ({
       author: c.author, text: c.text, time: c.time, avatar: AV[c.av % AV.length],
       badge: c.likes > 150 ? 'top fan' : 'lecteur',
-      likeLabel: '♡ ' + fmt(c.likes), likeColor: c.liked ? '#7CB9E3' : '#74716A',
+      likeLabel: '♡ ' + fmt(c.likes), likeColor: c.liked ? '#7CB9E3' : '#96918A',
       reportLabel: c.reported ? 'signalé' : 'Signaler',
       isReplying: s.replyTo === c.id,
       like: () => this.mutate(() => { c.liked = !c.liked; c.likes += c.liked ? 1 : -1; }),
@@ -1869,7 +2045,7 @@ class Component extends DCLogic {
     const mapPost = p => ({
       author: p.author, text: p.text, time: p.time, avatar: AV[p.av % AV.length],
       isTheory: p.kind === 'theory',
-      likeLabel: '♡ ' + fmt(p.likes), likeColor: p.liked ? '#7CB9E3' : '#74716A',
+      likeLabel: '♡ ' + fmt(p.likes), likeColor: p.liked ? '#7CB9E3' : '#96918A',
       replyCount: p.replies.length,
       reportLabel: p.reported ? 'signalé' : 'Signaler',
       isReplying: s.replyTo === p.id,
@@ -1944,12 +2120,12 @@ class Component extends DCLogic {
     const offerAmount = (s.offer === 'pack' && paidCount >= 2) ? packPrice : (pT ? pT.price : 0);
     const lp = s.lastPurchase;
     const auth = s.auth;
-    const isOwner = !!(auth && auth.admin);
+    const isOwner = !!s.adminVerified;
     const emailOk = /.+@.+\..+/.test(s.authEmail) && s.authPass.length >= 6;
     const base = location.origin + location.pathname;
     const refLink = base + '?ref=' + u.refCode;
     const supAmt = parseFloat(String(s.supportAmount).replace(',', '.'));
-    const supOk = !isNaN(supAmt) && supAmt > 0;
+    const supOk = !isNaN(supAmt) && supAmt >= 1;
 
     const reports = [];
     d.posts.forEach(p => { if (p.reported) reports.push({ author: p.author, text: p.text, remove: () => this.mutate(dd => { dd.posts = dd.posts.filter(x => x.id !== p.id); }), keep: () => this.mutate(() => { p.reported = false; }) }); });
@@ -2023,7 +2199,7 @@ class Component extends DCLogic {
       composeCounter: s.compose.length + ' / 280',
       toggleTheory: () => this.setState({ composeTheory: !s.composeTheory }),
       theoryFlagBorder: s.composeTheory ? '#3B8FCB' : '#23323F',
-      theoryFlagColor: s.composeTheory ? '#7CB9E3' : '#6B6862',
+      theoryFlagColor: s.composeTheory ? '#7CB9E3' : '#8B877F',
       post: () => {
         if (!this.requireAuth('Connecte-toi pour publier')) return;
         if (!s.compose.trim()) return;
@@ -2034,14 +2210,14 @@ class Component extends DCLogic {
       setPopular: () => this.setState({ tab: 'popular', feedCount: 6 }),
       setTheory: () => this.setState({ tab: 'theory', feedCount: 6 }),
       setRecent: () => this.setState({ tab: 'recent', feedCount: 6 }),
-      popularFg: s.tab === 'popular' ? '#F2F0EC' : '#74716A', popularBorder: s.tab === 'popular' ? '#3B8FCB' : 'transparent',
-      theoryFg: s.tab === 'theory' ? '#F2F0EC' : '#74716A', theoryBorder: s.tab === 'theory' ? '#3B8FCB' : 'transparent',
-      recentFg: s.tab === 'recent' ? '#F2F0EC' : '#74716A', recentBorder: s.tab === 'recent' ? '#3B8FCB' : 'transparent',
+      popularFg: s.tab === 'popular' ? '#F2F0EC' : '#96918A', popularBorder: s.tab === 'popular' ? '#3B8FCB' : 'transparent',
+      theoryFg: s.tab === 'theory' ? '#F2F0EC' : '#96918A', theoryBorder: s.tab === 'theory' ? '#3B8FCB' : 'transparent',
+      recentFg: s.tab === 'recent' ? '#F2F0EC' : '#96918A', recentBorder: s.tab === 'recent' ? '#3B8FCB' : 'transparent',
       replyDraft: s.replyDraft, onReplyDraft: e => this.setState({ replyDraft: e.target.value }),
 
       thread: threadPost ? {
         author: threadPost.author, text: threadPost.text, time: threadPost.time, avatar: AV[threadPost.av % AV.length],
-        likeLabel: '♡ ' + fmt(threadPost.likes), likeColor: threadPost.liked ? '#7CB9E3' : '#74716A',
+        likeLabel: '♡ ' + fmt(threadPost.likes), likeColor: threadPost.liked ? '#7CB9E3' : '#96918A',
         like: () => this.mutate(() => { threadPost.liked = !threadPost.liked; threadPost.likes += threadPost.liked ? 1 : -1; }),
         replyCount: threadPost.replies.length,
         replies: mapReplies(threadPost.replies),
@@ -2050,7 +2226,7 @@ class Component extends DCLogic {
           this.mutate(() => { threadPost.replies.push({ id: uid(), author: u.handle, text: s.replyDraft.trim(), time: "à l'instant", likes: 0, liked: false, av: 0 }); });
           this.setState({ replyDraft: '' });
         }
-      } : { author: '', text: '', time: '', avatar: AV[0], likeLabel: '', likeColor: '#74716A', like: () => {}, replyCount: 0, replies: [], sendReply: () => {} },
+      } : { author: '', text: '', time: '', avatar: AV[0], likeLabel: '', likeColor: '#96918A', like: () => {}, replyCount: 0, replies: [], sendReply: () => {} },
 
       readerTomeLabel: cur ? 'TOME ' + cur.tome.num + ' · ' + cur.tome.title : '',
       readerChapterTitle: cur ? cur.ch.title : '',
@@ -2068,11 +2244,11 @@ class Component extends DCLogic {
       zoomIn: () => this.setZoom(Math.min(180, this.state.zoom + 5)),
       zoomOut: () => this.setZoom(Math.max(50, this.state.zoom - 5)),
       zoomReset: () => this.setZoom(80),
-      scrollBorder: s.mode === 'scroll' ? '#3B8FCB' : '#2A3A4A', scrollColor: s.mode === 'scroll' ? '#7CB9E3' : '#74716A',
-      pagedBorder: s.mode === 'paged' ? '#3B8FCB' : '#2A3A4A', pagedColor: s.mode === 'paged' ? '#7CB9E3' : '#74716A',
+      scrollBorder: s.mode === 'scroll' ? '#3B8FCB' : '#2A3A4A', scrollColor: s.mode === 'scroll' ? '#7CB9E3' : '#96918A',
+      pagedBorder: s.mode === 'paged' ? '#3B8FCB' : '#2A3A4A', pagedColor: s.mode === 'paged' ? '#7CB9E3' : '#96918A',
       fitWidth: () => this.setState({ fit: 'width' }), fitHeight: () => this.setState({ fit: 'height' }),
-      fitWBorder: s.fit === 'width' ? '#3B8FCB' : '#2A3A4A', fitWColor: s.fit === 'width' ? '#7CB9E3' : '#74716A',
-      fitHBorder: s.fit === 'height' ? '#3B8FCB' : '#2A3A4A', fitHColor: s.fit === 'height' ? '#7CB9E3' : '#74716A',
+      fitWBorder: s.fit === 'width' ? '#3B8FCB' : '#2A3A4A', fitWColor: s.fit === 'width' ? '#7CB9E3' : '#96918A',
+      fitHBorder: s.fit === 'height' ? '#3B8FCB' : '#2A3A4A', fitHColor: s.fit === 'height' ? '#7CB9E3' : '#96918A',
       toggleLowQ: () => { this.setState({ lowQ: !s.lowQ }); this.flash(s.lowQ ? 'Qualité normale' : 'Économiseur de données activé'); },
       lowQBg: s.lowQ ? '#3B8FCB' : '#1B1B21', lowQFg: s.lowQ ? '#06131F' : '#8B877F',
       toggleFull: () => {
@@ -2132,7 +2308,7 @@ class Component extends DCLogic {
 
       fundTotal: eur(d.fund.total), fundMeta: d.fund.count + ' contribution' + (d.fund.count === 1 ? '' : 's'),
       donations: d.fund.donations.slice(0, 6).map((x, i) => ({ author: x.author, amount: eur(x.amount), time: x.time, avatar: AV[i % AV.length] })),
-      openSupport: () => this.setState({ showSupport: true, supportAmount: '', paywallTome: null }),
+      openSupport: () => this.setState({ showSupport: true, supportAmount: '', paywallTome: null, supportBusy: false }),
       closeSupport: () => this.setState({ showSupport: false }),
       showSupport: s.showSupport,
       supportAmount: s.supportAmount, onSupportAmount: e => this.setState({ supportAmount: e.target.value }),
@@ -2142,17 +2318,19 @@ class Component extends DCLogic {
         bg: String(v) === String(s.supportAmount) ? '#12202C' : '#0A0A0C',
         color: String(v) === String(s.supportAmount) ? '#7CB9E3' : '#D6D3CC'
       })),
-      supportBg: supOk ? '#3B8FCB' : '#182028', supportFg: supOk ? '#06131F' : '#57544F',
-      supportLabel: supOk ? 'Donner ' + eur(supAmt) : 'Choisis un montant',
+      supportBg: supOk && !s.supportBusy ? '#3B8FCB' : '#182028', supportFg: supOk && !s.supportBusy ? '#06131F' : '#817C75',
+      supportLabel: s.supportBusy ? 'Redirection vers Stripe…' : (supOk ? 'Donner ' + eur(supAmt) + ' · Stripe' : 'Choisis un montant (1 € min.)'),
       confirmSupport: () => {
         if (!this.requireAuth('Connecte-toi pour soutenir l’auteur')) return;
-        if (!supOk) return;
-        this.mutate(dd => {
-          dd.fund.total += supAmt; dd.fund.count += 1;
-          dd.fund.donations.unshift({ author: u.handle, amount: supAmt, time: "à l'instant" });
-        });
-        this.setState({ showSupport: false, supportAmount: '' });
-        this.flash('Merci ! ' + eur(supAmt) + ' ajoutés à la cagnotte');
+        if (!supOk || s.supportBusy) return;
+        this.setState({ supportBusy: true });
+        fetch('/api/create-checkout-session', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kind: 'donation', title: 'Don — soutien à l’auteur (cagnotte UMBRA)', amountCents: Math.round(supAmt * 100), tomeIds: [], uid: u.refCode, handle: u.handle })
+        }).then(r => r.json()).then(data => {
+          if (data && data.url) { window.location.href = data.url; }
+          else { this.setState({ supportBusy: false }); this.flash((data && data.error) || 'Erreur de paiement — réessaie'); }
+        }).catch(() => { this.setState({ supportBusy: false }); this.flash('Erreur réseau — réessaie'); });
       },
 
       showPaywall: !!pT,
@@ -2168,7 +2346,7 @@ class Component extends DCLogic {
       affiliateExplain: 'Le Tome 3 est le seul débloquable par parrainage, et une seule fois : dès qu’une personne ouvre ton lien, il s’ouvre automatiquement.',
       paywallPrice: pT ? pT.price.toFixed(2) + ' €' : '',
       closePaywall: () => this.setState({ paywallTome: null }),
-      payBg: s.payLoading ? '#182028' : '#3B8FCB', payFg: s.payLoading ? '#57544F' : '#06131F',
+      payBg: s.payLoading ? '#182028' : '#3B8FCB', payFg: s.payLoading ? '#817C75' : '#06131F',
       payLabel: pT ? (s.payLoading ? 'Redirection vers Stripe…' : 'Payer ' + offerAmount.toFixed(2) + ' € · Stripe') : '',
       payHint: 'Paiement sécurisé sur la page Stripe — tu reviens automatiquement sur UMBRA une fois payé.',
       confirmPay: () => {
@@ -2268,9 +2446,9 @@ class Component extends DCLogic {
       onPageCountDraft: e => this.setState({ drafts: Object.assign({}, dr, { defaultPageCount: e.target.value }) }),
       synopsisDraft: dr.synopsis !== undefined ? dr.synopsis : site.synopsis,
       onSynopsisDraft: e => this.setState({ drafts: Object.assign({}, dr, { synopsis: e.target.value }) }),
-      saveHint: 'Réglages conservés dans ce navigateur.',
+      saveHint: 'Les réglages sont publiés pour tous les visiteurs dès que tu enregistres.',
       saveSettings: () => {
-        this.mutate(dd => {
+        this.adminMutate(dd => {
           Object.keys(dr).forEach(k => {
             if (k === 'defaultPageCount') dd.site[k] = parseInt(dr[k], 10) || 0;
             else if (k === 'packPrice') dd.site[k] = parseFloat(String(dr[k]).replace(',', '.')) || 6.99;
@@ -2278,22 +2456,23 @@ class Component extends DCLogic {
           });
         });
         this.setState({ drafts: null });
-        this.flash('Réglages enregistrés');
+        this.flash('Réglages publiés');
       },
 
       adminTomes: d.tomes.map(t => ({
         cover: t.cover, title: t.title, price: String(t.price),
-        meta: 'Tome ' + t.num + ' · ' + t.chapters.length + ' chapitres · ' + (this.hasPages(t) ? 'planches importées' : 'aucune planche — non vendable') + (t.released ? '' : ' · marqué non dispo'),
+        meta: 'Tome ' + t.num + ' · ' + t.chapters.length + ' chapitres · ' + (this.hasPages(t) ? 'planches importées' : 'aucune planche — non vendable') + (t.released ? '' : ' · marqué non dispo') + ' · ✎ clique la couverture pour la changer',
         paidLabel: t.paid ? 'Payant' : 'Gratuit',
         paidBorder: t.paid ? '#3B8FCB' : '#2A6B3C', paidColor: t.paid ? '#7CB9E3' : '#4ADE80',
         releasedLabel: t.released ? 'Marqué dispo' : 'Non dispo',
-        releasedColor: t.released ? '#D6D3CC' : '#6B6862',
-        onTitle: e => { const v = e.target.value; this.mutate(() => { t.title = v; }); },
-        onPrice: e => { const v = parseFloat(e.target.value.replace(',', '.')); this.mutate(() => { t.price = isNaN(v) ? 0 : v; }); },
-        togglePaid: () => this.mutate(() => { t.paid = !t.paid; if (!t.paid) t.price = 0; else if (!t.price) t.price = 3.99; }),
-        toggleReleased: () => this.mutate(() => { t.released = !t.released; }),
-        remove: () => { this.mutate(dd => { dd.tomes = dd.tomes.filter(x => x.id !== t.id); }); this.flash(t.title + ' supprimé'); },
-        addChapter: () => this.mutate(() => {
+        releasedColor: t.released ? '#D6D3CC' : '#8B877F',
+        onTitle: e => { const v = e.target.value; this.adminMutate(() => { t.title = v; }); },
+        onCover: e => this.uploadCover(t.id, e),
+        onPrice: e => { const v = parseFloat(e.target.value.replace(',', '.')); this.adminMutate(() => { t.price = isNaN(v) ? 0 : v; }); },
+        togglePaid: () => this.adminMutate(() => { t.paid = !t.paid; if (!t.paid) t.price = 0; else if (!t.price) t.price = 3.99; }),
+        toggleReleased: () => this.adminMutate(() => { t.released = !t.released; }),
+        remove: () => { if (!window.confirm('Supprimer « ' + t.title + ' » pour tous les visiteurs ?')) return; this.adminMutate(dd => { dd.tomes = dd.tomes.filter(x => x.id !== t.id); }); this.flash(t.title + ' supprimé'); },
+        addChapter: () => this.adminMutate(() => {
           const last = t.chapters[t.chapters.length - 1];
           const num = (last ? last.num : 0) + 1;
           t.chapters.push({ id: t.id + 'c' + num + uid(), num: num, title: 'Chapitre ' + num, pageCount: site.defaultPageCount, pages: [], likes: 0, liked: false, comments: [] });
@@ -2301,8 +2480,8 @@ class Component extends DCLogic {
         chapters: t.chapters.map(c => ({
           title: c.title,
           pageMeta: c.pages.length ? c.pages.length + ' pages importées · ordre par nom de fichier' : 'aucune page — dépose autant de pages que tu veux',
-          remove: () => { if (t.chapters.length <= 1) return this.flash('Un tome garde au moins un chapitre'); this.mutate(() => { t.chapters = t.chapters.filter(x => x.id !== c.id); }); this.flash(c.title + ' supprimé'); },
-          onTitle: e => { const v = e.target.value; this.mutate(() => { c.title = v; }); },
+          remove: () => { if (t.chapters.length <= 1) return this.flash('Un tome garde au moins un chapitre'); if (!window.confirm('Supprimer « ' + c.title + ' » ?')) return; this.adminMutate(() => { t.chapters = t.chapters.filter(x => x.id !== c.id); }); this.flash(c.title + ' supprimé'); },
+          onTitle: e => { const v = e.target.value; this.adminMutate(() => { c.title = v; }); },
           onUpload: e => this.upload(c.id, e, 'replace'),
           onAppend: e => this.upload(c.id, e, 'append'),
           insertAt: (s.insertAt || {})[c.id] || '',
@@ -2312,20 +2491,30 @@ class Component extends DCLogic {
             n: i + 1, src: p,
             thumb: React.createElement('img', { src: p, alt: 'page ' + (i + 1), loading: 'lazy', style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } }),
             onReplace: e => this.replacePage(c.id, i, e),
-            del: () => { this.mutate(() => { c.pages = c.pages.filter((_, j) => j !== i); c.pageCount = c.pages.length; }); this.flash('Page ' + (i + 1) + ' supprimée'); },
-            up: () => { if (i === 0) return; this.mutate(() => { const a = c.pages; const t2 = a[i - 1]; a[i - 1] = a[i]; a[i] = t2; }); },
-            down: () => { if (i === c.pages.length - 1) return; this.mutate(() => { const a = c.pages; const t2 = a[i + 1]; a[i + 1] = a[i]; a[i] = t2; }); }
+            del: () => { this.adminMutate(() => { c.pages = c.pages.filter((_, j) => j !== i); c.pageCount = c.pages.length; }); this.flash('Page ' + (i + 1) + ' supprimée'); },
+            up: () => { if (i === 0) return; this.adminMutate(() => { const a = c.pages; const t2 = a[i - 1]; a[i - 1] = a[i]; a[i] = t2; }); },
+            down: () => { if (i === c.pages.length - 1) return; this.adminMutate(() => { const a = c.pages; const t2 = a[i + 1]; a[i + 1] = a[i]; a[i] = t2; }); }
           })),
-          clear: () => this.mutate(() => { c.pages = []; c.pageCount = site.defaultPageCount; })
+          clear: () => this.adminMutate(() => { c.pages = []; c.pageCount = site.defaultPageCount; })
         }))
       })),
-      addTome: () => this.mutate(dd => {
-        const n = dd.tomes.length + 1;
-        dd.tomes.push({ id: 't' + n + uid(), num: n, title: 'Tome ' + n, price: 4, paid: true, released: false, cover: COVERS[(n - 1) % COVERS.length], reads: 0, chapters: [{ id: 'nt' + uid(), num: 1, title: 'Chapitre 1', pageCount: site.defaultPageCount, pages: [], likes: 0, liked: false, comments: [] }] });
-      }),
+      addTome: () => {
+        let title = '';
+        this.adminMutate(dd => {
+          const n = dd.tomes.reduce((m, x) => Math.max(m, x.num), 0) + 1;
+          title = 'Tome ' + n;
+          dd.tomes.push({ id: 't' + n + uid(), num: n, title: title, price: 4, paid: true, released: false, cover: COVERS[(n - 1) % COVERS.length], reads: 0, chapters: [{ id: 'nt' + uid(), num: 1, title: 'Chapitre 1', pageCount: site.defaultPageCount, pages: [], likes: 0, liked: false, comments: [] }] });
+        });
+        this.flash(title + ' créé — ajoute sa couverture et ses pages');
+        setTimeout(() => {
+          const rows = [].slice.call(document.querySelectorAll('[data-screen-label="Panneau créateur"] input')).filter(i => i.value === title);
+          const el = rows[rows.length - 1];
+          if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); el.select(); }
+        }, 250);
+      },
       reports: reports, noReports: reports.length === 0,
       isSignedIn: !!auth, isSignedOut: !auth,
-      authLabel: auth ? (auth.admin ? 'Espace créateur' : auth.email) : 'Se connecter',
+      authLabel: isOwner ? 'Espace créateur' : (auth ? auth.email : 'Se connecter'),
       authChipBorder: auth ? '#1E5F8F' : '#22222A',
       authChipColor: auth ? '#7CB9E3' : '#A8A49C',
       showAuth: s.authOpen,
@@ -2339,11 +2528,11 @@ class Component extends DCLogic {
       authPass: s.authPass, onAuthPass: e => this.setState({ authPass: e.target.value }),
       authSubmitLabel: emailOk ? (s.authMode === 'signup' ? 'Créer mon compte' : 'Continuer par e-mail') : 'E-mail et mot de passe (6 car.)',
       authSubmitBg: emailOk ? '#3B8FCB' : '#182028',
-      authSubmitFg: emailOk ? '#06131F' : '#57544F',
+      authSubmitFg: emailOk ? '#06131F' : '#817C75',
       authSubmit: () => {
         if (!emailOk) return;
         const em = s.authEmail.trim().toLowerCase();
-        this.saveAuth({ email: em, admin: em === ADMIN_EMAIL, via: 'email' });
+        this.saveAuth({ email: em, admin: false, via: 'email' });
         this.flash(s.authMode === 'signup' ? 'Compte créé' : 'Connecté');
       },
       googleSignIn: () => {
@@ -2358,10 +2547,23 @@ class Component extends DCLogic {
       isOwner: isOwner,
       adminCode: s.adminCode, onAdminCode: e => this.setState({ adminCode: e.target.value }),
       adminUnlock: () => {
-        if (s.adminCode !== ADMIN_CODE) return this.flash('Code d’accès invalide');
-        this.saveAuth({ email: site.author, admin: true, via: 'code' });
-        this.flash('Accès administrateur ouvert');
+        if (s.adminBusy) return;
+        if (!s.adminCode) return this.flash('Saisis le mot de passe créateur');
+        this.setState({ adminBusy: true });
+        fetch('/api/admin-login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: s.adminCode }) })
+          .then(r => r.json().catch(() => ({})).then(j => ({ ok: r.ok, j: j })))
+          .then(res => {
+            if (!res.ok) { this.setState({ adminBusy: false }); return this.flash(res.j.error || 'Accès refusé'); }
+            try { localStorage.setItem(ADMIN_TOKEN_KEY, JSON.stringify({ token: res.j.token, expiresAt: res.j.expiresAt })); } catch (e) {}
+            this.setState({ adminVerified: true, adminBusy: false, adminCode: '', publishState: '' });
+            this.flash('Accès créateur ouvert');
+          })
+          .catch(() => { this.setState({ adminBusy: false }); this.flash('Erreur réseau — réessaie'); });
       },
+      adminUnlockLabel: s.adminBusy ? 'Vérification…' : 'Ouvrir le panneau créateur',
+      adminLogout: () => { this.adminLogout(); this.nav('home'); this.flash('Panneau créateur verrouillé'); },
+      publishLabel: ({ saving: 'Publication en cours…', saved: '✓ Publié pour tous les visiteurs', error: '⚠ Publication échouée — réessaie' })[s.publishState] || 'Modifications publiées automatiquement',
+      publishColor: s.publishState === 'error' ? '#E5484D' : (s.publishState === 'saved' ? '#4ADE80' : '#8B877F'),
 
       showAdminLink: !(site.hideAdmin && !isOwner),
       hideAdminLabel: (dr.hideAdmin !== undefined ? dr.hideAdmin : !!site.hideAdmin) ? 'Lien masqué — accès par /?admin=1' : 'Lien visible dans la barre et le pied de page',

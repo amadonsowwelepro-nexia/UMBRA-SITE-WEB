@@ -6,6 +6,7 @@
 // Signature is verified manually (HMAC-SHA256) — no Stripe SDK needed.
 
 const crypto = require('crypto');
+const { recordDonation } = require('./_lib/fund');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -31,11 +32,16 @@ module.exports = async function handler(req, res) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     if (session.payment_status === 'paid') {
-      const uid = (session.metadata && session.metadata.uid) || session.client_reference_id;
-      let tomeIds = [];
-      try { tomeIds = JSON.parse((session.metadata && session.metadata.tomeIds) || '[]'); } catch (e) {}
-      if (uid && tomeIds.length) {
-        await recordPurchase(uid, tomeIds).catch(() => {});
+      const meta = session.metadata || {};
+      if (meta.kind === 'donation') {
+        await recordDonation({ sessionId: session.id, amountCents: session.amount_total, handle: meta.handle }).catch(() => {});
+      } else {
+        const uid = meta.uid || session.client_reference_id;
+        let tomeIds = [];
+        try { tomeIds = JSON.parse(meta.tomeIds || '[]'); } catch (e) {}
+        if (uid && tomeIds.length) {
+          await recordPurchase(uid, tomeIds).catch(() => {});
+        }
       }
     }
   }
