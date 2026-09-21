@@ -43,4 +43,24 @@ function putFile(pathname, buffer, contentType) {
   });
 }
 
-module.exports = { configured, readJson, writeJson, putFile };
+async function readBuffer(pathname) {
+  const r = await blob.get(pathname, { access: 'public', useCache: false });
+  if (!r || r.statusCode !== 200) return null;
+  return Buffer.from(await new Response(r.stream).arrayBuffer());
+}
+
+function putRaw(pathname, buffer, contentType) {
+  return blob.put(pathname, buffer, {
+    access: 'public',
+    contentType: contentType,
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    cacheControlMaxAge: 60
+  });
+}
+
+async function del(pathnames) {
+  try { await blob.del(pathnames); } catch (e) { /* nettoyage au mieux */ }
+}
+
+module.exports = { configured, readJson, writeJson, putFile, readBuffer, putRaw, del };

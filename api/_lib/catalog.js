@@ -10,6 +10,7 @@ const BLOB_HOST = '(?:https:\\/\\/[a-z0-9-]+\\.public\\.blob\\.vercel-storage\\.
 const LOCAL_IMG = '(?:pages|covers)\\/[A-Za-z0-9._\\-\\/]{1,120}';
 const IMG_URL_RE = new RegExp('^(?:' + BLOB_HOST + '|' + LOCAL_IMG + ')$');
 const COVER_RE = new RegExp('^(?:linear-gradient\\([#0-9a-fA-F,%\\s.()a-z-]{5,200}\\)|url\\("(?:' + BLOB_HOST + '|' + LOCAL_IMG + ')"\\) center\\/cover no-repeat)$');
+const AUDIO_URL_RE = new RegExp('^(?:' + BLOB_HOST + '|uploads\\/[^"\\s<>()\\\\]{1,150}\\.(?:mp3|m4a|ogg|wav))$');
 const ID_RE = /^[A-Za-z0-9_-]{1,80}$/;
 const HTTPS_RE = /^https:\/\/[^\s"'<>]{1,300}$/;
 const ADSENSE_RE = /^ca-pub-\d{10,20}$/;
@@ -18,6 +19,13 @@ const LIMITS = { tomes: 60, chapters: 300, pages: 500, bytes: 1500000 };
 const DEFAULT_COVER = 'linear-gradient(150deg,#2E3C4A,#141A20)';
 
 function str(v, max) { return typeof v === 'string' ? v.slice(0, max) : ''; }
+function music(m, withEnabled) {
+  const ok = m && typeof m === 'object' && typeof m.url === 'string' && AUDIO_URL_RE.test(m.url);
+  if (!withEnabled && !ok) return null;
+  const out = { url: ok ? m.url : '', name: m && typeof m === 'object' ? str(m.name, 80) : '', loop: !!(m && m.loop) };
+  if (withEnabled) out.enabled = !(m && typeof m === 'object' && m.enabled === false);
+  return out;
+}
 function num(v, min, max, fallback) {
   const n = typeof v === 'number' ? v : parseFloat(String(v).replace(',', '.'));
   return isFinite(n) ? Math.min(max, Math.max(min, n)) : fallback;
@@ -35,6 +43,7 @@ function sanitize(input) {
     defaultPageCount: int(s.defaultPageCount, 0, 500, 0),
     packPrice: Math.round(num(s.packPrice, 0, 500, 6.99) * 100) / 100,
     hideAdmin: !!s.hideAdmin,
+    music: music(s.music, true),
     twitter: HTTPS_RE.test(str(s.twitter, 300)) ? s.twitter : '',
     tiktok: HTTPS_RE.test(str(s.tiktok, 300)) ? s.tiktok : ''
   };
@@ -63,7 +72,8 @@ function sanitize(input) {
         id: c.id,
         num: int(c.num, 1, 9999, j + 1),
         title: str(c.title, 120) || ('Chapitre ' + (j + 1)),
-        pages: rawPages.filter(function (p) { return typeof p === 'string' && IMG_URL_RE.test(p); })
+        pages: rawPages.filter(function (p) { return typeof p === 'string' && IMG_URL_RE.test(p); }),
+        music: music(c.music, false)
       });
     }
 

@@ -21,7 +21,7 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'PUT' || req.method === 'POST') {
     res.setHeader('Cache-Control', 'no-store');
-    if (!auth.requireAdmin(req, res)) return;
+    if (!(await auth.requireAdmin(req, res))) return;
     if (!store.configured()) return res.status(503).json({ error: 'Stockage non configuré (Vercel Blob manquant)' });
 
     let body = req.body;

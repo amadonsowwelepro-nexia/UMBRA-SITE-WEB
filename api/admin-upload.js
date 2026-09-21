@@ -36,7 +36,7 @@ module.exports = async function handler(req, res) {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  if (!auth.requireAdmin(req, res)) return;
+  if (!(await auth.requireAdmin(req, res))) return;
   if (!store.configured()) return res.status(503).json({ error: 'Stockage non configuré (Vercel Blob manquant)' });
 
   const kind = req.query && req.query.kind === 'cover' ? 'cover' : 'page';

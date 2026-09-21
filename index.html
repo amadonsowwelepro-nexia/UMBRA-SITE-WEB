@@ -291,12 +291,12 @@
 </style>
 </helmet>
 
-<audio ref="{{ audioRef }}" src="uploads/果てなき航海.mp3" preload="auto" style="display: none;"></audio>
+<audio ref="{{ audioRef }}" preload="auto" style="display: none;"></audio>
 <sc-if value="{{ audioStarted }}" hint-placeholder-val="{{ false }}">
   <div style="position: fixed; bottom: 22px; left: 22px; z-index: 90; display: flex; align-items: center; gap: 10px; padding: 9px 14px 9px 12px; border-radius: 999px; border: 1px solid #23323F; background: rgba(8,12,18,.92); backdrop-filter: blur(8px); box-shadow: 0 12px 32px rgba(0,0,0,.5);">
     <div onClick="{{ playTrailer }}" title="Lecture / pause" style="width: 30px; height: 30px; border-radius: 999px; background: #3B8FCB; color: #06131F; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer;" style-hover="background: #7CB9E3;">{{ trailerIcon }}</div>
     <div onClick="{{ toggleMute }}" title="Couper / activer le son" style="width: 30px; height: 30px; border-radius: 999px; border: 1px solid #23323F; color: #7CB9E3; display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer;" style-hover="color: #F2F0EC; border-color: #3B8FCB;">{{ muteIcon }}</div>
-    <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .08em; color: #6B7A87;">OPENING</div>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .08em; color: #6B7A87;">{{ audioLabel }}</div>
   </div>
 </sc-if>
 
@@ -1041,6 +1041,19 @@
         <div style="font-size: 10.5px; letter-spacing: .12em; color: #8B877F;">SYNOPSIS</div>
         <textarea value="{{ synopsisDraft }}" onChange="{{ onSynopsisDraft }}" rows="3" style="margin-top: 7px; width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 13.5px; line-height: 1.6; outline: none; resize: vertical;"></textarea>
       </div>
+      <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid #1B1B21;">
+        <div style="font-size: 10.5px; letter-spacing: .12em; color: #8B877F;">MUSIQUE D'OUVERTURE DU SITE</div>
+        <div style="margin-top: 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <div style="font-size: 13px; color: #F2F0EC; font-weight: 700;">♪ {{ siteMusicName }}</div>
+          <label style="padding: 9px 14px; border-radius: 9px; border: 1px dashed #33434F; font-size: 12px; font-weight: 700; color: #D6D3CC; cursor: pointer; white-space: nowrap;">Changer la musique
+            <input type="file" accept="audio/*,.mp3,.m4a,.ogg,.wav" onChange="{{ onSiteMusic }}" style="display: none;">
+          </label>
+          <div onClick="{{ toggleSiteLoop }}" style="padding: 9px 14px; border-radius: 999px; border: 1px solid {{ siteLoopBorder }}; color: {{ siteLoopColor }}; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;">{{ siteLoopLabel }}</div>
+          <div onClick="{{ toggleSiteMusic }}" style="padding: 9px 14px; border-radius: 999px; border: 1px solid #2A3A4A; color: #D6D3CC; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;">{{ siteMusicToggleLabel }}</div>
+          <div onClick="{{ resetSiteMusic }}" style="font-size: 11.5px; color: #8B877F; cursor: pointer; white-space: nowrap;" style-hover="color: #F2F0EC;">Remettre la musique d'origine</div>
+        </div>
+        <div style="margin-top: 8px; font-size: 11.5px; color: #8B877F; line-height: 1.6;">MP3, M4A, OGG ou WAV · 25 Mo max · appliqué tout de suite pour tous les visiteurs. Chaque chapitre peut avoir sa propre musique (plus bas).</div>
+      </div>
       <div style="margin-top: 16px; display: flex; align-items: center; gap: 12px;">
         <div onClick="{{ saveSettings }}" style="padding: 11px 20px; border-radius: 10px; background: #3B8FCB; color: #06131F; font-size: 13px; font-weight: 800; cursor: pointer;" style-hover="background: #5BA6DC;">Enregistrer</div>
         <div style="font-size: 12px; color: #8B877F;">{{ saveHint }}</div>
@@ -1072,7 +1085,7 @@
             </div>
             <div onClick="{{ t.togglePaid }}" style="padding: 10px 15px; border-radius: 999px; border: 1px solid {{ t.paidBorder }}; color: {{ t.paidColor }}; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap;">{{ t.paidLabel }}</div>
             <div onClick="{{ t.toggleReleased }}" style="padding: 10px 15px; border-radius: 999px; border: 1px solid #23323F; color: {{ t.releasedColor }}; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap;">{{ t.releasedLabel }}</div>
-            <div onClick="{{ t.remove }}" title="Supprimer ce tome" style="width: 34px; height: 34px; border-radius: 9px; border: 1px solid #2A1D1D; color: #6B4444; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;" style-hover="border-color: #E5484D; color: #E5484D;">🗑</div>
+            <div onClick="{{ t.remove }}" title="Supprimer ce tome" style="min-width: 34px; height: 34px; padding: 0 {{ t.deletePad }}; border-radius: 9px; border: 1px solid {{ t.deleteBorder }}; color: {{ t.deleteColor }}; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; cursor: pointer; white-space: nowrap;" style-hover="border-color: #E5484D; color: #E5484D;">{{ t.deleteLabel }}</div>
           </div>
           <div style="margin-top: 16px; display: grid; gap: 10px;">
             <sc-for list="{{ t.chapters }}" as="ch" hint-placeholder-count="2">
@@ -1094,9 +1107,23 @@
                     <input type="file" accept="image/*" multiple="{{ true }}" onChange="{{ ch.onUpload }}" style="display: none;">
                   </label>
                   <div style="display: flex; gap: 12px; align-items: center;">
-                    <div onClick="{{ ch.clear }}" style="font-size: 11.5px; color: #817C75; cursor: pointer; white-space: nowrap;" style-hover="color: #E5484D;">Vider</div>
-                    <div onClick="{{ ch.remove }}" title="Supprimer ce chapitre" style="font-size: 11.5px; font-weight: 700; color: #6B4444; cursor: pointer; white-space: nowrap;" style-hover="color: #E5484D;">Supprimer</div>
+                    <div onClick="{{ ch.clear }}" style="font-size: 11.5px; color: {{ ch.clearColor }}; cursor: pointer; white-space: nowrap;" style-hover="color: #E5484D;">{{ ch.clearLabel }}</div>
+                    <div onClick="{{ ch.remove }}" title="Supprimer ce chapitre" style="font-size: 11.5px; font-weight: 700; color: {{ ch.deleteColor }}; cursor: pointer; white-space: nowrap;" style-hover="color: #E5484D;">{{ ch.deleteLabel }}</div>
                   </div>
+                </div>
+
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #17171C; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                  <div style="font-size: 11px; letter-spacing: .1em; color: #8B877F; font-weight: 700;">♪ MUSIQUE DU CHAPITRE</div>
+                  <div style="font-size: 12.5px; color: #D6D3CC; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ ch.musicLabel }}</div>
+                  <label style="padding: 8px 13px; border-radius: 9px; border: 1px dashed #33434F; font-size: 12px; font-weight: 700; color: #D6D3CC; cursor: pointer; white-space: nowrap;">{{ ch.musicBtnLabel }}
+                    <input type="file" accept="audio/*,.mp3,.m4a,.ogg,.wav" onChange="{{ ch.onMusic }}" style="display: none;">
+                  </label>
+                  <sc-if value="{{ ch.hasMusic }}" hint-placeholder-val="{{ false }}">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div onClick="{{ ch.toggleMusicLoop }}" style="padding: 8px 13px; border-radius: 999px; border: 1px solid {{ ch.musicLoopBorder }}; color: {{ ch.musicLoopColor }}; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;">{{ ch.musicLoopLabel }}</div>
+                      <div onClick="{{ ch.removeMusic }}" style="font-size: 11.5px; color: #817C75; cursor: pointer; white-space: nowrap;" style-hover="color: #E5484D;">Retirer</div>
+                    </div>
+                  </sc-if>
                 </div>
 
                 <sc-if value="{{ ch.hasPages }}" hint-placeholder-val="{{ false }}">
@@ -1144,6 +1171,10 @@
       </div>
     </div>
   </div>
+  </sc-if>
+
+  <sc-if value="{{ isAdminChecking }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Vérification session" style="max-width: 460px; margin: 0 auto; padding: 90px 24px 0; text-align: center; font-size: 13px; color: #8B877F;">Vérification de ta session créateur…</div>
   </sc-if>
 
   <sc-if value="{{ isAdminLocked }}" hint-placeholder-val="{{ false }}">
@@ -1549,7 +1580,7 @@ function seed() {
       mangaTitle: 'THE WORLD', author: 'Amadon', year: '2026', edition: 'Umbra',
       genres: ['Shonen', 'Thriller politique', 'Action', 'Aventure', 'Mystère'],
       synopsis: "Un explorateur a fait ce que personne n'osait tenter, le tour du monde ! Il en revient avec une vérité que l'humanité n'est pas prête à entendre... La Terre n'est pas plate ! Refusant d'y croire, le monde préfère le faire taire en rendant toute navigation illégale, et quiconque prend la mer devient pirate aux yeux de l'Instance mondiale. Pendant que le temps s'écoule, expéditions, guerres de succession, batailles navales, vengeances et combats déchirent les mers. The World n'a pas un héros car raconte comment des dizaines de destins s'entrechoquent, sans qu'aucun d'eux ne sache encore que le monde entier joue sa survie. Manga seinen français original, écrit par Amadon.",
-      videoUrl: '', adsense: '', defaultPageCount: 0, videoViews: 0, packPrice: 6.99, hideAdmin: false,
+      videoUrl: '', adsense: '', defaultPageCount: 0, videoViews: 0, packPrice: 6.99, hideAdmin: false, music: { enabled: true, loop: false, url: '', name: '' },
       twitter: 'https://x.com/ThreadToon_', tiktok: 'https://www.tiktok.com/@umbra_editions?_r=1&_t=ZN-99TV3AbN61e'
     },
     tomes: tomes, posts: posts,
@@ -1591,6 +1622,16 @@ const LEGAL = {
 const KEY = 'umbra_state_v12';
 const AUTH_KEY = 'umbra_auth_v1';
 const ADMIN_TOKEN_KEY = 'umbra_admin_session_v1';
+const DEFAULT_MUSIC = 'uploads/果てなき航海.mp3';
+function loadAdminToken() {
+  try {
+    const raw = localStorage.getItem(ADMIN_TOKEN_KEY);
+    if (!raw) return '';
+    const o = JSON.parse(raw);
+    if (!o || !o.token || !o.expiresAt || o.expiresAt < Date.now()) { localStorage.removeItem(ADMIN_TOKEN_KEY); return ''; }
+    return o.token;
+  } catch (e) { return ''; }
+}
 
 function loadAuth() {
   try { const r = localStorage.getItem(AUTH_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; }
@@ -1601,18 +1642,50 @@ class Component extends DCLogic {
     route: 'home', tomeId: null, chapterId: null, mode: 'scroll', page: 0, zoom: 80, showTop: false, insertAt: {}, fit: 'width', lowQ: false, bright: 100,
     tab: 'popular', threadId: null, feedCount: 6, showAllComments: false,
     search: '', compose: '', composeTheory: false, commentDraft: '', replyDraft: '', replyTo: null,
-    paywallTome: null, showSupport: false, supportAmount: '', payLoading: false, supportBusy: false, adminVerified: false, adminBusy: false, publishState: '',
+    paywallTome: null, showSupport: false, supportAmount: '', payLoading: false, supportBusy: false, adminVerified: false, adminChecking: !!loadAdminToken(), adminBusy: false, publishState: '', confirmDel: null,
     toast: '', copied: false, drafts: null, data: seed(),
     offer: 'single', lastPurchase: null, legalTab: 'cgv', adDismissed: false,
     auth: loadAuth(), authOpen: false, authMode: 'signin', authEmail: '', authPass: '', adminCode: '',
     consentOpen: false, consent: (function () { try { return localStorage.getItem('umbra_consent') || null; } catch (e) { return null; } })()
   };
 
+  desiredTrack() {
+    const st = this.state, site = st.data.site, m = site.music || {};
+    if (st.route === 'reader' && st.chapterId) {
+      const f = this.findChapter(st.chapterId);
+      if (f && f.ch.music && f.ch.music.url) return { url: f.ch.music.url, loop: !!f.ch.music.loop, chapter: true };
+    }
+    if (m.enabled === false) return null;
+    return { url: m.url || DEFAULT_MUSIC, loop: !!m.loop, chapter: false };
+  }
+
+  prepareAudio(a) {
+    const t = this.desiredTrack();
+    if (t && !a.getAttribute('src')) a.src = t.url;
+    a.loop = !!(t && t.loop);
+  }
+
+  syncAudio(gesture) {
+    const a = this.audioRef && this.audioRef.current;
+    if (!a) return;
+    const t = this.desiredTrack();
+    if (!t) { a.pause(); this.setState({ audioPlaying: false, audioStarted: false }); return; }
+    const wantPlay = !a.paused || !!(gesture && t.chapter);
+    const abs = new URL(t.url, location.href).href;
+    a.loop = t.loop;
+    const start = () => { a.muted = !!this.state.audioMuted; a.play().then(() => this.setState({ audioPlaying: true, audioStarted: true })).catch(() => {}); };
+    if (a.src !== abs) { a.src = t.url; if (wantPlay) start(); }
+    else if (wantPlay && a.paused) start();
+  }
+
   startOpening() {
     const tryPlay = () => {
       const a = this.audioRef && this.audioRef.current;
       if (!a) { setTimeout(tryPlay, 120); return; }
-      a.loop = true; a.muted = false;
+      const t = this.desiredTrack();
+      if (!t) return;
+      a.onended = () => this.setState({ audioPlaying: false });
+      a.src = t.url; a.loop = t.loop; a.muted = false;
       a.play().then(() => this.setState({ audioPlaying: true, audioStarted: true, audioMuted: false }))
         .catch(() => {
           a.muted = true;
@@ -1633,7 +1706,8 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
-    this.startOpening();
+    this._remoteReady = new Promise(res => { this._resolveRemote = res; setTimeout(res, 1500); });
+    this._remoteReady.then(() => this.startOpening());
     let d = this.state.data;
     try {
       const raw = localStorage.getItem(KEY);
@@ -1763,15 +1837,7 @@ class Component extends DCLogic {
   mutate(fn) { const d = this.state.data; fn(d); this.save(d); }
 
   /* ===== Panneau créateur : session serveur, publication, envoi d'images ===== */
-  adminToken() {
-    try {
-      const raw = localStorage.getItem(ADMIN_TOKEN_KEY);
-      if (!raw) return '';
-      const o = JSON.parse(raw);
-      if (!o || !o.token || !o.expiresAt || o.expiresAt < Date.now()) { localStorage.removeItem(ADMIN_TOKEN_KEY); return ''; }
-      return o.token;
-    } catch (e) { return ''; }
-  }
+  adminToken() { return loadAdminToken(); }
 
   adminFetch(url, opts) {
     opts = Object.assign({}, opts);
@@ -1784,6 +1850,8 @@ class Component extends DCLogic {
   }
 
   adminLogout(expired) {
+    const token = this.adminToken();
+    if (!expired && token) fetch('/api/admin-logout', { method: 'POST', headers: { Authorization: 'Bearer ' + token } }).catch(() => {});
     try { localStorage.removeItem(ADMIN_TOKEN_KEY); } catch (e) {}
     this.setState({ adminVerified: false, publishState: '' });
     if (expired) this.flash('Session créateur expirée — reconnecte-toi');
@@ -1791,14 +1859,17 @@ class Component extends DCLogic {
 
   verifyAdminSession() {
     const token = this.adminToken();
-    if (!token) return;
+    if (!token) { this.setState({ adminChecking: false }); return; }
     fetch('/api/admin-verify', { headers: { Authorization: 'Bearer ' + token } })
-      .then(r => { if (r.ok) this.setState({ adminVerified: true }); else { try { localStorage.removeItem(ADMIN_TOKEN_KEY); } catch (e) {} } })
-      .catch(() => {});
+      .then(r => {
+        if (r.ok) this.setState({ adminVerified: true, adminChecking: false });
+        else { try { localStorage.removeItem(ADMIN_TOKEN_KEY); } catch (e) {} this.setState({ adminVerified: false, adminChecking: false }); }
+      })
+      .catch(() => this.setState({ adminChecking: false }));
   }
 
   loadRemote() {
-    fetch('/api/site-data').then(r => r.json()).then(j => { if (j && j.catalog) this.applyCatalog(j.catalog); }).catch(() => {});
+    fetch('/api/site-data').then(r => r.json()).then(j => { if (j && j.catalog) this.applyCatalog(j.catalog); }).catch(() => {}).then(() => { if (this._resolveRemote) this._resolveRemote(); });
     this.loadFund();
     this.verifyAdminSession();
   }
@@ -1814,7 +1885,7 @@ class Component extends DCLogic {
 
   applyCatalog(cat) {
     const d = this.state.data;
-    if (cat.site) ['author', 'synopsis', 'videoUrl', 'adsense', 'defaultPageCount', 'packPrice', 'hideAdmin', 'twitter', 'tiktok'].forEach(k => { if (cat.site[k] !== undefined) d.site[k] = cat.site[k]; });
+    if (cat.site) ['author', 'synopsis', 'videoUrl', 'adsense', 'defaultPageCount', 'packPrice', 'hideAdmin', 'music', 'twitter', 'tiktok'].forEach(k => { if (cat.site[k] !== undefined) d.site[k] = cat.site[k]; });
     if (Array.isArray(cat.tomes) && cat.tomes.length) {
       const old = {};
       d.tomes.forEach(t => { old[t.id] = t; });
@@ -1827,22 +1898,22 @@ class Component extends DCLogic {
           reads: ot ? ot.reads : 0,
           chapters: ct.chapters.map(cc => {
             const o = oc[cc.id];
-            return { id: cc.id, num: cc.num, title: cc.title, pageCount: cc.pages.length, pages: cc.pages.slice(), likes: o ? o.likes : 0, liked: o ? o.liked : false, comments: o ? o.comments : [] };
+            return { id: cc.id, num: cc.num, title: cc.title, pageCount: cc.pages.length, pages: cc.pages.slice(), music: cc.music || null, likes: o ? o.likes : 0, liked: o ? o.liked : false, comments: o ? o.comments : [] };
           })
         };
       });
     }
-    this.setState({ data: d });
+    this.setState({ data: d }, () => this.syncAudio(false));
   }
 
   buildCatalog() {
     const d = this.state.data, st = d.site;
     const okImg = p => typeof p === 'string' && p.slice(0, 5) !== 'blob:' && p.slice(0, 5) !== 'data:';
     return {
-      site: { author: st.author, synopsis: st.synopsis, videoUrl: st.videoUrl, adsense: st.adsense, defaultPageCount: st.defaultPageCount, packPrice: st.packPrice, hideAdmin: !!st.hideAdmin, twitter: st.twitter, tiktok: st.tiktok },
+      site: { author: st.author, synopsis: st.synopsis, videoUrl: st.videoUrl, adsense: st.adsense, defaultPageCount: st.defaultPageCount, packPrice: st.packPrice, hideAdmin: !!st.hideAdmin, music: st.music || { enabled: true, loop: false, url: '', name: '' }, twitter: st.twitter, tiktok: st.tiktok },
       tomes: d.tomes.map(t => ({
         id: t.id, num: t.num, title: t.title, price: t.price, paid: t.paid, released: t.released, cover: t.cover,
-        chapters: t.chapters.map(c => ({ id: c.id, num: c.num, title: c.title, pages: c.pages.filter(okImg) }))
+        chapters: t.chapters.map(c => ({ id: c.id, num: c.num, title: c.title, pages: c.pages.filter(okImg), music: c.music || null }))
       }))
     };
   }
@@ -1868,6 +1939,46 @@ class Component extends DCLogic {
       return this.adminFetch('/api/admin-upload?kind=' + kind + '&name=' + encodeURIComponent(file.name), { method: 'POST', headers: { 'Content-Type': 'image/jpeg' }, body: blob });
     });
     return tryOne(0).then(j => j.url);
+  }
+
+  confirmTwice(key, msg) {
+    if (this.state.confirmDel === key) { this.setState({ confirmDel: null }); return true; }
+    this.setState({ confirmDel: key });
+    this.flash(msg || 'Clique encore pour confirmer');
+    clearTimeout(this._cdT);
+    this._cdT = setTimeout(() => { if (this.state.confirmDel === key) this.setState({ confirmDel: null }); }, 5000);
+    return false;
+  }
+
+  uploadAudio(file, onProgress) {
+    const CH = 3500000;
+    if (file.size > 25 * 1024 * 1024) return Promise.reject(new Error('Musique trop lourde (25 Mo max) — compresse-la en MP3 128 kbps'));
+    const id = Math.random().toString(36).slice(2, 12) + Date.now().toString(36).slice(-4);
+    const n = Math.max(1, Math.ceil(file.size / CH));
+    let p = Promise.resolve();
+    for (let i = 0; i < n; i++) {
+      p = p.then(() => {
+        if (onProgress) onProgress(i, n);
+        return this.adminFetch('/api/admin-audio?action=chunk&id=' + id + '&i=' + i, { method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: file.slice(i * CH, (i + 1) * CH) });
+      });
+    }
+    return p.then(() => this.adminFetch('/api/admin-audio?action=finish&id=' + id + '&n=' + n + '&name=' + encodeURIComponent(file.name), { method: 'POST' })).then(j => j.url);
+  }
+
+  uploadMusic(target, e) {
+    const f = (e.target.files || [])[0];
+    e.target.value = '';
+    if (!f) return;
+    this.flash('Envoi de la musique…');
+    this.uploadAudio(f, (i, n) => { if (n > 1) this.flash('Envoi de la musique… ' + (i + 1) + '/' + n); }).then(url => {
+      const name = f.name.replace(/\.[^.]+$/, '').slice(0, 80);
+      this.adminMutate(d => {
+        if (target === 'site') d.site.music = Object.assign({ enabled: true, loop: false }, d.site.music, { url: url, name: name, enabled: true });
+        else d.tomes.forEach(t => t.chapters.forEach(c => { if (c.id === target) c.music = { url: url, name: name, loop: !!(c.music && c.music.loop) }; }));
+      });
+      this.flash('Musique ajoutée' + (target === 'site' ? ' — lecture en cours' : ' à ce chapitre'));
+      if (target === 'site') setTimeout(() => this.startOpening(), 120);
+    }).catch(err => this.flash((err && err.message) || 'Envoi impossible'));
   }
 
   uploadCover(tomeId, e) {
@@ -1910,11 +2021,11 @@ class Component extends DCLogic {
     if (!f) return;
     if (!this.isAvailable(f.tome) || !this.isUnlocked(f.tome)) return this.setState({ paywallTome: f.tome.id, payLoading: false });
     this.mutate(() => { f.tome.reads += 1; });
-    this.setState({ route: 'reader', chapterId: id, tomeId: f.tome.id, page: 0, replyTo: null, showAllComments: false });
+    this.setState({ route: 'reader', chapterId: id, tomeId: f.tome.id, page: 0, replyTo: null, showAllComments: false }, () => this.syncAudio(true));
     window.scrollTo(0, 0);
   }
 
-  nav(route) { this.setState({ route: route, replyTo: null, threadId: null }); window.scrollTo(0, 0); }
+  nav(route) { this.setState({ route: route, replyTo: null, threadId: null }, () => this.syncAudio(false)); window.scrollTo(0, 0); }
 
   upload(chapterId, e, mode) {
     const files = Array.prototype.slice.call(e.target.files || []);
@@ -2131,6 +2242,9 @@ class Component extends DCLogic {
     d.posts.forEach(p => { if (p.reported) reports.push({ author: p.author, text: p.text, remove: () => this.mutate(dd => { dd.posts = dd.posts.filter(x => x.id !== p.id); }), keep: () => this.mutate(() => { p.reported = false; }) }); });
 
     const countView = () => this.mutate(dd => { dd.site.videoViews += 1; });
+    const sm = site.music || {};
+    const smOn = sm.enabled !== false;
+    const curTrack = this.desiredTrack();
 
     if (!this.audioRef) this.audioRef = React.createRef();
     const playing = !!this.state.audioPlaying, muted = !!this.state.audioMuted;
@@ -2138,19 +2252,19 @@ class Component extends DCLogic {
       const a = this.audioRef.current;
       countView();
       if (!a) return;
-      if (a.paused) { a.loop = true; a.muted = muted; a.play().catch(() => {}); this.setState({ audioPlaying: true, audioStarted: true }); }
+      if (a.paused) { this.prepareAudio(a); a.muted = muted; a.play().catch(() => {}); this.setState({ audioPlaying: true, audioStarted: true }); }
       else { a.pause(); this.setState({ audioPlaying: false }); }
     };
     const toggleMute = () => {
       const a = this.audioRef.current, next = !muted;
-      if (a) { a.muted = next; if (a.paused && !next) { a.loop = true; a.play().catch(() => {}); this.setState({ audioPlaying: true, audioStarted: true, audioMuted: next }); return; } }
+      if (a) { a.muted = next; if (a.paused && !next) { this.prepareAudio(a); a.play().catch(() => {}); this.setState({ audioPlaying: true, audioStarted: true, audioMuted: next }); return; } }
       this.setState({ audioMuted: next });
     };
 
     return {
       isHome: route === 'home', isLibrary: route === 'library', isReader: route === 'reader',
       isCommunity: route === 'community', isThread: route === 'thread', isReferral: route === 'referral',
-      isAdmin: route === 'admin' && isOwner, isAdminLocked: route === 'admin' && !isOwner,
+      isAdmin: route === 'admin' && isOwner, isAdminLocked: route === 'admin' && !isOwner && !s.adminChecking, isAdminChecking: route === 'admin' && !isOwner && !!s.adminChecking,
       goHome: () => this.nav('home'), goLibrary: () => this.nav('library'),
       goCommunity: () => { this.setState({ feedCount: 6 }); this.nav('community'); },
       goReferral: () => { this.setState({ paywallTome: null, showSupport: false }); this.nav('referral'); },
@@ -2169,6 +2283,7 @@ class Component extends DCLogic {
       countView: countView,
       audioRef: this.audioRef,
       audioStarted: !!this.state.audioStarted,
+      audioLabel: curTrack && curTrack.chapter ? 'MUSIQUE DU CHAPITRE' : 'OPENING',
       playTrailer: playTrailer,
       toggleMute: toggleMute,
       muteIcon: muted ? '🔇' : '🔊',
@@ -2447,6 +2562,14 @@ class Component extends DCLogic {
       synopsisDraft: dr.synopsis !== undefined ? dr.synopsis : site.synopsis,
       onSynopsisDraft: e => this.setState({ drafts: Object.assign({}, dr, { synopsis: e.target.value }) }),
       saveHint: 'Les réglages sont publiés pour tous les visiteurs dès que tu enregistres.',
+      siteMusicName: !smOn ? 'Musique désactivée' : (sm.url ? (sm.name || 'Musique personnalisée') : 'Opening d’origine (果てなき航海)'),
+      onSiteMusic: e => this.uploadMusic('site', e),
+      siteLoopLabel: sm.loop ? '↻ Boucle : oui' : 'Boucle : non',
+      siteLoopBorder: sm.loop ? '#3B8FCB' : '#2A3A4A', siteLoopColor: sm.loop ? '#7CB9E3' : '#A8A49C',
+      siteMusicToggleLabel: smOn ? 'Désactiver la musique' : 'Activer la musique',
+      toggleSiteLoop: () => { this.adminMutate(dd => { dd.site.music = Object.assign({ enabled: true, url: '', name: '' }, dd.site.music, { loop: !(dd.site.music && dd.site.music.loop) }); }); setTimeout(() => this.syncAudio(false), 60); },
+      toggleSiteMusic: () => { this.adminMutate(dd => { const m = dd.site.music || {}; dd.site.music = Object.assign({ url: '', name: '', loop: false }, m, { enabled: m.enabled === false }); }); setTimeout(() => (smOn ? this.syncAudio(false) : this.startOpening()), 80); },
+      resetSiteMusic: () => { this.adminMutate(dd => { dd.site.music = { enabled: true, loop: false, url: '', name: '' }; }); this.flash('Musique d’origine rétablie'); setTimeout(() => this.startOpening(), 120); },
       saveSettings: () => {
         this.adminMutate(dd => {
           Object.keys(dr).forEach(k => {
@@ -2471,7 +2594,11 @@ class Component extends DCLogic {
         onPrice: e => { const v = parseFloat(e.target.value.replace(',', '.')); this.adminMutate(() => { t.price = isNaN(v) ? 0 : v; }); },
         togglePaid: () => this.adminMutate(() => { t.paid = !t.paid; if (!t.paid) t.price = 0; else if (!t.price) t.price = 3.99; }),
         toggleReleased: () => this.adminMutate(() => { t.released = !t.released; }),
-        remove: () => { if (!window.confirm('Supprimer « ' + t.title + ' » pour tous les visiteurs ?')) return; this.adminMutate(dd => { dd.tomes = dd.tomes.filter(x => x.id !== t.id); }); this.flash(t.title + ' supprimé'); },
+        remove: () => { if (!this.confirmTwice('tome:' + t.id, 'Clique encore sur « Supprimer ? » pour supprimer ' + t.title + ' pour tous les visiteurs')) return; this.adminMutate(dd => { dd.tomes = dd.tomes.filter(x => x.id !== t.id); }); this.flash(t.title + ' supprimé'); },
+        deleteLabel: s.confirmDel === 'tome:' + t.id ? 'Supprimer ?' : '🗑',
+        deleteBorder: s.confirmDel === 'tome:' + t.id ? '#E5484D' : '#2A1D1D',
+        deleteColor: s.confirmDel === 'tome:' + t.id ? '#E5484D' : '#6B4444',
+        deletePad: s.confirmDel === 'tome:' + t.id ? '12px' : '0px',
         addChapter: () => this.adminMutate(() => {
           const last = t.chapters[t.chapters.length - 1];
           const num = (last ? last.num : 0) + 1;
@@ -2480,7 +2607,9 @@ class Component extends DCLogic {
         chapters: t.chapters.map(c => ({
           title: c.title,
           pageMeta: c.pages.length ? c.pages.length + ' pages importées · ordre par nom de fichier' : 'aucune page — dépose autant de pages que tu veux',
-          remove: () => { if (t.chapters.length <= 1) return this.flash('Un tome garde au moins un chapitre'); if (!window.confirm('Supprimer « ' + c.title + ' » ?')) return; this.adminMutate(() => { t.chapters = t.chapters.filter(x => x.id !== c.id); }); this.flash(c.title + ' supprimé'); },
+          remove: () => { if (t.chapters.length <= 1) return this.flash('Un tome garde au moins un chapitre'); if (!this.confirmTwice('ch:' + c.id, 'Clique encore sur « Confirmer ? » pour supprimer ' + c.title)) return; this.adminMutate(() => { t.chapters = t.chapters.filter(x => x.id !== c.id); }); this.flash(c.title + ' supprimé'); },
+          deleteLabel: s.confirmDel === 'ch:' + c.id ? 'Confirmer ?' : 'Supprimer',
+          deleteColor: s.confirmDel === 'ch:' + c.id ? '#E5484D' : '#8B877F',
           onTitle: e => { const v = e.target.value; this.adminMutate(() => { c.title = v; }); },
           onUpload: e => this.upload(c.id, e, 'replace'),
           onAppend: e => this.upload(c.id, e, 'append'),
@@ -2495,7 +2624,18 @@ class Component extends DCLogic {
             up: () => { if (i === 0) return; this.adminMutate(() => { const a = c.pages; const t2 = a[i - 1]; a[i - 1] = a[i]; a[i] = t2; }); },
             down: () => { if (i === c.pages.length - 1) return; this.adminMutate(() => { const a = c.pages; const t2 = a[i + 1]; a[i + 1] = a[i]; a[i] = t2; }); }
           })),
-          clear: () => this.adminMutate(() => { c.pages = []; c.pageCount = site.defaultPageCount; })
+          clear: () => { if (!this.confirmTwice('clr:' + c.id, 'Clique encore sur « Confirmer ? » pour vider ce chapitre')) return; this.adminMutate(() => { c.pages = []; c.pageCount = site.defaultPageCount; }); },
+          clearLabel: s.confirmDel === 'clr:' + c.id ? 'Confirmer ?' : 'Vider',
+          clearColor: s.confirmDel === 'clr:' + c.id ? '#E5484D' : '#817C75',
+          hasMusic: !!(c.music && c.music.url),
+          musicLabel: c.music && c.music.url ? (c.music.name || 'Musique personnalisée') : 'Aucune — la musique du site continue',
+          musicBtnLabel: c.music && c.music.url ? 'Changer' : '+ Ajouter une musique',
+          onMusic: e => this.uploadMusic(c.id, e),
+          musicLoopLabel: c.music && c.music.loop ? '↻ Boucle : oui' : 'Boucle : non',
+          musicLoopBorder: c.music && c.music.loop ? '#3B8FCB' : '#2A3A4A',
+          musicLoopColor: c.music && c.music.loop ? '#7CB9E3' : '#A8A49C',
+          toggleMusicLoop: () => { this.adminMutate(() => { if (c.music) c.music.loop = !c.music.loop; }); setTimeout(() => this.syncAudio(false), 60); },
+          removeMusic: () => { this.adminMutate(() => { c.music = null; }); this.flash('Musique du chapitre retirée'); setTimeout(() => this.syncAudio(false), 60); }
         }))
       })),
       addTome: () => {

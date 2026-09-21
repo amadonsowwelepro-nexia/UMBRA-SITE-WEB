@@ -10,6 +10,6 @@ module.exports = async function handler(req, res) {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  if (!auth.requireAdmin(req, res)) return;
+  if (!(await auth.requireAdmin(req, res))) return;
   return res.status(200).json({ ok: true, storage: store.configured() });
 };

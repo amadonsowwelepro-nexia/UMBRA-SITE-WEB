@@ -1,11 +1,15 @@
 // Authentification créateur — 100 % côté serveur.
 // Le mot de passe vit uniquement dans la variable d'environnement ADMIN_PASSWORD (Vercel).
-// Après un login réussi, le serveur émet un jeton signé (HMAC-SHA256) valable 12 h.
+// Après un login réussi, le serveur émet un jeton signé (HMAC-SHA256) valable 7 jours.
+// « Verrouiller » révoque côté serveur TOUS les jetons émis avant cet instant (voir revokeAll).
 // Changer ADMIN_PASSWORD invalide automatiquement tous les jetons existants.
 
 const crypto = require('crypto');
+const store = require('./store');
 
-const SESSION_HOURS = 12;
+const STATE_PATH = 'umbra/admin-state.json';
+
+const SESSION_HOURS = 24 * 7;
 const MIN_PASSWORD_LENGTH = 10;
 
 const failures = new Map(); // ip -> { count, first } (meilleur effort, par instance serverless)
@@ -40,23 +44,50 @@ function passwordStatus() {
 }
 
 function issueToken() {
-  const exp = Date.now() + SESSION_HOURS * 3600 * 1000;
-  const payload = b64u(JSON.stringify({ exp: exp, n: crypto.randomBytes(8).toString('hex') }));
+  const iat = Date.now();
+  const exp = iat + SESSION_HOURS * 3600 * 1000;
+  const payload = b64u(JSON.stringify({ iat: iat, exp: exp, n: crypto.randomBytes(8).toString('hex') }));
   const sig = b64u(crypto.createHmac('sha256', sessionKey()).update(payload).digest());
   return { token: payload + '.' + sig, expiresAt: exp };
 }
 
-function verifyToken(token) {
-  if (!passwordStatus().ok || typeof token !== 'string') return false;
+// Vérifie signature + expiration. Renvoie les données du jeton, ou null.
+function parseToken(token) {
+  if (!passwordStatus().ok || typeof token !== 'string') return null;
   const parts = token.split('.');
-  if (parts.length !== 2) return false;
+  if (parts.length !== 2) return null;
   const expected = crypto.createHmac('sha256', sessionKey()).update(parts[0]).digest();
   let given;
-  try { given = fromB64u(parts[1]); } catch (e) { return false; }
-  if (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) return false;
+  try { given = fromB64u(parts[1]); } catch (e) { return null; }
+  if (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) return null;
   let data;
-  try { data = JSON.parse(fromB64u(parts[0]).toString('utf8')); } catch (e) { return false; }
-  return !!data && typeof data.exp === 'number' && data.exp > Date.now();
+  try { data = JSON.parse(fromB64u(parts[0]).toString('utf8')); } catch (e) { return null; }
+  if (!data || typeof data.exp !== 'number' || data.exp <= Date.now()) return null;
+  return data;
+}
+
+// Un jeton émis avant la dernière révocation (« Verrouiller ») n'est plus valable.
+async function isRevoked(data) {
+  if (!store.configured()) return false;
+  try {
+    const r = await store.readJson(STATE_PATH);
+    const before = r.data && typeof r.data.revokedBefore === 'number' ? r.data.revokedBefore : 0;
+    return (data.iat || 0) < before;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function verifyToken(token) {
+  const data = parseToken(token);
+  if (!data) return false;
+  return !(await isRevoked(data));
+}
+
+async function revokeAll() {
+  if (!store.configured()) return false;
+  await store.writeJson(STATE_PATH, { revokedBefore: Date.now() });
+  return true;
 }
 
 function bearer(req) {
@@ -65,10 +96,10 @@ function bearer(req) {
   return m ? m[1].trim() : '';
 }
 
-function requireAdmin(req, res) {
+async function requireAdmin(req, res) {
   const st = passwordStatus();
   if (!st.ok) { res.status(503).json({ error: st.error }); return false; }
-  if (!verifyToken(bearer(req))) { res.status(401).json({ error: 'Non autorisé' }); return false; }
+  if (!(await verifyToken(bearer(req)))) { res.status(401).json({ error: 'Non autorisé' }); return false; }
   return true;
 }
 
@@ -93,6 +124,6 @@ function registerFailure(ip) {
 function clearFailures(ip) { failures.delete(ip); }
 
 module.exports = {
-  safeEqual, passwordStatus, issueToken, verifyToken, bearer, requireAdmin,
+  safeEqual, passwordStatus, issueToken, parseToken, verifyToken, revokeAll, bearer, requireAdmin,
   clientIp, isLockedOut, registerFailure, clearFailures, SESSION_HOURS
 };
