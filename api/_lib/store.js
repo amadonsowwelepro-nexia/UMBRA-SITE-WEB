@@ -3,8 +3,10 @@
 
 const blob = require('@vercel/blob');
 
+// Deux modes d'authentification Vercel Blob : clé classique (BLOB_READ_WRITE_TOKEN)
+// ou connexion sans clé (BLOB_STORE_ID + jeton OIDC fourni automatiquement par Vercel).
 function configured() {
-  return !!process.env.BLOB_READ_WRITE_TOKEN;
+  return !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 }
 
 async function readJson(pathname) {
