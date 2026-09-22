@@ -366,7 +366,9 @@
             </div>
           </sc-if>
 
-          <div style="position: absolute; bottom: 10px; right: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(6,12,20,.78); font-size: 11px; font-weight: 700; color: #7CB9E3;">{{ videoViews }} vues</div>
+          <sc-if value="{{ hasTrack }}" hint-placeholder-val="{{ true }}">
+            <div style="position: absolute; bottom: 10px; right: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(6,12,20,.78); font-size: 11px; font-weight: 700; color: #7CB9E3;">{{ videoViews }} vues</div>
+          </sc-if>
         </div>
       </div>
     </div>
@@ -2291,6 +2293,7 @@ class Component extends DCLogic {
       audioRef: this.audioRef,
       audioStarted: !!this.state.audioStarted,
       audioLabel: curTrack && curTrack.chapter ? 'MUSIQUE DU CHAPITRE' : 'OPENING',
+      hasTrack: !!curTrack,
       playTrailer: playTrailer,
       toggleMute: toggleMute,
       muteIcon: muted ? '🔇' : '🔊',
