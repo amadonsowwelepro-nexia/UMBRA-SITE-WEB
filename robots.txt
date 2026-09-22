@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://umbra-site-web.vercel.app/sitemap.xml
+Sitemap: https://amadon-manga.vercel.app/sitemap.xml
