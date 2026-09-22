@@ -47,6 +47,7 @@ module.exports = async function handler(req, res) {
   params.set('line_items[0][price_data][unit_amount]', String(amountCents));
   params.set('line_items[0][price_data][product_data][name]', title.slice(0, 120));
   params.set('line_items[0][quantity]', '1');
+  params.set('payment_intent_data[statement_descriptor]', 'AMADON');
   params.set('metadata[uid]', uid);
   params.set('metadata[kind]', isDonation ? 'donation' : 'purchase');
   if (isDonation) {
