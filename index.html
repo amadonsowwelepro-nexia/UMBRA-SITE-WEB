@@ -381,6 +381,9 @@
       <div onClick="{{ goLibrary }}" style="font-size: 13px; font-weight: 700; color: #4E9BD4; cursor: pointer;">Voir tout →</div>
     </div>
 
+    <sc-if value="{{ noTomes }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top: 20px; border-radius: 14px; border: 1px dashed #1F1F26; background: #0B0B0E; padding: 34px 22px; text-align: center; font-size: 13.5px; color: #8B877F;">Les premiers tomes arrivent bientôt.</div>
+    </sc-if>
     <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(126px, 1fr)); gap: 14px;">
       <sc-for list="{{ tomes }}" as="tome" hint-placeholder-count="7">
         <div onClick="{{ tome.open }}" style="cursor: pointer;">
@@ -517,6 +520,9 @@
   <div data-screen-label="Bibliothèque" style="max-width: 1120px; margin: 0 auto; padding: 32px 24px 0;">
     <div style="font-family: 'Archivo Black', sans-serif; font-size: 34px;">Tous les tomes</div>
     <div style="margin-top: 8px; font-size: 13.5px; color: #8B877F;">{{ continuityLine }}</div>
+    <sc-if value="{{ noTomes }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top: 26px; border-radius: 14px; border: 1px dashed #1F1F26; background: #0B0B0E; padding: 40px 22px; text-align: center; font-size: 13.5px; color: #8B877F;">Les premiers tomes arrivent bientôt.</div>
+    </sc-if>
     <div style="margin-top: 26px; display: grid; gap: 14px;">
       <sc-for list="{{ tomes }}" as="tome" hint-placeholder-count="7">
         <div style="border-radius: 16px; border: 1px solid #1B1B21; background: #0D0D11; padding: 18px; display: grid; grid-template-columns: 78px 1fr auto; gap: 20px; align-items: center;">
@@ -1071,6 +1077,13 @@
       <div onClick="{{ addTome }}" style="padding: 10px 16px; border-radius: 10px; border: 1px solid #3B8FCB; color: #7CB9E3; font-size: 12.5px; font-weight: 800; cursor: pointer;">+ Nouveau tome</div>
     </div>
 
+    <sc-if value="{{ noTomes }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top: 14px; border-radius: 14px; border: 1px dashed #2A3A4A; background: #0B0B0E; padding: 26px 22px; text-align: center;">
+        <div style="font-size: 13.5px; color: #D6D3CC; font-weight: 700;">Aucun tome pour le moment</div>
+        <div style="margin-top: 6px; font-size: 12.5px; color: #8B877F;">Le site public n'affiche plus de tomes. Crée un nouveau tome, ou rétablis les tomes d'origine.</div>
+        <div onClick="{{ restoreDefaults }}" style="display: inline-block; margin-top: 14px; padding: 10px 18px; border-radius: 10px; border: 1px solid #3B8FCB; color: #7CB9E3; font-size: 12.5px; font-weight: 800; cursor: pointer;" style-hover="background: #12202C;">↺ Rétablir les tomes d'origine</div>
+      </div>
+    </sc-if>
     <div style="margin-top: 14px; display: grid; gap: 14px;">
       <sc-for list="{{ adminTomes }}" as="t" hint-placeholder-count="3">
         <div style="border-radius: 16px; border: 1px solid #1B1B21; background: #0D0D11; padding: 20px;">
@@ -1892,7 +1905,7 @@ class Component extends DCLogic {
   applyCatalog(cat) {
     const d = this.state.data;
     if (cat.site) ['author', 'synopsis', 'videoUrl', 'adsense', 'defaultPageCount', 'packPrice', 'hideAdmin', 'music', 'twitter', 'tiktok'].forEach(k => { if (cat.site[k] !== undefined) d.site[k] = cat.site[k]; });
-    if (Array.isArray(cat.tomes) && cat.tomes.length) {
+    if (Array.isArray(cat.tomes)) {
       const defaults = {};
       seed().tomes.forEach(t => t.chapters.forEach(c => { if (c.pages.length) defaults[c.id] = c.pages; }));
       const old = {};
@@ -2094,7 +2107,8 @@ class Component extends DCLogic {
     const dr = s.drafts || {};
     const route = s.route;
     const cur = s.chapterId ? this.findChapter(s.chapterId) : null;
-    const maxLikes = Math.max.apply(null, d.tomes.map(t => this.tomeLikes(t)));
+    const maxLikes = Math.max.apply(null, [0].concat(d.tomes.map(t => this.tomeLikes(t))));
+    const first = d.tomes[0] || null;
 
     const tomes = d.tomes.map(t => {
       const unlocked = this.isUnlocked(t);
@@ -2301,17 +2315,19 @@ class Component extends DCLogic {
       trailerHint: !curTrack ? "bande-annonce à venir" : (playing ? "opening en cours" : "bande-annonce / opening — clique pour lancer la musique"),
       continuityLine: "Tous les tomes de " + site.mangaTitle + " forment une seule et même histoire — chaque tome reprend là où le précédent s'arrête.",
       topUpdated: 'mis à jour en temps réel',
-      aboutCover: d.tomes[0].cover,
-      aboutNoArt: d.tomes[0].cover.indexOf('url(') < 0,
+      aboutCover: first ? first.cover : 'linear-gradient(150deg,#2E3C4A,#141A20)',
+      aboutNoArt: !first || first.cover.indexOf('url(') < 0,
       hasVideo: !!site.videoUrl, noVideo: !site.videoUrl,
       videoEl: site.videoUrl ? React.createElement('video', { src: site.videoUrl, controls: true, onPlay: countView, style: { width: '100%', height: '100%', objectFit: 'cover', background: '#000' } }) : null,
       adSlotLabel: site.adsense ? 'Google AdSense · ' + site.adsense + ' — emplacement annonce' : 'emplacement Google AdSense — ajoute ton ID client dans ⚙ Panneau créateur',
       footerLine: site.mangaTitle + ' © ' + site.year + ' ' + site.author + ' · prototype',
 
       tomes: tomes, topChapters: ranked, noRanked: ranked.length === 0,
-      readFirst: () => this.openChapter(d.tomes[0].chapters[0].id),
-      readFirstLabel: this.isAvailable(d.tomes[0]) ? 'Lire le chapitre 1 · gratuit' : 'Chapitre 1 · à venir',
-      readFirstShort: this.isAvailable(d.tomes[0]) ? 'Lire le chapitre 1' : 'Chapitre 1 · à venir',
+      readFirst: () => { if (!first) return this.flash('Les premiers chapitres arrivent bientôt'); this.openChapter(first.chapters[0].id); },
+      readFirstLabel: !first ? 'Bientôt disponible' : (this.isAvailable(first) ? 'Lire le chapitre 1 · gratuit' : 'Chapitre 1 · à venir'),
+      readFirstShort: !first ? 'Bientôt disponible' : (this.isAvailable(first) ? 'Lire le chapitre 1' : 'Chapitre 1 · à venir'),
+      noTomes: d.tomes.length === 0,
+      restoreDefaults: () => { this.adminMutate(dd => { dd.tomes = seed().tomes; }); this.flash('Tomes d’origine rétablis'); },
 
       handle: u.handle,
       regenHandle: () => this.mutate(dd => { dd.user.handle = handleGen(); }),
