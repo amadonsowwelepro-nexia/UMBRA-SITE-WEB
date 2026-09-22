@@ -73,7 +73,10 @@ function sanitize(input) {
         num: int(c.num, 1, 9999, j + 1),
         title: str(c.title, 120) || ('Chapitre ' + (j + 1)),
         pages: rawPages.filter(function (p) { return typeof p === 'string' && IMG_URL_RE.test(p); }),
-        music: music(c.music, false)
+        music: music(c.music, false),
+        paid: !!c.paid,
+        price: Math.round(num(c.price, 0, 500, 0) * 100) / 100,
+        released: c.released !== false
       });
     }
 

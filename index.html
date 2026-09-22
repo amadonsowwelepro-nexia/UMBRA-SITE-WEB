@@ -1131,6 +1131,16 @@
                 </div>
 
                 <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #17171C; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                  <div style="font-size: 11px; letter-spacing: .1em; color: #8B877F; font-weight: 700;">ACCÈS DU CHAPITRE</div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <div style="font-size: 10px; color: #8B877F;">PRIX (€)</div>
+                    <input value="{{ ch.price }}" onChange="{{ ch.onPrice }}" style="width: 64px; padding: 7px 9px; border-radius: 8px; border: 1px solid #23232B; background: #101014; color: #F2F0EC; font-size: 12.5px; text-align: right; outline: none;">
+                  </div>
+                  <div onClick="{{ ch.togglePaid }}" style="padding: 8px 13px; border-radius: 999px; border: 1px solid {{ ch.paidBorder }}; color: {{ ch.paidColor }}; font-size: 11.5px; font-weight: 800; cursor: pointer; white-space: nowrap;">{{ ch.paidLabel }}</div>
+                  <div onClick="{{ ch.toggleReleased }}" style="padding: 8px 13px; border-radius: 999px; border: 1px solid #23323F; color: {{ ch.releasedColor }}; font-size: 11.5px; font-weight: 800; cursor: pointer; white-space: nowrap;">{{ ch.releasedLabel }}</div>
+                </div>
+
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #17171C; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                   <div style="font-size: 11px; letter-spacing: .1em; color: #8B877F; font-weight: 700;">♪ MUSIQUE DU CHAPITRE</div>
                   <div style="font-size: 12.5px; color: #D6D3CC; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ ch.musicLabel }}</div>
                   <label style="padding: 8px 13px; border-radius: 9px; border: 1px dashed #33434F; font-size: 12px; font-weight: 700; color: #D6D3CC; cursor: pointer; white-space: nowrap;">{{ ch.musicBtnLabel }}
@@ -1581,7 +1591,8 @@ function seed() {
       const scale = Math.max(0.12, (8 - i) / 8) * (1 - c * 0.18);
       chapters.push({
         id: 't' + i + 'c' + num, num: num, title: 'Chapitre ' + num,
-        pageCount: 0, pages: (i === 1 && c === 0) ? T1C1.slice() : ((i === 1 && c === 1) ? T1C2.slice() : ((i === 1 && c === 2) ? T1C3.slice() : [])), liked: false, likes: 0, comments: []
+        pageCount: 0, pages: (i === 1 && c === 0) ? T1C1.slice() : ((i === 1 && c === 1) ? T1C2.slice() : ((i === 1 && c === 2) ? T1C3.slice() : [])), liked: false, likes: 0, comments: [],
+        paid: false, price: 0, released: true
       });
     }
     tomes.push({
@@ -1659,7 +1670,7 @@ class Component extends DCLogic {
     route: 'home', tomeId: null, chapterId: null, mode: 'scroll', page: 0, zoom: 80, showTop: false, insertAt: {}, fit: 'width', lowQ: false, bright: 100,
     tab: 'popular', threadId: null, feedCount: 6, showAllComments: false,
     search: '', compose: '', composeTheory: false, commentDraft: '', replyDraft: '', replyTo: null,
-    paywallTome: null, showSupport: false, supportAmount: '', payLoading: false, supportBusy: false, adminVerified: false, adminChecking: !!loadAdminToken(), adminBusy: false, publishState: '', confirmDel: null,
+    paywallTome: null, paywallChapter: null, showSupport: false, supportAmount: '', payLoading: false, supportBusy: false, adminVerified: false, adminChecking: !!loadAdminToken(), adminBusy: false, publishState: '', confirmDel: null,
     toast: '', copied: false, drafts: null, data: seed(),
     offer: 'single', lastPurchase: null, legalTab: 'cgv', adDismissed: false,
     auth: loadAuth(), authOpen: false, authMode: 'signin', authEmail: '', authPass: '', adminCode: '',
@@ -1779,14 +1790,19 @@ class Component extends DCLogic {
               const dd = this.state.data;
               data.tomeIds.forEach(id => { if (dd.user.purchased.indexOf(id) < 0) dd.user.purchased.push(id); });
               this.save(dd);
-              const firstTome = dd.tomes.find(t => t.id === data.tomeIds[0]);
+              const firstId = data.tomeIds[0];
+              const firstTome = dd.tomes.find(t => t.id === firstId);
+              const firstChapter = !firstTome ? this.findChapter(firstId) : null;
+              const label = data.tomeIds.length > 1
+                ? 'Pack intégral Amadon'
+                : (firstTome ? firstTome.title : (firstChapter ? firstChapter.tome.title + ' — ' + firstChapter.ch.title : 'Ton achat'));
               this.setState({
                 route: 'success',
                 lastPurchase: {
-                  label: data.tomeIds.length > 1 ? 'Pack intégral Amadon' : (firstTome ? firstTome.title : 'Ton achat'),
+                  label: label,
                   amount: (data.amountTotal || 0) / 100,
-                  tomeId: data.tomeIds[0],
-                  chapterId: firstTome && firstTome.chapters[0] ? firstTome.chapters[0].id : null,
+                  tomeId: firstTome ? firstTome.id : (firstChapter ? firstChapter.tome.id : firstId),
+                  chapterId: firstTome && firstTome.chapters[0] ? firstTome.chapters[0].id : (firstChapter ? firstChapter.ch.id : null),
                   count: data.tomeIds.length,
                   ref: sessionId.slice(-8).toUpperCase()
                 }
@@ -1920,7 +1936,7 @@ class Component extends DCLogic {
           chapters: ct.chapters.map(cc => {
             const o = oc[cc.id];
             const pg = cc.pages.length ? cc.pages.slice() : (defaults[cc.id] ? defaults[cc.id].slice() : []);
-            return { id: cc.id, num: cc.num, title: cc.title, pageCount: pg.length, pages: pg, music: cc.music || null, likes: o ? o.likes : 0, liked: o ? o.liked : false, comments: o ? o.comments : [] };
+            return { id: cc.id, num: cc.num, title: cc.title, pageCount: pg.length, pages: pg, music: cc.music || null, paid: !!cc.paid, price: cc.price || 0, released: cc.released !== false, likes: o ? o.likes : 0, liked: o ? o.liked : false, comments: o ? o.comments : [] };
           })
         };
       });
@@ -1935,7 +1951,7 @@ class Component extends DCLogic {
       site: { author: st.author, synopsis: st.synopsis, videoUrl: st.videoUrl, adsense: st.adsense, defaultPageCount: st.defaultPageCount, packPrice: st.packPrice, hideAdmin: !!st.hideAdmin, music: st.music || { enabled: true, loop: false, url: '', name: '' }, twitter: st.twitter, tiktok: st.tiktok },
       tomes: d.tomes.map(t => ({
         id: t.id, num: t.num, title: t.title, price: t.price, paid: t.paid, released: t.released, cover: t.cover,
-        chapters: t.chapters.map(c => ({ id: c.id, num: c.num, title: c.title, pages: c.pages.filter(okImg), music: c.music || null }))
+        chapters: t.chapters.map(c => ({ id: c.id, num: c.num, title: c.title, pages: c.pages.filter(okImg), music: c.music || null, paid: !!c.paid, price: c.price || 0, released: c.released !== false }))
       }))
     };
   }
@@ -2024,6 +2040,9 @@ class Component extends DCLogic {
   hasPages(t) { return t.chapters.some(c => c.pages.length > 0); }
   isAvailable(t) { return !!t.released && this.hasPages(t); }
   isUnlocked(t) { return !t.paid || t.price === 0 || this.state.data.user.purchased.indexOf(t.id) >= 0; }
+  tomeFullyOwned(t) { return this.state.data.user.purchased.indexOf(t.id) >= 0; }
+  isChapterAvailable(c, t) { return !!t.released && c.released !== false && c.pages.length > 0; }
+  isChapterUnlocked(c, t) { return !c.paid || !c.price || this.state.data.user.purchased.indexOf(c.id) >= 0 || this.tomeFullyOwned(t); }
 
   filtered() {
     const d = this.state.data, tab = this.state.tab;
@@ -2034,16 +2053,19 @@ class Component extends DCLogic {
   }
 
   openTome(t) {
-    if (!this.isAvailable(t) || !this.isUnlocked(t)) return this.setState({ paywallTome: t.id, payLoading: false });
-    this.openChapter(t.chapters[0].id);
+    if (!this.isAvailable(t)) return this.setState({ paywallTome: t.id, paywallChapter: null, payLoading: false, offer: 'single' });
+    const openable = t.chapters.find(c => this.isChapterAvailable(c, t)) || t.chapters[0];
+    this.openChapter(openable.id);
   }
 
   openChapter(id) {
     const f = this.findChapter(id);
     if (!f) return;
-    if (!this.isAvailable(f.tome) || !this.isUnlocked(f.tome)) return this.setState({ paywallTome: f.tome.id, payLoading: false });
-    this.mutate(() => { f.tome.reads += 1; });
-    this.setState({ route: 'reader', chapterId: id, tomeId: f.tome.id, page: 0, replyTo: null, showAllComments: false }, () => this.syncAudio(true));
+    const t = f.tome, c = f.ch;
+    if (!this.isAvailable(t) || !this.isChapterAvailable(c, t)) return this.setState({ paywallTome: t.id, paywallChapter: c.id, payLoading: false, offer: 'single' });
+    if (!this.isChapterUnlocked(c, t)) return this.setState({ paywallTome: t.id, paywallChapter: c.id, payLoading: false, offer: 'chapter' });
+    this.mutate(() => { t.reads += 1; });
+    this.setState({ route: 'reader', chapterId: id, tomeId: t.id, page: 0, replyTo: null, showAllComments: false }, () => this.syncAudio(true));
     window.scrollTo(0, 0);
   }
 
@@ -2129,11 +2151,15 @@ class Component extends DCLogic {
         priceLabel: !avail ? 'À venir' : (!t.paid || t.price === 0 ? 'Gratuit' : (unlocked ? 'Débloqué' : t.price.toFixed(2) + ' €')),
         cta: !avail ? 'À venir' : (unlocked ? 'Lire' : 'Débloquer'),
         open: () => this.openTome(t),
-        chapters: t.chapters.map(c => ({
-          short: 'Ch. ' + c.num,
-          lockIcon: t.released ? (unlocked ? '' : '🔒') : '·',
-          open: () => this.openChapter(c.id)
-        }))
+        chapters: t.chapters.map(c => {
+          const cAvail = this.isChapterAvailable(c, t);
+          const cUnlocked = this.isChapterUnlocked(c, t);
+          return {
+            short: 'Ch. ' + c.num,
+            lockIcon: !cAvail ? '·' : (cUnlocked ? '' : '🔒'),
+            open: () => this.openChapter(c.id)
+          };
+        })
       };
     });
 
@@ -2246,12 +2272,25 @@ class Component extends DCLogic {
     })();
 
     const pT = s.paywallTome ? d.tomes.find(t => t.id === s.paywallTome) : null;
-    const isAff = pT && pT.id === d.affiliateTome && !u.affiliateUsed;
+    const pC = (pT && s.paywallChapter) ? pT.chapters.find(c => c.id === s.paywallChapter) : null;
+    const pCAvailable = !!(pC && this.isChapterAvailable(pC, pT));
+    const isAff = pT && !pC && pT.id === d.affiliateTome && !u.affiliateUsed;
     const paidTomes = d.tomes.filter(t => t.paid && this.isAvailable(t));
     const paidCount = paidTomes.length;
     const packPrice = paidCount >= 2 ? Math.max(site.packPrice || 6.99, Math.max.apply(null, paidTomes.map(t => t.price)) + 0.01) : 0;
     const pAvailable = !!(pT && this.isAvailable(pT));
-    const offerAmount = (s.offer === 'pack' && paidCount >= 2) ? packPrice : (pT ? pT.price : 0);
+    const offerAmount = (s.offer === 'pack' && paidCount >= 2) ? packPrice
+      : (s.offer === 'chapter' && pC) ? pC.price
+      : (s.offer === 'tome' && pT) ? pT.price
+      : (pT ? pT.price : 0);
+    const mapOffer = o => {
+      const on = s.offer === o.id;
+      return Object.assign({}, o, {
+        border: on ? '#3B8FCB' : '#23323F', bg: on ? '#0E1A24' : '#0A1016',
+        dot: on ? '#3B8FCB' : '#2A3A4A', dotFill: on ? '#3B8FCB' : 'transparent',
+        pick: () => this.setState({ offer: o.id })
+      });
+    };
     const lp = s.lastPurchase;
     const auth = s.auth;
     const isOwner = !!s.adminVerified;
@@ -2290,7 +2329,7 @@ class Component extends DCLogic {
       isAdmin: route === 'admin' && isOwner, isAdminLocked: route === 'admin' && !isOwner && !s.adminChecking, isAdminChecking: route === 'admin' && !isOwner && !!s.adminChecking,
       goHome: () => this.nav('home'), goLibrary: () => this.nav('library'),
       goCommunity: () => { this.setState({ feedCount: 6 }); this.nav('community'); },
-      goReferral: () => { this.setState({ paywallTome: null, showSupport: false }); this.nav('referral'); },
+      goReferral: () => { this.setState({ paywallTome: null, paywallChapter: null, showSupport: false }); this.nav('referral'); },
       goAdmin: () => this.nav('admin'),
       search: s.search, onSearch: e => this.setState({ search: e.target.value }),
       twitterUrl: site.twitter, tiktokUrl: site.tiktok,
@@ -2324,8 +2363,8 @@ class Component extends DCLogic {
 
       tomes: tomes, topChapters: ranked, noRanked: ranked.length === 0,
       readFirst: () => { if (!first) return this.flash('Les premiers chapitres arrivent bientôt'); this.openChapter(first.chapters[0].id); },
-      readFirstLabel: !first ? 'Bientôt disponible' : (this.isAvailable(first) ? 'Lire le chapitre 1 · gratuit' : 'Chapitre 1 · à venir'),
-      readFirstShort: !first ? 'Bientôt disponible' : (this.isAvailable(first) ? 'Lire le chapitre 1' : 'Chapitre 1 · à venir'),
+      readFirstLabel: !first ? 'Bientôt disponible' : (!this.isChapterAvailable(first.chapters[0], first) ? 'Chapitre 1 · à venir' : (this.isChapterUnlocked(first.chapters[0], first) ? 'Lire le chapitre 1 · gratuit' : 'Chapitre 1 · ' + first.chapters[0].price.toFixed(2) + ' €')),
+      readFirstShort: !first ? 'Bientôt disponible' : (!this.isChapterAvailable(first.chapters[0], first) ? 'Chapitre 1 · à venir' : (this.isChapterUnlocked(first.chapters[0], first) ? 'Lire le chapitre 1' : 'Chapitre 1 · ' + first.chapters[0].price.toFixed(2) + ' €')),
       noTomes: d.tomes.length === 0,
       restoreDefaults: () => { this.adminMutate(dd => { dd.tomes = seed().tomes; }); this.flash('Tomes d’origine rétablis'); },
 
@@ -2449,7 +2488,7 @@ class Component extends DCLogic {
 
       fundTotal: eur(d.fund.total), fundMeta: d.fund.count + ' contribution' + (d.fund.count === 1 ? '' : 's'),
       donations: d.fund.donations.slice(0, 6).map((x, i) => ({ author: x.author, amount: eur(x.amount), time: x.time, avatar: AV[i % AV.length] })),
-      openSupport: () => this.setState({ showSupport: true, supportAmount: '', paywallTome: null, supportBusy: false }),
+      openSupport: () => this.setState({ showSupport: true, supportAmount: '', paywallTome: null, paywallChapter: null, supportBusy: false }),
       closeSupport: () => this.setState({ showSupport: false }),
       showSupport: s.showSupport,
       supportAmount: s.supportAmount, onSupportAmount: e => this.setState({ supportAmount: e.target.value }),
@@ -2475,27 +2514,32 @@ class Component extends DCLogic {
       },
 
       showPaywall: !!pT,
-      paywallKicker: pT ? (pAvailable ? 'DÉBLOQUER' : 'PAS ENCORE DISPONIBLE') : '',
-      paywallTitle: pT ? pT.title : '',
-      paywallText: pT ? (pAvailable
-        ? 'Ce tome est payant. Tu le gardes à vie après paiement, en lecture web et en téléchargement PDF, EPUB et CBZ.'
-        : pT.title + " n'est pas encore disponible. Les dates de sortie sont annoncées sur le compte X d'Amadon.") : '',
-      paywallBuyable: !!(pT && pAvailable),
-      paywallSoon: !!(pT && !pAvailable),
+      paywallKicker: pC ? (pCAvailable ? 'DÉBLOQUER CE CHAPITRE' : 'PAS ENCORE DISPONIBLE') : (pT ? (pAvailable ? 'DÉBLOQUER' : 'PAS ENCORE DISPONIBLE') : ''),
+      paywallTitle: pC ? (pT.title + ' — ' + pC.title) : (pT ? pT.title : ''),
+      paywallText: pC
+        ? (pCAvailable
+          ? 'Ce chapitre est payant. Tu le gardes à vie après paiement, en lecture web.'
+          : pC.title + " n'est pas encore disponible. Les dates de sortie sont annoncées sur le compte X d'Amadon.")
+        : (pT ? (pAvailable
+          ? 'Ce tome est payant. Tu le gardes à vie après paiement, en lecture web et en téléchargement PDF, EPUB et CBZ.'
+          : pT.title + " n'est pas encore disponible. Les dates de sortie sont annoncées sur le compte X d'Amadon.") : ''),
+      paywallBuyable: pC ? pCAvailable : !!(pT && pAvailable),
+      paywallSoon: pC ? !pCAvailable : !!(pT && !pAvailable),
       paywallAffiliate: !!isAff,
-      paywallSupport: !!(pT && !pAvailable),
+      paywallSupport: pC ? !pCAvailable : !!(pT && !pAvailable),
       affiliateExplain: 'Le Tome 3 est le seul débloquable par parrainage, et une seule fois : dès qu’une personne ouvre ton lien, il s’ouvre automatiquement.',
-      paywallPrice: pT ? pT.price.toFixed(2) + ' €' : '',
-      closePaywall: () => this.setState({ paywallTome: null }),
+      paywallPrice: pC ? pC.price.toFixed(2) + ' €' : (pT ? pT.price.toFixed(2) + ' €' : ''),
+      closePaywall: () => this.setState({ paywallTome: null, paywallChapter: null }),
       payBg: s.payLoading ? '#182028' : '#3B8FCB', payFg: s.payLoading ? '#817C75' : '#06131F',
       payLabel: pT ? (s.payLoading ? 'Redirection vers Stripe…' : 'Payer ' + offerAmount.toFixed(2) + ' € · Stripe') : '',
       payHint: 'Paiement sécurisé sur la page Stripe — tu reviens automatiquement sur Amadon une fois payé.',
       confirmPay: () => {
         if (!pT || s.payLoading) return;
-        const isPack = s.offer === 'pack' && paidCount >= 2;
-        const ids = isPack ? paidTomes.map(t => t.id) : [pT.id];
-        const title = isPack ? 'Pack intégral Amadon' : pT.title;
-        const amountCents = Math.round(offerAmount * 100);
+        let ids, title, amountCents;
+        if (s.offer === 'chapter' && pC) { ids = [pC.id]; title = pT.title + ' — ' + pC.title; amountCents = Math.round(pC.price * 100); }
+        else if (s.offer === 'tome' && pC) { ids = [pT.id]; title = pT.title; amountCents = Math.round(pT.price * 100); }
+        else if (s.offer === 'pack' && paidCount >= 2) { ids = paidTomes.map(t => t.id); title = 'Pack intégral Amadon'; amountCents = Math.round(packPrice * 100); }
+        else { ids = [pT.id]; title = pT.title; amountCents = Math.round(pT.price * 100); }
         this.setState({ payLoading: true });
         fetch('/api/create-checkout-session', {
           method: 'POST',
@@ -2510,18 +2554,15 @@ class Component extends DCLogic {
           .catch(() => { this.setState({ payLoading: false }); this.flash('Erreur réseau — réessaie'); });
       },
 
-      offers: pT ? [
+      offers: (pC && pCAvailable) ? [
+        { id: 'chapter', title: pC.title, sub: 'accès à vie · lecture web', price: pC.price.toFixed(2) + ' €' }
+      ].concat((pT.paid && pT.price > 0) ? [
+        { id: 'tome', title: pT.title + ' (tome entier)', sub: pT.chapters.length + (pT.chapters.length === 1 ? ' chapitre' : ' chapitres') + ' · accès à vie', price: pT.price.toFixed(2) + ' €' }
+      ] : []).map(mapOffer) : pT ? [
         { id: 'single', title: pT.title, sub: pT.chapters.length + (pT.chapters.length === 1 ? ' chapitre' : ' chapitres') + ' · accès à vie', price: pT.price.toFixed(2) + ' €' }
       ].concat(paidCount >= 2 ? [
         { id: 'pack', title: 'Pack intégral', sub: paidCount + ' tomes disponibles · un seul paiement', price: packPrice.toFixed(2) + ' €' }
-      ] : []).map(o => {
-        const on = s.offer === o.id;
-        return Object.assign({}, o, {
-          border: on ? '#3B8FCB' : '#23323F', bg: on ? '#0E1A24' : '#0A1016',
-          dot: on ? '#3B8FCB' : '#2A3A4A', dotFill: on ? '#3B8FCB' : 'transparent',
-          pick: () => this.setState({ offer: o.id })
-        });
-      }) : [],
+      ] : []).map(mapOffer) : [],
 
       isSuccess: s.route === 'success',
       successSub: lp ? lp.label + ' · accès débloqué immédiatement' : 'Accès débloqué immédiatement',
@@ -2628,11 +2669,19 @@ class Component extends DCLogic {
         addChapter: () => this.adminMutate(() => {
           const last = t.chapters[t.chapters.length - 1];
           const num = (last ? last.num : 0) + 1;
-          t.chapters.push({ id: t.id + 'c' + num + uid(), num: num, title: 'Chapitre ' + num, pageCount: site.defaultPageCount, pages: [], likes: 0, liked: false, comments: [] });
+          t.chapters.push({ id: t.id + 'c' + num + uid(), num: num, title: 'Chapitre ' + num, pageCount: site.defaultPageCount, pages: [], likes: 0, liked: false, comments: [], paid: false, price: 0, released: true });
         }),
         chapters: t.chapters.map(c => ({
           title: c.title,
           pageMeta: c.pages.length ? c.pages.length + ' pages importées · ordre par nom de fichier' : 'aucune page — dépose autant de pages que tu veux',
+          price: String(c.price || 0),
+          paidLabel: c.paid ? 'Payant' : 'Gratuit',
+          paidBorder: c.paid ? '#3B8FCB' : '#2A6B3C', paidColor: c.paid ? '#7CB9E3' : '#4ADE80',
+          releasedLabel: c.released !== false ? 'Disponible' : 'Non dispo',
+          releasedColor: c.released !== false ? '#D6D3CC' : '#8B877F',
+          onPrice: e => { const v = parseFloat(e.target.value.replace(',', '.')); this.adminMutate(() => { c.price = isNaN(v) ? 0 : v; }); },
+          togglePaid: () => this.adminMutate(() => { c.paid = !c.paid; if (!c.paid) c.price = 0; else if (!c.price) c.price = 0.99; }),
+          toggleReleased: () => this.adminMutate(() => { c.released = c.released === false ? true : false; }),
           remove: () => { if (t.chapters.length <= 1) return this.flash('Un tome garde au moins un chapitre'); if (!this.confirmTwice('ch:' + c.id, 'Clique encore sur « Confirmer ? » pour supprimer ' + c.title)) return; this.adminMutate(() => { t.chapters = t.chapters.filter(x => x.id !== c.id); }); this.flash(c.title + ' supprimé'); },
           deleteLabel: s.confirmDel === 'ch:' + c.id ? 'Confirmer ?' : 'Supprimer',
           deleteColor: s.confirmDel === 'ch:' + c.id ? '#E5484D' : '#8B877F',
@@ -2669,7 +2718,7 @@ class Component extends DCLogic {
         this.adminMutate(dd => {
           const n = dd.tomes.reduce((m, x) => Math.max(m, x.num), 0) + 1;
           title = 'Tome ' + n;
-          dd.tomes.push({ id: 't' + n + uid(), num: n, title: title, price: 4, paid: true, released: false, cover: COVERS[(n - 1) % COVERS.length], reads: 0, chapters: [{ id: 'nt' + uid(), num: 1, title: 'Chapitre 1', pageCount: site.defaultPageCount, pages: [], likes: 0, liked: false, comments: [] }] });
+          dd.tomes.push({ id: 't' + n + uid(), num: n, title: title, price: 4, paid: true, released: false, cover: COVERS[(n - 1) % COVERS.length], reads: 0, chapters: [{ id: 'nt' + uid(), num: 1, title: 'Chapitre 1', pageCount: site.defaultPageCount, pages: [], likes: 0, liked: false, comments: [], paid: false, price: 0, released: true }] });
         });
         this.flash(title + ' créé — ajoute sa couverture et ses pages');
         setTimeout(() => {
